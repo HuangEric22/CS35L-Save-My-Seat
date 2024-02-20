@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {createAuction, createBid, getAuctions, deleteAuction, completeAuction} = require('../controllers/auctionControllers');
 
 router.route('/').post(createAuction);
 router.route('/:auctionId').post(createBid);
