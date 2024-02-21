@@ -1,7 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const auctionRoutes = require('./routes/AuctionRoutes')
+const auctionRoutes = require('./routes/auctionRoutes')
+const userRoutes  = require('./routes/userRoutes')
 const app = express();
 dotenv.config();
 
