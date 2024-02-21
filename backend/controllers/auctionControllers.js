@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const createAuction = async (req, res) => {
     try {
-        const { auctionName, owner, bids } = req.body;
+        const {auctionName} = req.body;
         const auction = new Auction({
             auctionName,
             owner,

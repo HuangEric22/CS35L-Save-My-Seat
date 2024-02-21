@@ -1,2 +1,8 @@
-//routes for user such as registering and logging in
-//authentication ppl add here
+const express = require('express');
+const router = express.Router();
+const {registerUser, authUser, allUsers } = require('../controllers/userControllers');
+
+router.post('/', registerUser); 
+router.post('/login', authUser);
+
+module.exports = router;

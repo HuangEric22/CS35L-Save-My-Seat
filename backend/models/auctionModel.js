@@ -1,19 +1,18 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema; 
-
-const auctionSchema = new Schema({
+const Bid = require('./bidModel.js')
+const auctionModel = new Schema({
     auctionName:{
         type:String,
-        required:true, 
-        trim:true
+        required:true
     }, 
     owner:{
         type:mongoose.Schema.Types.ObjectId, 
         ref:"User"
     }, 
-    bids:[bidSchema]
+    bids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }] 
 
-})
+});
 
 const Auction = mongoose.model("Auction", auctionModel);
 module.exports = Auction;
