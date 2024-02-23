@@ -1,0 +1,50 @@
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 100px repeat(5, 1fr); /* First column wider for time labels */
+    grid-template-rows: auto; /* Rows height will be determined by content */
+    width: 100%; /* Ensure the grid takes full width of its container */
+    grid-gap: 1px; /* This creates a small gap between grid items */
+  }
+  
+  .grid-row {
+    display: contents; /* This allows the .grid-cell to be direct children of the grid */
+  }
+  
+  .grid-cell {
+    display: flex;
+    align-items: center; /* Center the content vertically */
+    justify-content: center; /* Center the content horizontally */
+    border: 1px solid #ccc; /* Example border */
+    background-color: #fff; /* Ensure background color for legibility */
+    min-height: 50px; /* Minimum height for each row */
+  }
+  
+  .time-label {
+    grid-column: 1; /* Place time label in the first column */
+    text-align: right; /* Align the text to the right */
+    padding-right: 10px; /* Space before the grid line */
+  }
+  
+  .day-label {
+    grid-column: span 5; /* Day labels span across all 5 day columns */
+    text-align: center;
+    background-color: #e4e4e4; /* Example background color for day labels */
+    font-weight: bold;
+  }
+  
+  .hour-cell {
+    /* Hour cells will automatically take up 1/5th of the space because of 1fr each */
+  }
+  
+  /* Specific to the day of the week headers */
+  .days-header {
+    display: grid;
+    grid-template-columns: 100px repeat(5, 1fr); /* This should match the parent grid */
+    grid-column: span 6; /* Span across all columns */
+  }
+  
+  /* Override for the first cell in the days header to prevent it from displaying */
+  .days-header .grid-cell:first-child {
+    display: none;
+  }
+  
