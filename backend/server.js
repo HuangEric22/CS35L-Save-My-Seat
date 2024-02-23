@@ -1,7 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-
+const auctionRoutes = require('./routes/auctionRoutes')
+const userRoutes  = require('./routes/userRoutes')
 const app = express();
 dotenv.config();
 
@@ -16,8 +17,11 @@ const connectDB = async () => { //connect to database
     }
 };
 
+// app.use('/api/user', userRoutes);
+app.use(express.json());
+app.use('/api/auction', auctionRoutes);
+app.use('/api/user', userRoutes);
 connectDB().then(()=> app.listen(process.env.PORT, console.log("Server Started"))) //start the backend server);
-
 
 
 

@@ -33,3 +33,114 @@ header a {
   padding: 20px;
   margin: 0 auto;
 }
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  margin-top: 50px;
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  padding: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.pageTitle {
+  color: #fff; /* Or any color you wish */
+  text-align: center;
+  font-size: 48px; /* Adjust the size as needed */
+  font-weight: normal; /* Or 400, 600, etc. depending on the emphasis you want */
+  margin-top: 20px; /* Add space at the top */
+  /* Add other styling properties as desired, such as font-family, line-height, etc. */
+}
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.text {
+  color: #3c009d;
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Enhanced the input fields for better UI */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: #6658f6;
+  box-shadow: 0 0 5px #c8caff;
+}
+
+button {
+  width: 100%;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+button[type="submit"] {
+  background-color: #4c00b4;
+  color: white;
+}
+
+button[type="button"] {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover {
+  background-color: #6658f6;
+}
+
+.submit-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.submit-container button {
+  margin-bottom: 15px; /* Add space between buttons */
+}
+
+.forgot-password-container,
+.registration-complete-container {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    margin-top: 30px;
+  }
+}
+

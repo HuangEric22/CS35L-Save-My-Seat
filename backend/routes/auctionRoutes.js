@@ -7,3 +7,5 @@ router.route('/:auctionId').post(createBid);
 router.route('/').get(getAuctions);
 router.route('/:auctionId').delete(deleteAuction);
 router.route('/:auctionId').put(completeAuction);
+
+module.exports = router;
