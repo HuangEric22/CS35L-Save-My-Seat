@@ -1,9 +1,11 @@
 import React from "react";
+//import Select from "react-select";
 
 //import user_icon from "../Assets/person.png";
 //import lock_icon from "../Assets/password.png";
 //import email_icon from "../Assets/email.png";
-import "../src/index.css";
+import "./LoginSignup.css";
+import sortedMajorsList from "../../majorsData";
 import react from "react";
 
 const LoginSignup = () => {
@@ -12,24 +14,30 @@ const LoginSignup = () => {
   const [email, setEmail] = react.useState("");
   const [password, setPassword] = react.useState("");
   const [passwordRepeat, setPasswordRepeat] = react.useState("");
+  const [selectedMajor, setSelectedMajor] = react.useState("");
+  const [searchTerm, setSearchTerm] = react.useState("");
+
+  const filteredMajors = sortedMajorsList.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const handleLogin = async (event) => {
-    event.preventDefault(); // Prevent the default form submit behavior
+    event.preventDefault(); 
 
-    // Preliminary check: Ensure neither field is empty
+    
     if (!username || !password) {
       alert("Username and password are required.");
       return;
     }
 
     const loginData = {
-      username, // Assuming these are state variables captured from input fields
-      password, // Same assumption
+      username, 
+      password, 
     };
 
     try {
       const response = await fetch("/login", {
-        // Adjust '/api/login' as your actual login route
+        
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +51,7 @@ const LoginSignup = () => {
       }
 
       console.log("Login successful", data);
-      // Handle login success (e.g., redirect to dashboard, store JWT, etc.)
+      
     } catch (error) {
       console.error("Error during login:", error.message);
     }
@@ -51,19 +59,20 @@ const LoginSignup = () => {
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    if (!username || !email || !password || !passwordRepeat) {
+    if (!username || !email || !password || !passwordRepeat || !selectedMajor) {
       alert("Please fill in all fields.");
     } else if (password !== passwordRepeat) {
       alert("Passwords don't match.");
       return;
     }
-    setAction("Registration Complete!");
-    // Continue with signup process (validation, API call, etc.)
+    setAction("Registration Complete!"); //this shouldn't be here when we actually finish the website, but I have it here for now to make sure that the right page comes up after a sign up
+   
     const userData = {
-      username, // Assuming these are state variables captured from input fields
-      password, // Same assumption
+      selectedMajor,
+      username, 
+      password, 
       email,
-      // Add more fields as needed
+     
     };
 
     try {
@@ -85,7 +94,7 @@ const LoginSignup = () => {
 
       console.log("Registration successful", data);
       // setAction("Registration Complete");
-      // Further actions upon successful registration
+     
     } catch (error) {
       console.error("Error during registration:", error.message);
     }
@@ -131,6 +140,36 @@ const LoginSignup = () => {
 
         {action === "Signup" && (
           <form onSubmit={handleSignup}>
+            {/*<div>
+              <select value={selectedMajor} onChange={handleMajor}>
+                <option value="">Select a Major</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </select>
+              {selectedMajor && <div>You selected: {selectedMajor}</div>}
+        </div>*/}
+            <div className="dropdown-search">
+              <input
+                type="text"
+                placeholder="Search for majors..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <select
+                value={selectedMajor}
+                onChange={(e) => setSelectedMajor(e.target.value)}
+                size={sortedMajorsList.length > 5 ? 5 : sortedMajorsList.length} 
+              >
+                {filteredMajors.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {selectedMajor && <div>You selected: {selectedMajor}</div>}
+            </div>
+
             <input
               type="text"
               placeholder="Username"
@@ -159,7 +198,7 @@ const LoginSignup = () => {
           </form>
         )}
 
-        {/* Add logic for "Login" if you want a separate form or view for it */}
+      
 
         {action === "Login" && (
           <form onSubmit={handleLogin}>
