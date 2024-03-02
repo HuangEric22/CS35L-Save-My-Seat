@@ -34,7 +34,7 @@ const authUser = async(req, res) => {
     if(!email || !password){
         res.status(400).send("Please Enter All Fields");
     };
-    const user = req.body
+    const user = req.body;
     if(await User.findOne({email, password})){
         res.json({
             _id:user._id, 

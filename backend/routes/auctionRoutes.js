@@ -3,9 +3,9 @@ const router = express.Router();
 const {createAuction, createBid, getAuctions, deleteAuction, completeAuction} = require('../controllers/auctionControllers');
 
 router.route('/').post(createAuction);
-router.route('/:auctionId').post(createBid);
+router.route('/:auctionId').put(createBid);
 router.route('/').get(getAuctions);
 router.route('/:auctionId').delete(deleteAuction);
-router.route('/:auctionId').put(completeAuction);
+router.route('/completed/:auctionId').put(completeAuction);
 
 module.exports = router;
