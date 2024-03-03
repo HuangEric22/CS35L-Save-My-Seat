@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import json
+import re
 
 # Set up Chrome options for headless mode
 chrome_options = Options()
@@ -103,19 +104,71 @@ def get_abbrv(major_name):
             pass                        
     return get_abbrv.get(major_name, "")
 
-#returns a tuple of all of the courses for a major and their prerequisites
-def get_course_reqs(name_page_pair):
+import re
+
+def extract_prerequisites(text):
+    # Updated pattern to include 'Requisites:' and 'Corequisites:' in the capture
+    # and to capture the entire phrase starting with these keywords.
+    pattern = re.compile(
+        r'((?:Requisite|Enforced requisite|Enforced corequisite|Requisites|Corequisites): (.*?))(?:\.|$| Not| P/NP| Letter)',
+        re.IGNORECASE | re.DOTALL)
+
+    # Find all matches in the text
+    matches = pattern.findall(text)
+
+    # Each match is a tuple, where the first element contains the full phrase we're interested in
+    prerequisites = "; ".join(match[0] for match in matches).strip()
+
+    return prerequisites
+
+# Example course descriptions
+course_descriptions = [
+    # Add your course descriptions here
+]
+
+# Process each course description
+for description in course_descriptions:
+    prerequisites = extract_prerequisites(description)
+    print("Prerequisites:", prerequisites if prerequisites else "None")
     
+#returns a tuple of all of the courses for a major and their prerequisites
+
+#todo: parse the prereq string so that you get call of the courses and the major abbreviation of said course 
+def get_course_reqs(name_page_pair):
+    course_list = []
+    url_list = []
+    prereqs = []
+    course_req_pair = []
+    driver = webdriver.Chrome(options=chrome_options)
+    #add all of the urls we need to scrape into a list
     for item in name_page_pair:
         if type(item) is tuple:
+            course_list.append(item[0])
             url = f"https://catalog.registrar.ucla.edu{item[1]}"
-            print(url)
+            url_list.append(url)
+             
         else:
             if type(item) is list:
+                #remove the integer from the list then process normally
+                item.pop()
                 for pair in item:
-                    pass
-    pass
+                    course_list.append(pair[0])
+                    url = f"https://catalog.registrar.ucla.edu{pair[1]}"
+                    url_list.append(url)
+    
+    for url in url_list:
+        driver.get(url)
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        course_description = soup.find('div', class_='readmore-content-wrapper').text
+        parsed_str = extract_prerequisites(course_description)
+        prereqs.append(parsed_str)
 
+    for i in range(len(course_list)):
+        new_pair = [course_list[i], [prereqs[i]]]
+        course_req_pair.append(new_pair)
+    print(course_req_pair)
+    return course_req_pair
+        
 name_page_pair = get_major_reqs("computerscience")
 get_course_reqs(name_page_pair)
 
