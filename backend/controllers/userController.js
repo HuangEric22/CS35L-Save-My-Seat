@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Auction = require('../models/auctionModel');
 const User = require('../models/userModel');
 const Bid = require('../models/bidModel');
 
+const generateToken = (_id) => {
+    return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
+  }
 const registerUser = async(req, res) =>{
     const {name, email, password} = req.body;
     if(!name || !email || !password){
@@ -22,9 +26,9 @@ const registerUser = async(req, res) =>{
             _id:user._id, 
             name:user.name, 
             email:user.email
-            // token: generateToken(user._id)
+            token: generateToken(user._id)
         });
-        console.log("resgister")
+        console.log("register");
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -42,8 +46,9 @@ const authUser = async(req, res) => {
             _id:user._id, 
             name:user.name, 
             email:user.email,
-            // token: generateToken(user._id)
+            token: generateToken(user._id)
         });
+        res.status(200).json({email, token});
         console.log("login");
     }
     else{
