@@ -7,6 +7,7 @@ import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
 import History from "./scenes/history";
+import Calendar from "./scenes/calendar";
 import { useEffect } from 'react';
 // import Bar from "./scenes/bar";
 // import Form from "./scenes/form";
@@ -34,6 +35,7 @@ function App() {
               <Route path="/" element={<Dashboard/>}/>
               <Route path="/history" element={<History/>}/>
               <Route path="/buy" element={<Buy/>}/>
+              <Route path="/calendar"  element={<Calendar/>}/> 
               
             
             </Routes>
