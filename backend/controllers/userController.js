@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Auction = require('../models/auctionModel');
 const User = require('../models/userModel');
 const Bid = require('../models/bidModel');
+const bcrypt = require ('bcrypt')
 
 const generateToken = (_id) => {
     return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
@@ -15,10 +16,14 @@ const registerUser = async(req, res) =>{
     if(await User.findOne({email})){
         res.status(400).send("User already Registered Under Email");
     }
+
+    const salt = await bcrypt.genSalt(5)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
     const user = new User({
         name,
         email, 
-        password
+        password: hashedPassword
     });
     try {
         await user.save();
@@ -28,7 +33,11 @@ const registerUser = async(req, res) =>{
             email:user.email
             token: generateToken(user._id)
         });
+<<<<<<< Updated upstream
         console.log("register");
+=======
+        console.log("register")
+>>>>>>> Stashed changes
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
