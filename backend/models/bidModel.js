@@ -5,6 +5,10 @@ const bidModel =  new Schema({
         type:String,
         required:true
     }, 
+    name:{
+        type:String, 
+        required:true
+    },
     amount:{
         type:String, trim:true
     },

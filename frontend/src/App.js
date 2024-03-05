@@ -24,7 +24,6 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <MyAuctions/>
         <CssBaseline/>
         <div className="app">
           <Navbar/>

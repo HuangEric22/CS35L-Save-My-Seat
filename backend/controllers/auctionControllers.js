@@ -31,7 +31,7 @@ const createAuction = async (req, res) => {
 
 const createBid = async (req, res) => {
     const { auctionId } = req.params;
-    const { bidderId:bidderID, amount } = req.body;
+    const { bidderId:bidderID, amount, name } = req.body;
     if (!mongoose.Types.ObjectId.isValid(auctionId)) 
     {
         res.status(404).send(`No auction with id: ${auctionId}`);
@@ -42,7 +42,8 @@ const createBid = async (req, res) => {
     }
     const bid = new Bid({
         bidderID, 
-        amount
+        amount, 
+        name
     })
     try {
         await bid.save();
@@ -101,7 +102,6 @@ const deleteAuction = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 const completeAuction = async (req, res) => {
     const { auctionId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(auctionId)) 
@@ -116,6 +116,42 @@ const completeAuction = async (req, res) => {
     res.status(201).json(auction);
 };
 
+const getTime = async (auctionIds) => {
+    const times = {};
+    const totalDurationMs = 24 * 60 * 60 * 1000; // Total duration in milliseconds (24 hours)
+
+    for (const auctionId of auctionIds) {
+        const auction = await Auction.findById(auctionId);
+        if (auction) {
+            const currentTime = new Date(); // Get the current time
+            const auctionTime = new Date(auction.createdAt); // Convert auction creation time to Date object
+            const elapsedTime = currentTime - auctionTime; // Calculate the elapsed time in milliseconds
+
+            // Calculate the remaining time by subtracting the elapsed time from the total duration
+            const remainingTimeMs = Math.max(totalDurationMs - elapsedTime, 0);
+
+            // Convert remaining time from milliseconds to hours and minutes
+            const remainingHours = Math.floor(remainingTimeMs / (1000 * 60 * 60));
+            const remainingMinutes = Math.floor((remainingTimeMs / (1000 * 60)) % 60);
+
+            // Store the remaining time in the times object
+            times[auctionId] = { hours:remainingHours, minutes:remainingMinutes };
+        }
+    }
+
+    return times;
+};
+
+
+
+const getTimes = async (req, res) => {
+    const auctions = await Auction.find({});
+    const auctionIds = auctions.map(auction => auction._id);
+    const times = await getTime(auctionIds); 
+    res.status(201).json(times);
+
+}
+
 module.exports = {
-    createAuction, createBid, getAuctions, deleteAuction, completeAuction
+    createAuction, createBid, getAuctions, deleteAuction, completeAuction, getTimes
 }
