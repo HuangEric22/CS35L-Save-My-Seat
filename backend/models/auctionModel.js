@@ -6,13 +6,21 @@ const auctionModel = new Schema({
         type:String,
         required:true
     }, 
-    owner:{
-        type:mongoose.Schema.Types.ObjectId, 
-        ref:"User"
+    courseName:{
+        type:String, 
+        required:true
+    },
+    ownerId:{
+        type:String,
+        required:true
     }, 
-    bids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }] 
+    completed:{
+        type: Boolean, 
+        default:false
+    },
+    bids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }]
 
-});
+},  {timestamps: true });
 
 const Auction = mongoose.model("Auction", auctionModel);
 module.exports = Auction;

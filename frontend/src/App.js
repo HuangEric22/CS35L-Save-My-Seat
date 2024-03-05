@@ -1,21 +1,48 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
-import Home from './pages/Home';
-import Bar from './components/Bar';
+import { ColorModeContext, useMode } from './theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { Routes, Route } from "react-router-dom";
+import Topbar from "./scenes/global/Topbar";
+import Navbar from "./scenes/global/Navbar";
+import Dashboard from "./scenes/dashboard";
+import Buy from "./scenes/buy";
+import Invoices from "./scenes/invoices";
+import History from "./scenes/history";
+import Calendar from "./scenes/calendar";
+import { useEffect } from 'react';
+// import Bar from "./scenes/bar";
+// import Form from "./scenes/form";
+// import Line from "./scenes/line";
+// import Pie from "./scenes/pie";
+// import FAQ from "./scenes/faq";
+// import Geography from "./scenes/geography";
+// import Calendar from "./scenes/calendar";
+import MyAuctions from './components/fetchAuctions';
+
+
 
 function App() {
+  const [theme, colorMode] = useMode();
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Bar />
-        <div className="pages">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            {/* <Route path="/about" element={<About />} />
-            <Route path="/dashboard" element={<Dashboard />} /> */}
-          </Routes>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <MyAuctions/>
+        <CssBaseline/>
+        <div className="app">
+          <Navbar/>
+          <main className="content">
+            <Topbar />
+            <Routes>
+              <Route path="/" element={<Dashboard/>}/>
+              <Route path="/history" element={<History/>}/>
+              <Route path="/buy" element={<Buy/>}/>
+              <Route path="/calendar"  element={<Calendar/>}/> 
+              
+            
+            </Routes>
+          </main>
         </div>
-      </BrowserRouter>
-    </div>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 
