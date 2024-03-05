@@ -1,4 +1,5 @@
 from os import error
+from pydoc import visiblename
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -11,7 +12,9 @@ chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--headless")
 chrome_options.add_argument('--log-level=3')
 
-
+# class course(major_name, catalog_num, prereqs):
+#     major = major_name
+    
 #returns a list of all the courses offered in a term
 def get_courses_offered(major_name, term):
     
@@ -52,31 +55,70 @@ def get_major_reqs(major_name):
     url = f"https://catalog.registrar.ucla.edu/major/2023/{major_name}bs"
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
-    
+    visited_courses = dict()
     major_reqs = []
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
-    containers = soup.find_all('div', class_='e127f7tk8')
+    containers = soup.find_all('div', class_='epj23730')
     
     for container in containers:
 
-        req_description = container.find('div', class_='e127f7tk5').text
         course_options = []
 
-        course_container = container.find('div', class_='e127f7tk4')
-        for object in course_container:
-            
-            course_page = object['href']
-            course_name = object.find("span", class_='relationshipName').text
-            name_page_pair = (course_name, course_page)
+        try:
+            req_description = container.find('div', class_='e127f7tk5').text
+        except:
+            continue
+        
+        if "one series" in req_description:
+            course_container = container.find_all('div', class_='e127f7tk8')  # Find all relevant containers for course series
+            for obj in course_container:  # Iterate over each course container found
+                if int(obj.get('data-level', 0)) == 3:  # Check if the data-level attribute is 3
+                    series_group = []  # Initialize an empty list for each series group
 
-            if "Select one course from:" in req_description:
-                course_options.append(name_page_pair)
-            else:
-                major_reqs.append(name_page_pair)
+                    course_group = obj.find('div', class_='e127f7tk4')  # Find the course group within the object
+                    if course_group:
+                        courses = course_group.find_all('a', class_='e127f7tk3')  # Find all course links within the course group
+                        
+                        for course in courses:  # Iterate over each course link found
+                            course_page = course['href']  # Extract the href attribute as the course page URL
+                            course_name = course.find('span', class_='relationshipName').text  # Extract the course name
+                            if course_name not in visited_courses.keys():
+                                visited_courses[course_name] = True
+                                name_page_pair = (course_name, course_page)  # Create a tuple of course name and page URL
+                                series_group.append(name_page_pair)  # Append the tuple to the series group list
+
+                    # Print and append the series group only if it's not empty
+                    if series_group:
+                        course_num = len(series_group)
+                        series_group.append(course_num)
+                        course_options.append(series_group)
+        
+        else:  
+            course_container = container.find('div', class_='e127f7tk4')
+            for object in course_container:
+                
+                course_page = object['href']
+                course_name = object.find("span", class_='relationshipName').text
+                name_page_pair = (course_name, course_page)
+
+                if "Select one course from:" in req_description:
+                    if course_name not in visited_courses.keys():
+                        visited_courses[course_name] = True
+                        course_options.append(name_page_pair)
+                else:
+                    if course_name not in visited_courses.keys():
+                        visited_courses[course_name] = True
+                        major_reqs.append(name_page_pair)
             
+        
         if "Select one course from:" in req_description:
+            if course_options not in major_reqs:
+                course_options.append(1)
+                major_reqs.append(course_options)
+
+        elif "one series" in req_description:
             if course_options not in major_reqs:
                 course_options.append(1)
                 major_reqs.append(course_options)
@@ -104,7 +146,6 @@ def get_abbrv(major_name):
             pass                        
     return get_abbrv.get(major_name, "")
 
-import re
 
 def extract_prerequisites(text):
     # Updated pattern to include 'Requisites:' and 'Corequisites:' in the capture
@@ -119,21 +160,9 @@ def extract_prerequisites(text):
     # Each match is a tuple, where the first element contains the full phrase we're interested in
     prerequisites = "; ".join(match[0] for match in matches).strip()
 
-    return prerequisites
+    return str(prerequisites)
 
-# Example course descriptions
-course_descriptions = [
-    # Add your course descriptions here
-]
 
-# Process each course description
-for description in course_descriptions:
-    prerequisites = extract_prerequisites(description)
-    print("Prerequisites:", prerequisites if prerequisites else "None")
-    
-#returns a tuple of all of the courses for a major and their prerequisites
-
-#todo: parse the prereq string so that you get call of the courses and the major abbreviation of said course 
 def get_course_reqs(name_page_pair):
     course_list = []
     url_list = []
@@ -141,21 +170,29 @@ def get_course_reqs(name_page_pair):
     course_req_pair = []
     driver = webdriver.Chrome(options=chrome_options)
     #add all of the urls we need to scrape into a list
-    for item in name_page_pair:
-        if type(item) is tuple:
-            course_list.append(item[0])
-            url = f"https://catalog.registrar.ucla.edu{item[1]}"
+    for object in name_page_pair:
+        if type(object) is tuple:
+            course_list.append(object[0])
+            url = f"https://catalog.registrar.ucla.edu{object[1]}"
             url_list.append(url)
              
         else:
-            if type(item) is list:
+            if type(object) is list:
                 #remove the integer from the list then process normally
-                item.pop()
-                for pair in item:
-                    course_list.append(pair[0])
-                    url = f"https://catalog.registrar.ucla.edu{pair[1]}"
-                    url_list.append(url)
-    
+                object.pop()
+                for item in object:
+                    if type(item) is tuple:
+                        course_list.append(item[0])
+                        url = f"https://catalog.registrar.ucla.edu{item[1]}"
+                        url_list.append(url)
+                    elif type(item) is list:
+                        #if entity is a series, then pop off the course count and then process
+                        item.pop()
+                        for pair in item:
+                            course_list.append(pair[0])
+                            url = f"https://catalog.registrar.ucla.edu{pair[1]}"
+                            url_list.append(url)
+        
     for url in url_list:
         driver.get(url)
         soup = BeautifulSoup(driver.page_source, 'lxml')
@@ -164,17 +201,27 @@ def get_course_reqs(name_page_pair):
         prereqs.append(parsed_str)
 
     for i in range(len(course_list)):
-        new_pair = [course_list[i], [prereqs[i]]]
+        new_pair = [course_list[i], prereqs[i]]
         course_req_pair.append(new_pair)
-    print(course_req_pair)
+
     return course_req_pair
         
-name_page_pair = get_major_reqs("computerscience")
-get_course_reqs(name_page_pair)
+name_page_pair = get_major_reqs("biochemistry")
+for entry in name_page_pair:
+    print(entry)
+    
+# print('----------------')
+# for course in get_course_reqs(name_page_pair):
+#     print(course)
 
-# for major in get_major_reqs("computerscience"):
-#     print(major, end = ' ') 
-#     print(type(major))
+# for course in name_page_pair:
+#     print(course)
+
+# print('---------------------------------')
+# for course in get_course_reqs(name_page_pair):
+#     print(course)
+
+
 
 # for course in get_courses_offered("Computer Science", '24s'):
 #     print(course)
