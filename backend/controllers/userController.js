@@ -4,6 +4,7 @@ const Auction = require('../models/auctionModel');
 const User = require('../models/userModel');
 const Bid = require('../models/bidModel');
 const bcrypt = require ('bcrypt')
+require('dotenv').config();
 
 const generateToken = (_id) => {
     return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
