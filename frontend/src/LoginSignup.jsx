@@ -137,7 +137,7 @@ const LoginSignup = () => {
               {selectedMajor && <div>You selected: {selectedMajor}</div>}
                 </div>*/}
 
-                //Here is the drop down menu code, list of majors is in majorsData.js
+               {/* //Here is the drop down menu code, list of majors is in majorsData.js */}
             <div className="login-signup-form">
               <h1>Select Your Major</h1>
               <Select

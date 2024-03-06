@@ -7,6 +7,8 @@ import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
 import ProtectedRoute from "./ProtectedRoute";
+import Signup from "./Signup";
+import Login from "./Login";
 
 import History from "./scenes/history";
 import { useEffect } from 'react';
@@ -34,8 +36,8 @@ function App() {
               <Route path="/" element={{/*<ProtectedRoute>*/}<Dashboard/>{/*</ProtectedRoute>*/}}/>
               <Route path="/history" element={{/*<ProtectedRoute>*/}<History/> {/*</ProtectedRoute>*/}}/>
               <Route path="/buy" element={{/*<ProtectedRoute>*/}<Buy/>{/*</ProtectedRoute>*/}}/>
-              {/* <Route path="/login" element={<LoginSignup/>}/> 
-               <Route path="/" element={<LoginSignup/>}/> */} {/*routes for signup/login*/}
+              {/* <Route path="/login" element={<Login/>}/> 
+               <Route path="/" element={<Signup/>}/> */} {/*routes for signup/login*/}
                
               
             
