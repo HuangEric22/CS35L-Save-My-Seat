@@ -7,13 +7,18 @@ import json
 import re
 
 # Set up Chrome options for headless mode
-chrome_options = Options()
-chrome_options.add_argument("--window-size=1920,1080")
+chrome_options = Options()  
 chrome_options.add_argument("--headless")
 chrome_options.add_argument('--log-level=3')
 
-# class course(major_name, catalog_num, prereqs):
-#     major = major_name
+class Course:
+    def __init__(self, cat_hash, course_title):
+        self.course_title = course_title
+        self.cat_hash = cat_hash
+        self.prereqs = set()
+        self.coreqs  = set()
+        
+
     
 #returns a list of all the courses offered in a term
 def get_courses_offered(major_name, term):
@@ -85,7 +90,7 @@ def get_major_reqs(major_name):
                             course_page = course['href']  # Extract the href attribute as the course page URL
                             course_name = course.find('span', class_='relationshipName').text  # Extract the course name
                             if course_name not in visited_courses.keys():
-                                visited_courses[course_name] = True
+                                visited_courses[course_name] = course_page
                                 name_page_pair = (course_name, course_page)  # Create a tuple of course name and page URL
                                 series_group.append(name_page_pair)  # Append the tuple to the series group list
 
@@ -105,11 +110,11 @@ def get_major_reqs(major_name):
 
                 if "Select one course from:" in req_description:
                     if course_name not in visited_courses.keys():
-                        visited_courses[course_name] = True
+                        visited_courses[course_name] = course_page
                         course_options.append(name_page_pair)
                 else:
                     if course_name not in visited_courses.keys():
-                        visited_courses[course_name] = True
+                        visited_courses[course_name] = course_page
                         major_reqs.append(name_page_pair)
             
         
@@ -123,10 +128,9 @@ def get_major_reqs(major_name):
                 course_options.append(1)
                 major_reqs.append(course_options)
         
-    driver.close()    
+
     return major_reqs
 
-    
 def get_abbrv(major_name):
     url = "https://registrar.ucla.edu/faculty-staff/courses-and-programs/department-and-subject-area-codes"
     driver = webdriver.Chrome(options=chrome_options)
@@ -146,7 +150,6 @@ def get_abbrv(major_name):
             pass                        
     return get_abbrv.get(major_name, "")
 
-
 def extract_prerequisites(text):
     # Updated pattern to include 'Requisites:' and 'Corequisites:' in the capture
     # and to capture the entire phrase starting with these keywords.
@@ -161,7 +164,6 @@ def extract_prerequisites(text):
     prerequisites = "; ".join(match[0] for match in matches).strip()
 
     return str(prerequisites)
-
 
 def get_course_reqs(name_page_pair):
     course_list = []
@@ -205,27 +207,100 @@ def get_course_reqs(name_page_pair):
         course_req_pair.append(new_pair)
 
     return course_req_pair
+
+def hash_name_pair(name_page_pair):
+    hash_to_course = dict()
+       
+    for object in name_page_pair:
+        if type(object) is tuple:
+            full_name = object[0]
+            hash = full_name.split('-')[0].rstrip(' ')
+            course_title = full_name.split('-')[1].lstrip(' ')
+            node = Course(hash, course_title)
+            hash_to_course[hash] = node
+             
+        else:
+            if type(object) is list:
+                #remove the integer from the list then process normally
+                object.pop()
+                for item in object:
+                    if type(item) is tuple:
+                        full_name = item[0]
+                        hash = full_name.split('-')[0].rstrip(' ')
+                        course_title = full_name.split('-')[1].lstrip(' ')
+                        node = Course(hash, course_title)
+                        hash_to_course[hash] = node                        
+                    elif type(item) is list:
+                        #if entity is a series, then pop off the course count and then process
+                        item.pop()
+                        for pair in item:
+                            full_name = pair[0]
+                            hash = full_name.split('-')[0].rstrip(' ')
+                            course_title = full_name.split('-')[1].lstrip(' ')
+                            node = Course(hash, course_title)
+                            hash_to_course[hash] = node           
         
-name_page_pair = get_major_reqs("biochemistry")
-for entry in name_page_pair:
-    print(entry)
+    return hash_to_course
+
+# def parse_req_pair(course_req_pair):
+#     parsed_reqs = []
+
+#     pass
+
+name_page_pair = get_major_reqs("computerscience")
+# for entry in name_page_pair:
+#     print(entry)
     
-# print('----------------')
-# for course in get_course_reqs(name_page_pair):
-#     print(course)
-
-# for course in name_page_pair:
-#     print(course)
-
-# print('---------------------------------')
-# for course in get_course_reqs(name_page_pair):
-#     print(course)
+# # print('----------------')
+# print('------------')
 
 
-
-# for course in get_courses_offered("Computer Science", '24s'):
-#     print(course)
+# course_map = hash_name_pair(name_page_pair)
     
-# print(get_courses_offered("Greek"))
-# print(get_courses_offered())
+# for key in course_map.keys():
+#     print(course_map[key].cat_hash)
+#     print(course_map[key].course_title)
+#     print('------------------------------')
 
+def process_courses_final(courses):
+    processed_courses = []
+
+    for course in courses:
+        course_name, details = course
+        department = " ".join(course_name.split(' - ')[0].split()[:-1])  # Extract the department from the course name
+
+        # Initialize lists to hold prerequisites and corequisites
+        prerequisites, corequisites = [], []
+
+        # Split the details to separate prerequisites and corequisites
+        details_parts = re.split(r';|\.|,', details)
+        
+        for part in details_parts:
+            # Check if the part describes prerequisites or corequisites
+            is_corequisite = 'corequisite' in part.lower()
+            target_list = corequisites if is_corequisite else prerequisites
+            
+            # Find all course numbers in this part
+            req_matches = re.findall(r'((\b\w+\b)?\s*\d+\w*)', part)
+            
+            # Prefix department if no department is specified in the requisite and format accordingly
+            for match, dept_prefix in req_matches:
+                match = match.strip()
+                if dept_prefix and dept_prefix not in ['course', 'courses', 'Mathematics']:  # Use specified department if recognized
+                    target_list.append(f'{dept_prefix} {match.split()[-1]}')
+                elif dept_prefix == 'Mathematics':  # Special case for 'Mathematics'
+                    target_list.append(f'MATH {match.split()[-1]}')
+                else:  # Assume same department if no recognized department or prefix 'course' is found
+                    target_list.append(f'{department} {match.split()[-1]}')
+
+        # Construct the course details list and add it to the processed courses list
+        processed_course = [course_name.split(' - ')[0], prerequisites, corequisites]
+        processed_courses.append(processed_course)
+
+    return processed_courses
+
+course_req = get_course_reqs(name_page_pair)
+print('---------------------------')
+for item in process_courses_final(course_req):
+    print(item)
+# Rerun the processing with the final function
