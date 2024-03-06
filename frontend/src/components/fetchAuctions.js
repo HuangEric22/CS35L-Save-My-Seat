@@ -13,7 +13,12 @@ const MyAuctions = () => {
     const fetchHighestBidder = async () => {
         try {
             const response = await fetch("http://localhost:4000/api/user/highestBidder", {
-                method: "GET"
+                method: "GET", 
+              /*  headers: {
+                    // Added Authorization header with Bearer token
+                    'Authorization': `Bearer ${token}`
+                }*/
+
             });
             if (!response.ok) {
                 throw new Error(`Failed to fetch data`);
@@ -41,7 +46,11 @@ const MyAuctions = () => {
     const fetchSellers = async () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
-                    method: "GET"
+                    method: "GET",
+                   /* headers: {
+                        // Added Authorization header with Bearer token
+                        'Authorization': `Bearer ${token}`
+                    }*/
                 });
                 if (!response.ok) {
                     throw new Error(`Failed to fetch data`);
@@ -56,7 +65,11 @@ const MyAuctions = () => {
     const fetchTimes = async () => {
         try {
             const res = await fetch("http://localhost:4000/api/auction/times", {
-                method:"GET"
+                method:"GET",
+              /*  headers: {
+                    // Added Authorization header with Bearer token
+                    'Authorization': `Bearer ${token}`
+                }*/
             });
             if(!res.ok){
                 throw new Error(`Failed to Fetch Times`)
@@ -72,6 +85,10 @@ const MyAuctions = () => {
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
+               /* headers: {
+                    // Added Authorization header with Bearer token
+                    'Authorization': `Bearer ${token}`
+                }*/
             });
 
             if (!response.ok) {

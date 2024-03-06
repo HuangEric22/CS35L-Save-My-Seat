@@ -5,7 +5,7 @@ import React from "react";
 //import lock_icon from "../Assets/password.png";
 //import email_icon from "../Assets/email.png";
 import "./LoginSignup.css";
-import sortedMajorsList from "../../majorsData";
+import sortedMajorsList from "../majorsData";
 import react from "react";
 import Select from "react-select";
 const LoginSignup = () => {
