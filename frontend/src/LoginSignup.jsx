@@ -1,5 +1,6 @@
 import React from "react";
 
+
 import { useSignup } from "./hooks/useSignup";
 import { useLogin } from "./hooks/useLogin";
 import "./LoginSignup.css";
@@ -30,12 +31,12 @@ const LoginSignup = () => {
     event.preventDefault(); // Prevent the default form submit behavior
 
     // Preliminary check: Ensure neither field is empty
-    if (!username || !password) {
-      alert("Username and password are required.");
+    if (!email || !password) {
+      alert("Email and password are required.");
       return;
     }
 
-    await useLogin(username, password);
+    await useLogin(email, password);
   };
 
   const handleSignup = async (event) => {
@@ -186,9 +187,9 @@ const LoginSignup = () => {
           <form onSubmit={handleLogin}>
             <input
               type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <input

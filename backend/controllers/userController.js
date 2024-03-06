@@ -11,8 +11,8 @@ const generateToken = (_id) => {
   }
 
   const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { major, name, email, password } = req.body;
+    if (!major || !name || !email || !password) {
         return res.status(400).send("Please Enter All Fields");
     }
     try {
@@ -26,7 +26,8 @@ const generateToken = (_id) => {
         const user = new User({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            major
         });
 
         await user.save();
@@ -34,6 +35,7 @@ const generateToken = (_id) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            major: user.major,
             token: generateToken(user._id)
         });
     } catch (error) {
@@ -73,25 +75,36 @@ const generateToken = (_id) => {
 //         res.status(500).json({ error: error.message });
 //     }
 // };
-
 const authUser = async(req, res) => {
-    const{email, password} = req.body;
+    const { email, password } = req.body;
     if(!email || !password){
-        res.status(400).send("Please Enter All Fields");
-    };
-    const user = req.body;
-    if(await User.findOne({email, password})){
+        return res.status(400).send("Please Enter All Fields");
+    }
+
+    try {
+       //attempt to find email first
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).send("Invalid Email or Password");
+        }
+
+        // compare inputted password with stored hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send("Invalid Email or Password");
+        }
+
+       
         res.json({
-            _id:user._id, 
-            name:user.name, 
-            email:user.email,
+            _id: user._id, 
+            name: user.name, 
+            email: user.email,
+            major: user.major, // include major
             token: generateToken(user._id)
         });
-        res.status(200).json({email, token});
-        console.log("login");
-    }
-    else{
-        res.status(400).send("username or password don't match");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
 };
 
