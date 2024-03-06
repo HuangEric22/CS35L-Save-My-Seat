@@ -247,7 +247,7 @@ def hash_name_pair(name_page_pair):
 
 #     pass
 
-name_page_pair = get_major_reqs("computerscience")
+name_page_pair = get_major_reqs("computerengineering")
 # for entry in name_page_pair:
 #     print(entry)
     
@@ -264,9 +264,12 @@ name_page_pair = get_major_reqs("computerscience")
 
 def process_courses_final(courses):
     processed_courses = []
+    prev_dept_prefix = ""
 
     for course in courses:
+                   
         course_name, details = course
+        
         department = " ".join(course_name.split(' - ')[0].split()[:-1])  # Extract the department from the course name
 
         # Initialize lists to hold prerequisites and corequisites
@@ -286,13 +289,29 @@ def process_courses_final(courses):
             # Prefix department if no department is specified in the requisite and format accordingly
             for match, dept_prefix in req_matches:
                 match = match.strip()
-                if dept_prefix and dept_prefix not in ['course', 'courses', 'Mathematics']:  # Use specified department if recognized
+                            
+                if dept_prefix and dept_prefix not in ['course', 'courses', 'Mathematics', '', 'Science']:  # Use specified department if recognized  
+                    if dept_prefix == "or" or dept_prefix == "and":
+                        dept_prefix = prev_dept_prefix
+                    if dept_prefix in ['course', 'courses', 'Mathematics', 'or', 'and']:
+                        dept_prefix = department
                     target_list.append(f'{dept_prefix} {match.split()[-1]}')
                 elif dept_prefix == 'Mathematics':  # Special case for 'Mathematics'
                     target_list.append(f'MATH {match.split()[-1]}')
+                elif dept_prefix == 'Science':
+                    target_list.append(f'COM SCI {match.split()[-1]}')
+                elif dept_prefix == '':
+                    if prev_dept_prefix in ['course', 'courses', '', 'or', 'and']:
+                        target_list.append(f'{department} {match.split()[-1]}')
+                    else:
+                        if prev_dept_prefix == "Mathematics":
+                            target_list.append(f'MATH {match.split()[-1]}')
+                        else:
+                            target_list.append(f'{prev_dept_prefix} {match.split()[-1]}')            
                 else:  # Assume same department if no recognized department or prefix 'course' is found
                     target_list.append(f'{department} {match.split()[-1]}')
-
+                
+                prev_dept_prefix = dept_prefix
         # Construct the course details list and add it to the processed courses list
         processed_course = [course_name.split(' - ')[0], prerequisites, corequisites]
         processed_courses.append(processed_course)
@@ -303,4 +322,6 @@ course_req = get_course_reqs(name_page_pair)
 print('---------------------------')
 for item in process_courses_final(course_req):
     print(item)
-# Rerun the processing with the final function
+
+
+# # Rerun the processing with the final function
