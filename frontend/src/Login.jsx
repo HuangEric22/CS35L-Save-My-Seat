@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { useLogin } from './hooks/useLogin';
 import { Link } from 'react-router-dom'; // Import Link
 import { useAuthContext } from './hooks/useAuthContext';
+import { ColorModeContext } from './theme'; 
+import { TextField, Button, Card, Container, Typography } from '@mui/material';
+
 
 const Login = () => {
+    const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,25 +24,41 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
-     <p>Dont have an account? <Link to="/signup">Sign Up</Link></p>  {/* Add this line */}
-    </div>
+    <Container maxWidth="sm">
+      <Card sx={{ p: 4, mt: 5 }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>Login</Typography>
+        <form onSubmit={handleLogin}>
+          <TextField 
+            label="Email" 
+            variant="outlined" 
+            fullWidth 
+            sx={{ mb: 2 }}
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
+          <TextField 
+            label="Password" 
+            type="password" 
+            variant="outlined" 
+            fullWidth 
+            sx={{ mb: 2 }}
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+          />
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary" 
+            sx={{ mr: 1 }}>Login</Button>
+          <Button variant="outlined" onClick={toggleColorMode}>
+            Toggle Theme
+          </Button>
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Don't have an account? <Link to="/signup">Sign up here</Link>
+          </Typography>
+        </form>
+      </Card>
+    </Container>
   );
 };
 
