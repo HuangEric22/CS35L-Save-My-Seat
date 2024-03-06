@@ -6,6 +6,7 @@ import Navbar from "./scenes/global/Navbar";
 import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
+import ProtectedRoute from "./ProtectedRoute";
 
 import History from "./scenes/history";
 import { useEffect } from 'react';
@@ -30,10 +31,12 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
-              <Route path="/" element={<Dashboard/>}/>
-              <Route path="/history" element={<History/>}/>
-              <Route path="/buy" element={<Buy/>}/>
-              {/* <Route path="/login" element={<LoginSignup/>}/>  */}
+              <Route path="/" element={{/*<ProtectedRoute>*/}<Dashboard/>{/*</ProtectedRoute>*/}}/>
+              <Route path="/history" element={{/*<ProtectedRoute>*/}<History/> {/*</ProtectedRoute>*/}}/>
+              <Route path="/buy" element={{/*<ProtectedRoute>*/}<Buy/>{/*</ProtectedRoute>*/}}/>
+              {/* <Route path="/login" element={<LoginSignup/>}/> 
+               <Route path="/" element={<LoginSignup/>}/> */} {/*routes for signup/login*/}
+               
               
             
             </Routes>
