@@ -1,13 +1,12 @@
 import React from "react";
-//import Select from "react-select";
 
-//import user_icon from "../Assets/person.png";
-//import lock_icon from "../Assets/password.png";
-//import email_icon from "../Assets/email.png";
+import { useSignup } from "./hooks/useSignup";
+import { useLogin } from "./hooks/useLogin";
 import "./LoginSignup.css";
-import sortedMajorsList from "../majorsData";
+import sortedMajorsList from "./majorsData";
 import react from "react";
 import Select from "react-select";
+import { useAuthContext } from './hooks/useAuthContext';
 const LoginSignup = () => {
   const [action, setAction] = react.useState("Login");
   const [username, setUsername] = react.useState("");
@@ -36,35 +35,14 @@ const LoginSignup = () => {
       return;
     }
 
-    const loginData = {
-      username, // Assuming these are state variables captured from input fields
-      password, // Same assumption
-    };
-
-    try {
-      const response = await fetch("/login", {
-        // Adjust '/api/login' as your actual login route
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "An error occurred during login.");
-      }
-
-      console.log("Login successful", data);
-      // Handle login success (e.g., redirect to dashboard, store JWT, etc.)
-    } catch (error) {
-      console.error("Error during login:", error.message);
-    }
+    await useLogin(username, password);
   };
 
   const handleSignup = async (event) => {
+  
     event.preventDefault();
+
+  
     if (!username || !email || !password || !passwordRepeat || !selectedMajor) {
       alert("Please fill in all fields.");
       return;
@@ -81,39 +59,8 @@ const LoginSignup = () => {
       alert("Password must be at least 8 characters long.");
       return;
     }
-    setAction("Registration Complete!");
-    // Continue with signup process (validation, API call, etc.)
-    const userData = {
-      selectedMajor,
-      username, // Assuming these are state variables captured from input fields
-      password, // Same assumption
-      email,
-      // Add more fields as needed
-    };
-
-    try {
-      const response = await fetch("/", {
-        // Adjusting as per your setup
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          data.message || "An error occurred during registration.",
-        );
-      }
-
-      console.log("Registration successful", data);
-      // setAction("Registration Complete");
-      // Further actions upon successful registration
-    } catch (error) {
-      console.error("Error during registration:", error.message);
-    }
+  
+  await useSignup(selectedMajor, username, email, password);
   };
 
   return (
