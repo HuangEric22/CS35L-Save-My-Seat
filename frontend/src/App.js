@@ -8,6 +8,7 @@ import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
 import History from "./scenes/history";
 import { useEffect } from 'react';
+require('dotenv').config();
 // import Bar from "./scenes/bar";
 // import Form from "./scenes/form";
 // import Line from "./scenes/line";

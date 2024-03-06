@@ -8,41 +8,70 @@ const bcrypt = require ('bcrypt')
 const generateToken = (_id) => {
     return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
   }
-const registerUser = async(req, res) =>{
-    const {name, email, password} = req.body;
-    if(!name || !email || !password){
-        res.status(400).send("Please Enter All Fields");
-    }
-    if(await User.findOne({email})){
-        res.status(400).send("User already Registered Under Email");
-    }
 
-    const salt = await bcrypt.genSalt(5)
-    const hashedPassword = await bcrypt.hash(password, salt)
-
-    const user = new User({
-        name,
-        email, 
-        password: hashedPassword
-    });
+  const registerUser = async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(400).send("Please Enter All Fields");
+    }
     try {
+        if (await User.findOne({ email })) {
+            return res.status(400).send("User already Registered Under Email");
+        }
+
+        const salt = await bcrypt.genSalt(10); // Increased the salt rounds
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const user = new User({
+            name,
+            email,
+            password: hashedPassword
+        });
+
         await user.save();
-        res.json({
-            _id:user._id, 
-            name:user.name, 
-            email:user.email
+        return res.status(201).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
             token: generateToken(user._id)
         });
-<<<<<<< Updated upstream
-        console.log("register");
-=======
-        console.log("register")
->>>>>>> Stashed changes
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        return res.status(500).json({ error: error.message });
     }
-    
 };
+
+// const registerUser = async(req, res) =>{
+//     console.log("register");
+//     const {name, email, password} = req.body;
+//     if(!name || !email || !password){
+//         res.status(400).send("Please Enter All Fields");
+//     }
+//     if(await User.findOne({email})){
+//         res.status(400).send("User already Registered Under Email");
+//     }
+
+//     const salt = await bcrypt.genSalt(5)
+//     const hashedPassword = await bcrypt.hash(password, salt)
+
+//     const user = new User({
+//         name,
+//         email, 
+//         password: hashedPassword
+//     });
+
+//     try {
+//         await user.save();
+//         res.json({
+//             _id:user._id, 
+//             name:user.name, 
+//             email:user.email,
+//             token: generateToken(user._id)
+//         });
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 
 const authUser = async(req, res) => {
     const{email, password} = req.body;
