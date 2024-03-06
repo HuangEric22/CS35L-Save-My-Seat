@@ -188,6 +188,8 @@ const LoginSignup = () => {
               </select>
               {selectedMajor && <div>You selected: {selectedMajor}</div>}
                 </div>*/}
+
+                //Here is the drop down menu code, list of majors is in majorsData.js
             <div className="login-signup-form">
               <h1>Select Your Major</h1>
               <Select
@@ -200,7 +202,7 @@ const LoginSignup = () => {
                 isClearable={true} // Allows the user to clear their selection
                 isSearchable={true} // Allows the user to search through the options
               />
-              {/* Add other form elements here */}
+             
             </div>
 
             <input
