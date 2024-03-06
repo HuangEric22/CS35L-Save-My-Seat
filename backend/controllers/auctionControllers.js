@@ -133,9 +133,9 @@ const getTime = async (auctionIds) => {
             // Convert remaining time from milliseconds to hours and minutes
             const remainingHours = Math.floor(remainingTimeMs / (1000 * 60 * 60));
             const remainingMinutes = Math.floor((remainingTimeMs / (1000 * 60)) % 60);
-
+            const expired = (remainingHours==0 && remainingMinutes ==0) || auction.completed
             // Store the remaining time in the times object
-            times[auctionId] = { hours:remainingHours, minutes:remainingMinutes };
+            times[auctionId] = { hours:remainingHours, minutes:remainingMinutes, completed:expired };
         }
     }
 

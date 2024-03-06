@@ -153,13 +153,18 @@ const MyAuctions = () => {
                         </Typography>
                     </Grid>
                 </>
+                
                 ) : null}
                 </Grid>
+                {highestBidders[auction._id] &&<Typography variant="body1" gutterBottom>
+                        Seller: {sellers[auction._id]} | Highest Bid: ${highestBidders[auction._id][0]} ({highestBidders[auction._id][1]})
+                </Typography>}
                 <Box display="flex" alignItems="center">
+                    {times[auction._id] && !times[auction._id].completed && 
                     <Button variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
                         {formVisibleMap[auction._id] ? "Cancel" : "Place Bid"}
-                    </Button>
-                    {formVisibleMap[auction._id] && (
+                    </Button>}
+                    {formVisibleMap[auction._id] && (!times[auction._id].completed)&& (
                         <Box ml={1}>
                             <form onSubmit={(event) => handleSubmit(event, auction._id)} style={{ display: 'flex', alignItems: 'center' }}>
                                 <Button type="button" variant="contained" color="secondary" onClick={(event) => handleSubmit(event, auction._id)} >

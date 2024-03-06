@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {createAuction, createBid, getAuctions, deleteAuction, completeAuction, getTimes} = require('../controllers/auctionControllers');
 const requireAuthent = require('../middleware/requireAuthent');
-router.use(requireAuthent); 
+// router.use(requireAuthent); 
 router.route('/').post(createAuction);
 router.route('/:auctionId').put(createBid);
 router.route('/').get(getAuctions);

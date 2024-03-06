@@ -6,6 +6,7 @@ import Navbar from "./scenes/global/Navbar";
 import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
+
 import History from "./scenes/history";
 import { useEffect } from 'react';
 // import Bar from "./scenes/bar";
@@ -15,7 +16,6 @@ import { useEffect } from 'react';
 // import FAQ from "./scenes/faq";
 // import Geography from "./scenes/geography";
 // import Calendar from "./scenes/calendar";
-import MyAuctions from './components/fetchAuctions';
 
 
 
@@ -33,6 +33,7 @@ function App() {
               <Route path="/" element={<Dashboard/>}/>
               <Route path="/history" element={<History/>}/>
               <Route path="/buy" element={<Buy/>}/>
+              {/* <Route path="/login" element={<LoginSignup/>}/>  */}
               
             
             </Routes>
