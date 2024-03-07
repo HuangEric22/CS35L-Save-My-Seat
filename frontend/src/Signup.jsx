@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
+//import Select from 'react-select';
 import { useSignup } from './hooks/useSignup';
 import sortedMajorsList from './majorsData';
 import { Link } from 'react-router-dom'; // Import Link
 
-import { ColorModeContext } from './theme'; 
+//import { ColorModeContext } from './theme'; 
 import { Container, TextField, Button, Card, Typography, CssBaseline } from '@mui/material';
 import CustomReactSelect from './customReactSelect'; 
 import { useTheme } from '@mui/material/styles';
 
 const Signup = () => {
-    const theme = useTheme();
+  const theme = useTheme();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [selectedMajor, setSelectedMajor] = useState('');
+  const {signup, error, isLoading} = useSignup();
 
   
 
@@ -38,7 +39,7 @@ const Signup = () => {
         return;
       }*/}
     
-    await useSignup(selectedMajor, username, email, password);
+    await signup(selectedMajor, username, email, password);
     };
   
   return (
@@ -83,7 +84,18 @@ const Signup = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
+          /><TextField
+          required
+          fullWidth
+          name="repeat-password"
+          label="Repeat Password"
+          type="repeat-password"
+          id="repeat-password"
+          autoComplete="repeat-password"
+          margin="normal"
+          value={passwordRepeat}
+          onChange={(e) => setPasswordRepeat(e.target.value)}
+        />
           <CustomReactSelect
             options={sortedMajorsList}
             placeholder="Select your major"

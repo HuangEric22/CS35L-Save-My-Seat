@@ -33,11 +33,11 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
-              <Route path="/" element={{/*<ProtectedRoute>*/}<Dashboard/>{/*</ProtectedRoute>*/}}/>
-              <Route path="/history" element={{/*<ProtectedRoute>*/}<History/> {/*</ProtectedRoute>*/}}/>
-              <Route path="/buy" element={{/*<ProtectedRoute>*/}<Buy/>{/*</ProtectedRoute>*/}}/>
-              {/* <Route path="/login" element={<Login/>}/> 
-               <Route path="/" element={<Signup/>}/> */} {/*routes for signup/login*/}
+              <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
+              <Route path="/history" element={<ProtectedRoute><History/> *</ProtectedRoute>}/>
+              <Route path="/buy" element={<ProtectedRoute><Buy/></ProtectedRoute>}/>
+               <Route path="/login" element={<Login/>}/> 
+               <Route path="/" element={<Signup/>}/> {/*routes for signup/login*/}
                
               
             

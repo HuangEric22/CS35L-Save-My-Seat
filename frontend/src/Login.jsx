@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { useLogin } from './hooks/useLogin';
 import { Link } from 'react-router-dom'; // Import Link
-import { useAuthContext } from './hooks/useAuthContext';
+
+
 import { ColorModeContext } from './theme'; 
 import { TextField, Button, Card, Container, Typography } from '@mui/material';
-
+import { useTheme } from '@mui/material/styles';
 
 const Login = () => {
-    const theme = useTheme();
+  const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login, error, isLoading } = useLogin();
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
   
   
-      await useLogin(email, password);
+  
+      await login(email, password);
   };
 
   return (
@@ -46,9 +48,9 @@ const Login = () => {
             variant="contained" 
             color="primary" 
             sx={{ mr: 1 }}>Login</Button>
-          <Button variant="outlined" onClick={toggleColorMode}>
+          {/*<Button variant="outlined" onClick={ColorModeContext}>
             Toggle Theme
-          </Button>
+  </Button>&*/}
           <Typography variant="body1" sx={{ mt: 2 }}>
             Don't have an account? <Link to="/signup">Sign up here</Link>
           </Typography>
