@@ -10,11 +10,30 @@ const generateToken = (_id) => {
     return jwt.sign({_id}, process.env.SECRET, { expiresIn: '3d' })
   }
 
+  function containsSpecialChars(str) {
+    
+    const specialCharsPattern = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+
+    return specialCharsPattern.test(str);
+  }
   const registerUser = async (req, res) => {
     const { major, name, email, password } = req.body;
     if (!major || !name || !email || !password) {
         return res.status(400).send("Please Enter All Fields");
     }
+ else if (password !== passwordRepeat) {
+        
+        return res.status(400).send("Passwords don't match");
+      } else if (email.lastIndexOf("@g.ucla.edu") === -1) {
+        return res.status(400).send("Email must be a @g.ucla.edu account.");
+       
+      } else if (!containsSpecialChars(password)) {
+        return res.status(400).send("Password must contain at least one special character.");
+       
+      } else if (password.length < 8) {
+        return res.status(400).send("Password must be at least 8 characters long.");
+        
+      }
     try {
         if (await User.findOne({ email })) {
             return res.status(400).send("User already Registered Under Email");

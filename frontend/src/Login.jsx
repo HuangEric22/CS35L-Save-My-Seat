@@ -14,11 +14,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    // Preliminary check: Ensure neither field is empty
-    if (!email || !password) {
-        alert("Email and password are required.");
-        return;
-      }
+  
   
       await useLogin(email, password);
   };

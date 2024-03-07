@@ -17,16 +17,11 @@ const Signup = () => {
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [selectedMajor, setSelectedMajor] = useState('');
 
-  function containsSpecialChars(str) {
-    // Define a regular expression pattern for special characters
-    const specialCharsPattern = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
-
-    return specialCharsPattern.test(str);
-  }
+  
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    if (!username || !email || !password || !passwordRepeat || !selectedMajor) {
+    {/*if (!username || !email || !password || !passwordRepeat || !selectedMajor) {
         alert("Please fill in all fields.");
         return;
       } else if (password !== passwordRepeat) {
@@ -41,7 +36,7 @@ const Signup = () => {
       } else if (password.length < 8) {
         alert("Password must be at least 8 characters long.");
         return;
-      }
+      }*/}
     
     await useSignup(selectedMajor, username, email, password);
     };
