@@ -85,7 +85,7 @@ const Auctions = () => {
                                     </CardContent>
                                     <CardActions>
                                         <Button size="small" sx={{ color: `${colors.primary[50]}` }}>View</Button>
-                                        <Button size="small" sx={{ color: `${colors.primary[50]}` }}>
+                                        <Button size="small" className={bid.highestBid > bid.userBid ? 'fieryGlowingText' : ' '} sx={{ color: bid.highestBid > bid.userBid ? 'red' : `${colors.primary[50]}` }} >
                                             Increase Bid
                                         </Button>
                                     </CardActions>
