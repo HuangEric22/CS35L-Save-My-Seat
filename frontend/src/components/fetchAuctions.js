@@ -162,7 +162,7 @@ const MyAuctions = () => {
                 
                 ) : null}
                 </Grid>
-                {highestBidders[auction._id] &&<Typography variant="body1" gutterBottom>
+                {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
                         Seller: {sellers[auction._id]} | Highest Bid: ${highestBidders[auction._id][0]} ({highestBidders[auction._id][1]})
                 </Typography>}
                 <Box display="flex" alignItems="center">
