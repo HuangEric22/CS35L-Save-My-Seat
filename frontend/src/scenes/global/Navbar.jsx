@@ -20,6 +20,7 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import { ExitToApp } from '@mui/icons-material';
 import { useLogout } from '../../hooks/useLogout'
 import { useNavigate } from 'react-router-dom';
@@ -145,7 +146,7 @@ if (userString) {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    {user ? user.name : ''} {/* Use user's name or a default */}
+                    Yash
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     
@@ -217,9 +218,9 @@ if (userString) {
                 setSelected={setSelected}
               />
               <Item
-                title="FAQ Page"
-                to="/faq"
-                icon={<HelpOutlineOutlinedIcon />}
+                title="Test"
+                to="/test"
+                icon={<ScienceOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

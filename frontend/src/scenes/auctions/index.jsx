@@ -4,6 +4,8 @@ import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, CardActions, Typography, Button, Grid } from '@mui/material';
 import { auctions, bids } from "../../data/mockAuctions"
+import { styled, keyframes } from '@mui/system';
+import '../../animations.css';
 
 
 const Auctions = () => {
@@ -19,6 +21,18 @@ const Auctions = () => {
         
         backgroundColor: `${colors.primary[400]}`
     };
+
+    const flameAnimation = keyframes`
+        0% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
+        50% { box-shadow: 0 0 20px 10px rgba(255, 140, 0, 0.9); }
+        100% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
+    `;
+
+// Styled Box component with the animation
+    const FieryCard = styled(Card)(({ theme }) => ({
+        backgroundColor: colors.primary[400],
+        animation: `${flameAnimation} 2s infinite ease-in-out`,
+    }));
 
     return (
         <Box m={2}>
@@ -54,7 +68,7 @@ const Auctions = () => {
                     <Grid container spacing={2}>
                         {userBids.map((bid) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={bid.id}>
-                                <Card raised style={cardStyle}>
+                                <Card raised className={bid.highestBid > bid.userBid ? 'someoneOutbidYou' : ''} sx={cardStyle}>
                                     <CardContent>
                                         <Typography variant="h5" component="h2">
                                             {bid.title}
@@ -71,7 +85,7 @@ const Auctions = () => {
                                     </CardContent>
                                     <CardActions>
                                         <Button size="small" sx={{ color: `${colors.primary[50]}` }}>View</Button>
-                                        <Button size="small" sx={{ color: `${colors.primary[50]}` }}>
+                                        <Button size="small" className={bid.highestBid > bid.userBid ? 'fieryGlowingText' : ' '} sx={{ color: bid.highestBid > bid.userBid ? 'red' : `${colors.primary[50]}` }} >
                                             Increase Bid
                                         </Button>
                                     </CardActions>

@@ -1,0 +1,52 @@
+@keyframes flameAnimation {
+    0% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
+    50% { box-shadow: 0 0 20px 10px rgba(255, 140, 0, 0.9); }
+    100% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
+  }
+  
+  .fieryBox {
+    animation: flameAnimation 2s infinite ease-in-out;
+    background-color: #b22222; /* Example fiery color */
+    /* Add other styles here */
+  }
+
+@keyframes someoneOutbidYou {
+    0% { box-shadow: 0 0 5px 2px rgba(255, 0, 55, 0.664); }
+    50% { box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.9); }
+    100% { box-shadow: 0 0 5px 2px rgba(255, 0, 55, 0.664); }
+  }
+  
+  .someoneOutbidYou {
+    animation: someoneOutbidYou 2s infinite ease-in-out;
+    background-color: #b22222; /* Example fiery color */
+    /* Add other styles here */
+  }
+
+  @keyframes pulsateFieryGlow {
+    0% {
+      text-shadow: 
+        0 0 4px #FF4500, 
+        0 0 10px #FF4500, 
+        0 0 20px #FF4500, 
+        0 0 40px #FFD700;
+    }
+    50% {
+      text-shadow: 
+        0 0 6px #FF4500, 
+        0 0 14px #FF8C00, 
+        0 0 28px #FF4500, 
+        0 0 56px #FFD700;
+    }
+    100% {
+      text-shadow: 
+        0 0 4px #FF4500, 
+        0 0 10px #FF4500, 
+        0 0 20px #FF4500, 
+        0 0 40px #FFD700;
+    }
+  }
+  
+  .fieryGlowingText {
+    animation: pulsateFieryGlow 2s infinite ease-in-out;
+    color: #FFA07A; /* Light salmon as the base text color for contrast */
+  }
