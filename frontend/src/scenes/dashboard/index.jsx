@@ -10,7 +10,6 @@ const Dashboard = () => {
                 <Header title="Overview" subtitle="Welcome back"/>
             </Box>
             <MyAuctions/>
-           
         </Box>
     );
 };

@@ -33,9 +33,24 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
-              <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
-              <Route path="/history" element={<ProtectedRoute><History/> </ProtectedRoute>}/>
-              <Route path="/buy" element={<ProtectedRoute><Buy/></ProtectedRoute>}/>
+              <Route path="/" element={
+                //<ProtectedRoute>
+                  <Dashboard/>
+                //</ProtectedRoute>
+              }/>
+              <Route path="/history" element={
+                //<ProtectedRoute>
+                  <History/>
+                  //</ProtectedRoute>
+              }/>
+              <Route path="/buy" element={
+                //<ProtectedRoute>
+                  <Buy/>
+                //</ProtectedRoute>
+              }/>
+              <Route path="/auctions" element= {
+                  <Auctions/>
+              }/>
                <Route path="/login" element={<Login/>}/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
                

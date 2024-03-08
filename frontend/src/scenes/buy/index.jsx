@@ -25,6 +25,10 @@ const Buy = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
+    const cardStyle = {
+        backgroundColor: colors.primary[400],
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const auctionData = {
@@ -52,6 +56,7 @@ const Buy = () => {
                   value={selectedClass}
                   label="Class" 
                   onChange={handleClassChange}
+                  sx={cardStyle}
               >
                   {classesList.map((className, index) => (
                       <MenuItem key={index} value={className}>
@@ -72,6 +77,7 @@ const Buy = () => {
               InputProps={{ inputProps: { min: 0 } }}
               value={startingBid}
               onChange={handleBidChange}
+              sx={cardStyle}
           />
           <FormControl fullWidth margin="normal">
               <InputLabel id="duration-select-label">Duration</InputLabel>
@@ -81,6 +87,7 @@ const Buy = () => {
                   value={duration}
                   label="Duration"
                   onChange={handleDurationChange}
+                  sx={cardStyle}
               >
                   {auctionDurations.map((option, index) => (
                       <MenuItem key={index} value={option.value}>
@@ -89,7 +96,7 @@ const Buy = () => {
                   ))}
               </Select>
           </FormControl>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }}>
               Start Auction
           </Button>
       </Box>
