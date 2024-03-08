@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+
+
+import { MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 //import Select from 'react-select';
 import { useSignup } from './hooks/useSignup';
 import sortedMajorsList from './majorsData';
@@ -9,6 +12,38 @@ import { Container, TextField, Button, Card, Typography, CssBaseline } from '@mu
 import CustomReactSelect from './customReactSelect'; 
 import { useTheme } from '@mui/material/styles';
 
+const ThemedSelect = ({ value, onChange, options, label }) => {
+  const theme = useTheme();
+
+  return (
+    <FormControl fullWidth margin="normal">
+      <InputLabel id="major-select-label">{label}</InputLabel>
+      <Select
+        labelId="major-select-label"
+        id="major-select"
+        value={value}
+        label={label}
+        onChange={onChange}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderColor: theme.palette.grey[500],
+          '&:hover': {
+            borderColor: theme.palette.primary.main,
+          },
+          '& .MuiSvgIcon-root': { // Arrow icon color
+            color: theme.palette.text.primary,
+          }
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
 const Signup = () => {
   const theme = useTheme();
   const [username, setUsername] = useState('');
@@ -22,22 +57,7 @@ const Signup = () => {
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    {/*if (!username || !email || !password || !passwordRepeat || !selectedMajor) {
-        alert("Please fill in all fields.");
-        return;
-      } else if (password !== passwordRepeat) {
-        alert("Passwords don't match.");
-        return;
-      } else if (email.lastIndexOf("@g.ucla.edu") === -1) {
-        alert("Email must be a @g.ucla.edu account.");
-        return;
-      } else if (!containsSpecialChars(password)) {
-        alert("Password must contain at least one special character.");
-        return;
-      } else if (password.length < 8) {
-        alert("Password must be at least 8 characters long.");
-        return;
-      }*/}
+   
     
     await signup(selectedMajor, username, email, password);
     };
@@ -84,7 +104,8 @@ const Signup = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          /><TextField
+          />
+          {/*<TextField
           required
           fullWidth
           name="repeat-password"
@@ -95,13 +116,23 @@ const Signup = () => {
           margin="normal"
           value={passwordRepeat}
           onChange={(e) => setPasswordRepeat(e.target.value)}
-        />
-          <CustomReactSelect
-            options={sortedMajorsList}
-            placeholder="Select your major"
-            onChange={setSelectedMajor}
-            value={selectedMajor}
-          />
+  />*/}
+       {/*} <CustomReactSelect
+  options={sortedMajorsList.map(major => ({ value: major, label: major }))}
+  placeholder="Select your major"
+  onChange={option => setSelectedMajor(option ? option.value : '')}
+  // Ensure the value prop correctly matches an object in the options array or is null
+  value={sortedMajorsList.find(option => option.value === selectedMajor) || null}
+/>*/}
+
+
+<ThemedSelect
+  label="Select your major"
+  value={selectedMajor}
+  onChange={(e) => {setSelectedMajor(e.target.value); console.log(e.target.value)}}
+  
+  options={sortedMajorsList}
+/>
           <Button
             type="submit"
             fullWidth
@@ -111,6 +142,11 @@ const Signup = () => {
           >
             Sign Up
           </Button>
+          {error && (
+        <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
           <Typography variant="body2">
             Already have an account? <Link to="/login" style={{ textDecoration: 'none' }}>Log in</Link>
           </Typography>
@@ -119,5 +155,8 @@ const Signup = () => {
     </Container>
   );
 };
+
+
+
 
 export default Signup;

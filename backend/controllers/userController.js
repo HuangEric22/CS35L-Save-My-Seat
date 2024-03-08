@@ -17,49 +17,25 @@ const generateToken = (_id) => {
     return specialCharsPattern.test(str);
   }
   const registerUser = async (req, res) => {
-    const { major, name, email, password } = req.body;
-    if (!major || !name || !email || !password) {
-        return res.status(400).send("Please Enter All Fields");
-    }
- else if (password !== passwordRepeat) {
-        
-        return res.status(400).send("Passwords don't match");
-      } else if (email.lastIndexOf("@g.ucla.edu") === -1) {
-        return res.status(400).send("Email must be a @g.ucla.edu account.");
-       
-      } else if (!containsSpecialChars(password)) {
-        return res.status(400).send("Password must contain at least one special character.");
-       
-      } else if (password.length < 8) {
-        return res.status(400).send("Password must be at least 8 characters long.");
-        
-      }
+    const { username, email, password,  major } = req.body;
+    
+
     try {
-        if (await User.findOne({ email })) {
-            return res.status(400).send("User already Registered Under Email");
-        }
-
-        const salt = await bcrypt.genSalt(10); // Increased the salt rounds
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = new User({
-            name,
-            email,
-            password: hashedPassword,
-            major
-        });
-
-        await user.save();
-        return res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            major: user.major,
-            token: generateToken(user._id)
-        });
+      const user = await User.signup(email, username, major, password)
+  console.log("Sign up was working")
+      // create a token
+      const token = generateToken(user._id)
+      console.log("Token generated")
+  
+      res.status(200).json({
+        username: user.username,
+        email: user.email,
+        major: user.major,
+        
+        
+         token})
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error.message });
+      res.status(400).json({error: error.message})
     }
 };
 
@@ -96,35 +72,18 @@ const generateToken = (_id) => {
 // };
 const authUser = async(req, res) => {
     const { email, password } = req.body;
-    if(!email || !password){
-        return res.status(400).send("Please Enter All Fields");
-    }
+    
 
     try {
-       //attempt to find email first
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).send("Invalid Email or Password");
-        }
-
-        // compare inputted password with stored hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).send("Invalid Email or Password");
-        }
-
-       
-        res.json({
-            _id: user._id, 
-            name: user.name, 
-            email: user.email,
-            major: user.major, // include major
-            token: generateToken(user._id)
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
+        const user = await User.login(email, password)
+    
+        // create a token
+        const token = generateToken(user._id)
+    
+        res.status(200).json({email, token})
+      } catch (error) {
+        res.status(400).json({error: error.message})
+      }
 };
 
 const getAuctionOwners = async (auctionIds) => {

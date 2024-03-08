@@ -4,7 +4,7 @@ const {registerUser, authUser, getUser, getHighestBiddersForAllAuctions } = requ
 
 //signup route
 // router.post('/', registerUser);
-router.route('/').post(registerUser); 
+router.route('/signup').post(registerUser); 
 router.post('/login', authUser);
 //router.route('/login').post(authUser);
 router.route('/').get(getUser);

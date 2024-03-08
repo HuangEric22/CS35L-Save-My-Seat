@@ -9,31 +9,38 @@ export const useSignup = () => {
   const navigate = useNavigate();
 
   const signup = async (selectedMajor, username, email, password) => {
-
-    setIsLoading(true)
-    setError(null)
-
-    const response = await fetch('/', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ selectedMajor, username, email, password })
-    })
-    const json = await response.json()
-
-    if (!response.ok) {
-      setIsLoading(false)
-      setError(json.error)
-    }
-    if (response.ok) {
-      
-      localStorage.setItem('user', JSON.stringify(json))
-
-      // update the auth context
-      dispatch({type: 'LOGIN', payload: json})
-
-      // update loading state
-      setIsLoading(false)
-      navigate("/login");
+    setIsLoading(true);
+    setError(null);
+  
+    try {
+      const response = await fetch('/api/user/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({  username, email, password, major:selectedMajor })
+      });
+     console.log(response)
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const json = await response.json();
+  
+          localStorage.setItem('user', JSON.stringify(json));
+          dispatch({ type: 'LOGIN', payload: json });
+          
+          setIsLoading(false);
+          navigate("/login");
+        } else {
+          throw new Error('Received response is not in JSON format');
+        }
+      } else {
+        console.log("WE got here")
+        const json = await response.json(); // Assuming error responses are also in JSON format.
+        setError(json.error || 'Unknown error occurred');
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError(error.toString());
+      setIsLoading(false);
     }
   }
 

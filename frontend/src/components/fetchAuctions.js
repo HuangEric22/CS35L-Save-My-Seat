@@ -1,7 +1,9 @@
 import { Box, Typography, Button, TextField, CircularProgress, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const MyAuctions = () => {
+    const user = useAuthContext();
     const [auctions, setAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
@@ -14,10 +16,11 @@ const MyAuctions = () => {
         try {
             const response = await fetch("http://localhost:4000/api/user/highestBidder", {
                 method: "GET", 
-              /*  headers: {
+                
+              headers: {
                     // Added Authorization header with Bearer token
-                    'Authorization': `Bearer ${token}`
-                }*/
+                    'Authorization': `Bearer ${user.token}`
+                }
 
             });
             if (!response.ok) {
@@ -47,10 +50,10 @@ const MyAuctions = () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
                     method: "GET",
-                   /* headers: {
+                    headers: {
                         // Added Authorization header with Bearer token
-                        'Authorization': `Bearer ${token}`
-                    }*/
+                        'Authorization': `Bearer ${user.token}`
+                    }
                 });
                 if (!response.ok) {
                     throw new Error(`Failed to fetch data`);
@@ -66,10 +69,10 @@ const MyAuctions = () => {
         try {
             const res = await fetch("http://localhost:4000/api/auction/times", {
                 method:"GET",
-              /*  headers: {
+                headers: {
                     // Added Authorization header with Bearer token
-                    'Authorization': `Bearer ${token}`
-                }*/
+                    'Authorization': `Bearer ${user.token}`
+                }
             });
             if(!res.ok){
                 throw new Error(`Failed to Fetch Times`)
@@ -85,10 +88,10 @@ const MyAuctions = () => {
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
-               /* headers: {
+                headers: {
                     // Added Authorization header with Bearer token
-                    'Authorization': `Bearer ${token}`
-                }*/
+                    'Authorization': `Bearer ${user.token}`
+                }
             });
 
             if (!response.ok) {

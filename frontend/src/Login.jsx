@@ -6,19 +6,15 @@ import { Link } from 'react-router-dom'; // Import Link
 import { ColorModeContext } from './theme'; 
 import { TextField, Button, Card, Container, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-
 const Login = () => {
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, error, isLoading } = useLogin();
+  const { login, error, isLoading } = useLogin(); // Assuming error state holds the error message
 
   const handleLogin = async (event) => {
     event.preventDefault();
-  
-  
-  
-      await login(email, password);
+    await login(email, password);
   };
 
   return (
@@ -47,10 +43,13 @@ const Login = () => {
             type="submit" 
             variant="contained" 
             color="primary" 
-            sx={{ mr: 1 }}>Login</Button>
-          {/*<Button variant="outlined" onClick={ColorModeContext}>
-            Toggle Theme
-  </Button>&*/}
+            sx={{ mr: 1 }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
+          </Button>
+          {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
+          
           <Typography variant="body1" sx={{ mt: 2 }}>
             Don't have an account? <Link to="/signup">Sign up here</Link>
           </Typography>
