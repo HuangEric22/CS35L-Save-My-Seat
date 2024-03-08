@@ -18,6 +18,7 @@ export const tokens = (mode) => ({
                 900: "#1a1a1a"
             },
             primary: {
+                50: "#2774ae", //hard coding button color
                 100: "#d4e3ef",
                 200: "#a9c7df",
                 300: "#7dacce",
@@ -61,6 +62,9 @@ export const tokens = (mode) => ({
                 800: "#001825",
                 900: "#000c12"
             },
+            buttonText: {
+                default: "#2774ae"
+            }
         }
     :   {
         grey: {
@@ -75,6 +79,7 @@ export const tokens = (mode) => ({
             900: "#e0e0e0"
         },
         primary: {
+            50: "#990000", //hard coding button color
           100: "#ebcccc",
           200: "#d69999",
           300: "#c26666",
@@ -118,6 +123,9 @@ export const tokens = (mode) => ({
             800: "#c3c6fd",
             900: "#e1e2fe"
         },
+        buttonText: {
+            default: "#990000"
+        }
     }),
 });
 
