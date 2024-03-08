@@ -3,7 +3,8 @@ const validator = require('validator');
 const bcrypt = require('bcrypt')
 const Schema = mongoose.Schema; 
 const userSchema = new Schema({
-    username:{type:String, required:true},
+  name:{type:String, required:true}, 
+    username:{type:String, required:true, unique: true},
     email:{type:String, required:true, unique:true }, 
     password:{type:String, required:true}, 
     major:{type:String, required:true}
@@ -11,10 +12,10 @@ const userSchema = new Schema({
 
 
 
-userSchema.statics.signup = async function(email, username, major, password) {
+userSchema.statics.signup = async function(name, email, username, major, password) {
 
     // validation
-    
+    if (!name) throw Error("Provide your name.")
 if (!email) throw Error("Must provide an email.")
 if (!username) throw Error("Must provide a username.")
 if (!major) throw Error("Must choose a major.")
@@ -36,11 +37,15 @@ if (!password) throw Error("Must provide a password.")
     if (exists) {
       throw Error('Email already in use');
     }
+    const existsTwo = await this.findOne({username});
+    if(existsTwo) {
+      throw Error('Username already in use');
+    }
   
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
   email = email.toLowerCase();
-    const user = await this.create({username, email,  major, password: hash });
+    const user = await this.create({name, username, email,  major, password: hash });
   
     return user;
   };

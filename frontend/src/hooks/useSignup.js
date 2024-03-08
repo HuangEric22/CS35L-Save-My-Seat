@@ -8,7 +8,7 @@ export const useSignup = () => {
   const { dispatch } = useAuthContext()
   const navigate = useNavigate();
 
-  const signup = async (selectedMajor, username, email, password) => {
+  const signup = async (name, selectedMajor, username, email, password) => {
     setIsLoading(true);
     setError(null);
   
@@ -16,7 +16,7 @@ export const useSignup = () => {
       const response = await fetch('/api/user/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({  username, email, password, major:selectedMajor })
+        body: JSON.stringify({  name, username, email, password, major:selectedMajor })
       });
      console.log(response)
       if (response.ok) {
@@ -28,7 +28,7 @@ export const useSignup = () => {
           dispatch({ type: 'LOGIN', payload: json });
           
           setIsLoading(false);
-          navigate("/login");
+          navigate("/");
         } else {
           throw new Error('Received response is not in JSON format');
         }

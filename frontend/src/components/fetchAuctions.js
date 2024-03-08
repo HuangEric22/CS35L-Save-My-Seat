@@ -1,6 +1,11 @@
 import { Box, Typography, Button, TextField, CircularProgress, Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { tokens } from "../theme";
+import { useTheme } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/system';
+import { light } from "@mui/material/styles/createPalette";
+import '../animations.css';
 
 const MyAuctions = () => {
     const user = useAuthContext();
@@ -48,7 +53,7 @@ const MyAuctions = () => {
     // }
     const fetchSellers = async () => {
             try {
-                const response = await fetch("http://localhost:4000/api/user/", {
+                const response = await fetch("/api/user/", {
                     method: "GET",
                    /*headers: {
                     // Added Authorization header with Bearer token
@@ -68,7 +73,7 @@ const MyAuctions = () => {
     };
     const fetchTimes = async () => {
         try {
-            const res = await fetch("http://localhost:4000/api/auction/times", {
+            const res = await fetch("/api/auction/times", {
                 method:"GET",
                 /*headers: {
                     // Added Authorization header with Bearer token
@@ -88,7 +93,7 @@ const MyAuctions = () => {
     }
     const fetchAuctions = async () => {
         try {
-            const response = await fetch("http://localhost:4000/api/auction/", {
+            const response = await fetch("/api/auction/", {
                 method: "GET", 
                 /*headers: {
                     // Added Authorization header with Bearer token
@@ -141,10 +146,21 @@ const MyAuctions = () => {
         }));
     };
 
+    const theme =useTheme();
+    const colors = tokens(theme.palette.mode);
+
+    const boxStyle = {
+        backgroundColor: colors.primary[600],
+    }
+
+    const lighterBoxStyle = {
+        backgroundColor: colors.primary[500],
+    }
+
     return (
         <Box m="20px">
             {auctions.map((auction)=>
-            <Box key = {auction._id} bgcolor='#528FBE' width='65%' p={2} color='white' borderRadius='10px' mb={3}>
+            <Box key={auction._id} className={times[auction._id] && times[auction._id].hours < 2 ? 'fieryBox' : ''} sx={boxStyle} width='65%' p={2} color='white' borderRadius='10px' mb={3}>
                 <Grid container justifyContent="space-between" alignItems="center">
                     {times[auction._id] ? (
                 <>
@@ -167,7 +183,7 @@ const MyAuctions = () => {
                 </Typography>}
                 <Box display="flex" alignItems="center">
                     {times[auction._id] && !times[auction._id].completed && 
-                    <Button variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
+                    <Button sx={lighterBoxStyle} variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
                         {formVisibleMap[auction._id] ? "Cancel" : "Place Bid"}
                     </Button>}
                     {formVisibleMap[auction._id] && (!times[auction._id].completed)&& (
@@ -178,6 +194,7 @@ const MyAuctions = () => {
                                 </Button>
                                 <Box ml={1} flexGrow={1}>
                                 <TextField
+                                    sx={lighterBoxStyle}
                                     variant="outlined"
                                     label="Bid Amount"
                                     name={`bid_${auction._id}`} // Using auction ID to make the name unique

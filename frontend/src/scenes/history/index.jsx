@@ -12,7 +12,7 @@ import { FaCaretUp } from "react-icons/fa";
 
 
 const History = () => {
-    const theme =useTheme();
+    const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const columns = [

@@ -5,6 +5,7 @@ import Topbar from "./scenes/global/Topbar";
 import Navbar from "./scenes/global/Navbar";
 import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
+import Test from "./scenes/test";
 import Auctions from "./scenes/auctions"
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "./Signup";
@@ -34,25 +35,26 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <Dashboard/>
-                //</ProtectedRoute>
+                </ProtectedRoute>
               }/>
               <Route path="/history" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <History/>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
               }/>
               <Route path="/buy" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <Buy/>
-                //</ProtectedRoute>
+                </ProtectedRoute>
               }/>
               <Route path="/auctions" element= {
                   <Auctions/>
               }/>
                <Route path="/login" element={<Login/>}/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
+               <Route path="/test" element={<Test/>}/>
                
               
             
