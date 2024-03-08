@@ -19,6 +19,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -143,19 +144,20 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 setSelected={setSelected}
               />
               <Item
+                title="My Auctions"
+                to="/auctions"
+                icon={<ShoppingCartOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
                 title="Purchase History"
                 to="/history"
                 icon={<HistoryOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
-              <Item
-                title="Report Fraud"
-                to="/invoices"
-                icon={<ReportGmailerrorredOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+              
   
               <Typography
                 variant="h6"

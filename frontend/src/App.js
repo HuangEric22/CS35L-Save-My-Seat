@@ -5,7 +5,7 @@ import Topbar from "./scenes/global/Topbar";
 import Navbar from "./scenes/global/Navbar";
 import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
-import Invoices from "./scenes/invoices";
+import Auctions from "./scenes/auctions"
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "./Signup";
 import Login from "./Login";
@@ -33,11 +33,32 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
+<<<<<<< HEAD
               <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
               <Route path="/history" element={<ProtectedRoute><History/> </ProtectedRoute>}/>
               <Route path="/buy" element={<ProtectedRoute><Buy/></ProtectedRoute>}/>
                <Route path="/login" element={<Login/>}/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
+=======
+              <Route path="/" element={
+                //<ProtectedRoute>
+                  <Dashboard/>
+                //</ProtectedRoute>
+              }/>
+              <Route path="/history" element={
+                //<ProtectedRoute>
+                  <History/>
+                //</ProtectedRoute>
+              }/>
+              <Route path="/buy" element={
+                //<ProtectedRoute>
+                  <Buy/>
+                //</ProtectedRoute>
+              }/>
+              <Route path="/auctions" element={<Auctions/>}/>
+              <Route path="/login" element={<Login/>}/> 
+              <Route path="/" element={<Signup/>}/> {/*routes for signup/login*/}
+>>>>>>> 6faecaa9dca35133100525fe55fbc34c80a0e7c7
                
               
             
