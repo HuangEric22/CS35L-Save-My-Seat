@@ -144,19 +144,20 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 setSelected={setSelected}
               />
               <Item
-                title="Purchase History"
-                to="/history"
-                icon={<HistoryOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-              <Item
                 title="My Auctions"
                 to="/auctions"
                 icon={<ShoppingCartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
+              <Item
+                title="Purchase History"
+                to="/history"
+                icon={<HistoryOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              
   
               <Typography
                 variant="h6"
