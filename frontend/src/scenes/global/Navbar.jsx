@@ -20,7 +20,9 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-
+import { ExitToApp } from '@mui/icons-material';
+import { useLogout } from '../../hooks/useLogout'
+import { useNavigate } from 'react-router-dom';
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -40,11 +42,16 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   };
 
   const Navbar = () => {
+    const navigate = useNavigate()
+    const { logout } = useLogout()
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
-  
+    const handleLogout = () => {
+      logout();
+      navigate('/login');
+    }
     return (
       <Box
         sx={{
@@ -128,6 +135,16 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              <MenuItem
+  icon={<ExitToApp/>} 
+  onClick={handleLogout}
+  style={{
+    color: colors.grey[100],
+  }}
+>
+  <Typography>Logout</Typography>
+ 
+</MenuItem>
   
               <Typography
                 variant="h6"
