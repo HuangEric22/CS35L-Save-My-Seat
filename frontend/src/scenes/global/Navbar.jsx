@@ -24,7 +24,29 @@ import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import { ExitToApp } from '@mui/icons-material';
 import { useLogout } from '../../hooks/useLogout'
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../hooks/useAuthContext'
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
+  
+  // Retrieve the user string from localStorage
+const userString = localStorage.getItem('user');
+
+// Check if userString is not null
+if (userString) {
+  // Parse the JSON string back into an object
+  const userObject = JSON.parse(userString);
+
+  // Access the name property of the user object
+  const name = userObject.name;
+  const username = userObject.username;
+
+  // Use the name for whatever you need
+  console.log(name);
+  console.log(username) // Example usage
+} else {
+  console.log('No user found in localStorage.');
+}
+
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
@@ -43,16 +65,14 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   };
 
   const Navbar = () => {
+    const { user } = useAuthContext()
     const navigate = useNavigate()
     const { logout } = useLogout()
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
-    const handleLogout = () => {
-      logout();
-      navigate('/login');
-    }
+    
     return (
       <Box
         sx={{
@@ -119,10 +139,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Ian Shih
+                    Yash
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
-                    @piddpudd
+                    
+                    {user ?  '@'+ user.name : ''} {/* Use user's name or a default */}
                   </Typography>
                 </Box>
               </Box>
@@ -136,16 +157,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 selected={selected}
                 setSelected={setSelected}
               />
-              <MenuItem
-  icon={<ExitToApp/>} 
-  onClick={handleLogout}
-  style={{
-    color: colors.grey[100],
-  }}
->
-  <Typography>Logout</Typography>
- 
-</MenuItem>
+              
   
               <Typography
                 variant="h6"
