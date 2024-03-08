@@ -146,11 +146,11 @@ if (userString) {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Yash
+                    {user ? user.name: ''}
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     
-                    {user ?  '@'+ user.name : ''} {/* Use user's name or a default */}
+                    {user ?  '@'+ user.username: ''} {/* Use user's name or a default */}
                   </Typography>
                 </Box>
               </Box>

@@ -82,7 +82,7 @@ const authUser = async(req, res) => {
         const token = generateToken(user._id)
     userID = user._id
     
-        res.status(200).json({name: user.name, email,userID,  token})
+        res.status(200).json({username: user.username, name: user.name, email,userID,  token})
       } catch (error) {
         res.status(400).json({error: error.message})
       }

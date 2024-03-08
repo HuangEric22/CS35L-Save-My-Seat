@@ -28,7 +28,7 @@ export const useSignup = () => {
           dispatch({ type: 'LOGIN', payload: json });
           
           setIsLoading(false);
-          navigate("/login");
+          navigate("/");
         } else {
           throw new Error('Received response is not in JSON format');
         }
