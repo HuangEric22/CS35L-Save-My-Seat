@@ -35,19 +35,19 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <Dashboard/>
-                //</ProtectedRoute>
+                </ProtectedRoute>
               }/>
               <Route path="/history" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <History/>
-                  //</ProtectedRoute>
+                  </ProtectedRoute>
               }/>
               <Route path="/buy" element={
-                //<ProtectedRoute>
+                <ProtectedRoute>
                   <Buy/>
-                //</ProtectedRoute>
+                </ProtectedRoute>
               }/>
               <Route path="/auctions" element= {
                   <Auctions/>
