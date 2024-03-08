@@ -17,17 +17,18 @@ const generateToken = (_id) => {
     return specialCharsPattern.test(str);
   }
   const registerUser = async (req, res) => {
-    const { username, email, password,  major } = req.body;
+    const { name, username, email, password,  major } = req.body;
     
 
     try {
-      const user = await User.signup(email, username, major, password)
+      const user = await User.signup(name, email, username, major, password)
   console.log("Sign up was working")
       // create a token
       const token = generateToken(user._id)
       console.log("Token generated")
   
       res.status(200).json({
+        name: user.name,
         username: user.username,
         email: user.email,
         major: user.major,
