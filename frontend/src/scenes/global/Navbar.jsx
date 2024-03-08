@@ -71,7 +71,14 @@ if (userString) {
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
-    
+
+    const isDarkMode = theme.palette.mode === 'dark'; // Determine if the theme is dark
+
+  // Determine the logo URL based on the theme mode
+  const logoUrl = isDarkMode
+    ? `${process.env.PUBLIC_URL}/assets/bear2.png`
+    : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
+    if (!user) {return null}
     return (
       <Box
         sx={{
@@ -127,7 +134,7 @@ if (userString) {
                     alt="profile-user"
                     width="100px"
                     height="100px"
-                    src={`${process.env.PUBLIC_URL}/assets/yash.jpg`}
+                    src={logoUrl}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 </Box>
@@ -196,7 +203,7 @@ if (userString) {
                 Pages
               </Typography>
               <Item
-                title="Profile Form"
+                title="Profile"
                 to="/form"
                 icon={<PersonOutlinedIcon />}
                 selected={selected}

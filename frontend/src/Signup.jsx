@@ -66,7 +66,24 @@ const Signup = () => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Card sx={{ mt: 8, p: 4 }}>
+      <Card 
+  sx={{ 
+    p: 4, 
+    mt: 5, 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center', 
+    borderRadius: '16px',
+    // Example of changing the background color to match the theme
+    backgroundColor: theme.palette.background.paper, // or any color from your theme
+    // For complementary color or lighter/darker shades, you might use
+    // backgroundColor: theme.palette.grey[200], // adapt the 200 to get the desired shade
+  }}
+>
+        <img src={`${process.env.PUBLIC_URL}/assets/bear2.png`} alt="Logo" style={{ maxWidth: '150px', marginBottom: theme.spacing(4) }} />
+      <Typography variant="h3" color={theme.palette.primary.main} sx={{ mb: 4, textAlign: 'center' }}>
+          Save My Seat
+        </Typography> 
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
