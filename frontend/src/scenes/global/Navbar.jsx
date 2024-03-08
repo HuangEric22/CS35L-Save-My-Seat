@@ -142,7 +142,7 @@ if (userString) {
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     
-                    {user ?  user.email : ''} {/* Use user's name or a default */}
+                    {user ?  '@'+ user.name : ''} {/* Use user's name or a default */}
                   </Typography>
                 </Box>
               </Box>
