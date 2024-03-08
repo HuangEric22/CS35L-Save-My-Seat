@@ -20,6 +20,7 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
 import { ExitToApp } from '@mui/icons-material';
 import { useLogout } from '../../hooks/useLogout'
 import { useNavigate } from 'react-router-dom';
@@ -107,7 +108,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                     alt="profile-user"
                     width="100px"
                     height="100px"
-                    src={`${process.env.PUBLIC_URL}/assets/yash.jpg`}
+                    src={`${process.env.PUBLIC_URL}/assets/ian.jpeg`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 </Box>
@@ -118,7 +119,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Yash
+                    Ian Shih
                   </Typography>
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     @piddpudd
@@ -198,9 +199,9 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 setSelected={setSelected}
               />
               <Item
-                title="FAQ Page"
-                to="/faq"
-                icon={<HelpOutlineOutlinedIcon />}
+                title="Test"
+                to="/test"
+                icon={<ScienceOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
