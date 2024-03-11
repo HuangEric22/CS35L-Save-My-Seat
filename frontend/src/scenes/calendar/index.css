@@ -4,17 +4,15 @@
     justify-content: center;
 }
 
-.rbc-row.rbc-row-resources{
-    height: 48px !important;
-}
-
-
 .rbc-allday-cell{
     display: none;
     
 }
 
 
+.rbc-time-header-gutter{
+    background: none;
+}
 
 .rbc-time-gutter.rbc-time-column{
     background: none;

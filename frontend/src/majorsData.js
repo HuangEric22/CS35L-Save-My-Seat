@@ -4,6 +4,7 @@ const majorList = [
     { label: "Chemical Engineering", value: "chemical engineering" },
     { label: "Civil Engineering", value: "civil engineering" },
     { label: "Computer Engineering", value: "computer engineering" },
+    { label: "Computer Science", value: "computer science"},
     {
       label: "Computer Science and Engineering",
       value: "computer science and engineering",
