@@ -12,23 +12,57 @@ import { Calendar, Views, DateLocalizer, momentLocalizer } from 'react-big-calen
 const today = new Date()
 
 //initial classes
-const events = [
+const initialClasses = [
     {
-        id: 1,
-        title: "MATH 100",
+        //id: 1,
+        title: "MATH 100 Lec 1",
         start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 50),
-        resourceId: 1,
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 30),
+        location: "Mathematical Sciences 4000",
+        resourceId: [1,3,5],
     },
     {
-        id: 2,
-        title: "MATH 200",
+        //id: 2,
+        title: "CHEM 20L Lab 1A",
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 50),
+        location: "Young Hall Room 1379",
+        resourceId: 3,
+    },
+    {
+        //id: 3,
+        title: "COM SCI 100 Lec 2",
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 15, 50),
+        location: "Haines Hall 39",
+        resourceId: [2,4],
+    },
+    {
+        //id: 4, test overlap
+        title: "MATH 200 Lec 2",
         start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8),
-        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 50),
-        resourceId: 1,
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 50),
+        location: "Young Hall CS50",
+        resourceId: [1,3,5],
     },
 
 ]
+
+// custom component definition for class title display
+const EventComponent = ({ event }) => {
+    // Split the title by a space followed by "Lec" or a space followed by a digit
+    const titleParts = event.title.split(/\s+(?=Lec|Dis|Lab)/);
+
+    return (
+        <div>
+            {/* Map over the title parts and render each part in a separate div */}
+            {titleParts.map((part, index) => (
+                <div key={index}>{part}</div>
+            ))}
+            <div>{event.location}</div>
+        </div>
+    );
+};
 
 
 const ResourceCalendar = ({localizer}) => {
@@ -44,21 +78,34 @@ const ResourceCalendar = ({localizer}) => {
 
     //set the props
     const { defaultDate, views } = useMemo(() => ({
-    defaultDate: new Date(),
+    defaultDate: today,
     views: ['day'],
     }), []);
 
-    //user can modify their class list to be displayed
-    const [myEvents, setEvents] = useState(events);
+    //state variable for user's classes
+    //think about implementation for setClasses
+    const [myClasses, setClasses] = useState(initialClasses);
 
-    //adapt min and max to the user's earliest/latest classes???
-    const min = new Date(today.getFullYear(),today.getMonth(),today.getDate(),8)
-    const max= new Date(today.getFullYear(),today.getMonth(),today.getDate(),20, 59, 59)
+    // find earliest and latest class to adapt the calendar hours flexibly
+    const minClass = myClasses.reduce((min, classEvent) => (
+        classEvent.start < min ? classEvent.start : min
+    ), myClasses[0].start);
 
-    //pop up with more info about classes
-    const handleSelectEvent = (event) => {
-        // Show additional information about the clicked event
-        alert(`Title: ${event.title}\nStart: ${event.start}\nEnd: ${event.end}`);
+    const maxClass = myClasses.reduce((max, classEvent) => (
+        classEvent.end > max ? classEvent.end : max
+    ), myClasses[0].end);
+
+    // set min and max prop for hours flexibility
+    const min = new Date(minClass.getFullYear(), minClass.getMonth(), minClass.getDate(), minClass.getHours(), minClass.getMinutes());
+    const max = new Date(maxClass.getFullYear(), maxClass.getMonth(), maxClass.getDate(), maxClass.getHours(), maxClass.getMinutes(), maxClass.getSeconds());
+
+
+    //when class clicked, popup with additinal info
+    const handleSelectClass = (event) => {
+        const startTime = event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const endTime = event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        //const finalExamInfo
+        alert(`Class: ${event.title}\nLocation: ${event.location}\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
     }
 
     return (
@@ -71,7 +118,7 @@ const ResourceCalendar = ({localizer}) => {
             defaultDate={defaultDate}
             defaultView={Views.DAY}
             toolbar={false}
-            events={myEvents}
+            events={myClasses}
             localizer={localizer}
             resourceIdAccessor="resourceId"
             resources={resourceMap}
@@ -81,7 +128,8 @@ const ResourceCalendar = ({localizer}) => {
             max={max}
             timeslots={4}
             step={15}
-            onSelectEvent={handleSelectEvent} // Call handleSelectEvent when an event is clicked
+            onSelectEvent={handleSelectClass} //display popup when clicked
+            components={{ event: EventComponent }} //custom event component for the classes displayed
             />
         </div>
         </Fragment>
