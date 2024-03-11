@@ -51,41 +51,38 @@ const initialClasses = [
 ]
 
 const ParentComponent = () => {
-  //lifting state up
-  const [myClasses, setMyClasses] = useState(initialClasses);
+    //lifting state up
+    const [myClasses, setMyClasses] = useState(initialClasses);
 
-  //add a class to the planner
-  const addClass = (newClass) => {
-    setMyClasses([...myClasses, newClass]);
-  };
+    //function- add a class to the planner
+    const addClass = (newClass) => {
+        setMyClasses([...myClasses, newClass]);
+    };
 
-  //remove a class from the planner
-  const removeClass = (classId) => {
-    setMyClasses(myClasses.filter((c) => c.id !== classId));
-  };
+    //function- remove a class from the planner
+    const removeClass = (classId) => {
+        setMyClasses(myClasses.filter((c) => c.id !== classId));
+    };
 
-  return (
+    return (
     <Box>
-      <Header title="Class Planner" subtitle="My Classes for Spring 2024" />
-      
-      {/* Calendar to display classes */}
-      <ResourceCalendar 
-        localizer={localizer} 
-        myClasses={myClasses} 
-        addClass={addClass} 
-        removeClass={removeClass}
-      />
-      <hr />
-      
-      {/* Component for searching and adding classes */}
-      <ClassPlanner 
+        <Header title="Class Planner" subtitle="My Classes for Spring 2024" />
+        
+        <ResourceCalendar 
+            localizer={localizer} 
+            myClasses={myClasses} 
+            addClass={addClass} 
+            removeClass={removeClass}
+        />
+        <hr />
+        
+        <ClassPlanner 
+            myClasses={myClasses}
         addClass={addClass}
-      />
-      {/* Component to display current classes and allow removal */}
-      {/* This component should be created to list classes and have a remove button */}
-      {/* YourClassList or similar */}
+        removeClass={removeClass}
+        />
     </Box>
-  );
+    );
 };
 
 export default ParentComponent;
