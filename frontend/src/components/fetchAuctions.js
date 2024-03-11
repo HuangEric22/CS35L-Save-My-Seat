@@ -53,7 +53,7 @@ const MyAuctions = () => {
     // }
     const fetchSellers = async () => {
             try {
-                const response = await fetch("/api/user/", {
+                const response = await fetch("http://localhost:4000/api/user/", {
                     method: "GET",
                    /*headers: {
                     // Added Authorization header with Bearer token
@@ -73,7 +73,7 @@ const MyAuctions = () => {
     };
     const fetchTimes = async () => {
         try {
-            const res = await fetch("/api/auction/times", {
+            const res = await fetch("http://localhost:4000/api/auction/times", {
                 method:"GET",
                 /*headers: {
                     // Added Authorization header with Bearer token
@@ -93,7 +93,7 @@ const MyAuctions = () => {
     }
     const fetchAuctions = async () => {
         try {
-            const response = await fetch("/api/auction/", {
+            const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
                 /*headers: {
                     // Added Authorization header with Bearer token
