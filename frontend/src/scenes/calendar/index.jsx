@@ -1,3 +1,4 @@
+/*
 import {Box} from "@mui/material";
 import Header from "../../components/Header";
 import { useState, useRef, useEffect } from 'react';
@@ -7,6 +8,7 @@ import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 
 
 //mock data for scheduled classes: array of objects
+//this is the INITIAL classes when the user first opens the calendar page
 const myClasses = [
     {
         //replace with some way to get the data in this format ???
@@ -37,10 +39,12 @@ const Calendar = () => {
     
     // create ref using useRef hook
     const calendarRef = useRef(null);
+    console.log("Calendar")
+    console.log(calendarRef)
     // define function to access DayPilot.Calendar methods
     // This function acts as a getter for the calendar control
     const getCalendar = () => {
-    return calendarRef.current ? calendarRef.current.control : null;
+        return calendarRef.current ? calendarRef.current.control : null;
     };
     
 
@@ -59,9 +63,11 @@ const Calendar = () => {
     const [startDate, setStartDate] = useState(DayPilot.Date.today());
 
     // State for columns (load during initial render)
-    const [columns, setColumns] = useState([]);
+    const [columns, setColumns] = useState([
+        //move columns here
+    ]);
     // State for calendar events (selected courses to be displayed)
-    const [scheduledCourses, setScheduledCourses] = useState([]);
+    const [scheduledCourses, setScheduledCourses] = useState(myClasses);
 
     //initialize columns and events (classes) with useEffect
     useEffect(() => {
@@ -72,7 +78,7 @@ const Calendar = () => {
             { name: "Thursday", id: "thurs" },
             { name: "Friday", id: "fri" },
         ]);
-        setScheduledCourses(myClasses);
+        //setScheduledCourses();
 
     }, []);
 
@@ -101,3 +107,5 @@ const Calendar = () => {
 }
 
 export default Calendar;
+
+*/

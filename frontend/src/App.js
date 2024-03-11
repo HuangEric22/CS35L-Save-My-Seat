@@ -7,7 +7,12 @@ import Dashboard from "./scenes/dashboard";
 import Buy from "./scenes/buy";
 import Invoices from "./scenes/invoices";
 import History from "./scenes/history";
-import Calendar from "./scenes/calendar";
+//added for calendar
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment'
+import ResourceCalendar from "./scenes/calendar/index2.jsx";
+
+
 import { useEffect } from 'react';
 // import Bar from "./scenes/bar";
 // import Form from "./scenes/form";
@@ -18,7 +23,8 @@ import { useEffect } from 'react';
 // import Calendar from "./scenes/calendar";
 import MyAuctions from './components/fetchAuctions';
 
-
+//added localizer for calendar
+const localizer = momentLocalizer(moment);
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -35,9 +41,7 @@ function App() {
               <Route path="/" element={<Dashboard/>}/>
               <Route path="/history" element={<History/>}/>
               <Route path="/buy" element={<Buy/>}/>
-              <Route path="/calendar"  element={<Calendar/>}/> 
-              
-            
+              <Route path="/calendar"  element={<ResourceCalendar localizer={localizer}/>}/>         
             </Routes>
           </main>
         </div>
