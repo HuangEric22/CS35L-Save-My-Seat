@@ -46,7 +46,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     //function- render each class as a MUI Card
     const renderMajorClassCard = (classInfo) => {
         return (
-            <Card key={classInfo.id} variant="outlined" sx={{ marginBottom: 2, maxWidth: 300, }}>
+            <Card key={classInfo.id} variant="outlined" sx={{ marginBottom: 2, maxWidth: 300, backgroundColor: '#679dc6' }}>
                 <CardContent>
                     <Typography variant="h6" component="div">
                         {classInfo.name}
@@ -68,7 +68,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
                     <Button 
                         size="small" 
                         onClick={() => addClass(classInfo)}
-                        sx={{ backgroundColor: 'gold', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
+                        sx={{ backgroundColor: '#ffc649', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
                         Add to My Classes
                     </Button>
                 </CardActions>
