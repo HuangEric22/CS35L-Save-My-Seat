@@ -67,7 +67,7 @@ const ParentComponent = () => {
     //display list of user's current classes in planner
     const renderMyClassesCard = (myClass) => {
         return (
-          <Card key={myClass.id} variant="outlined" sx={{ maxWidth: 275, margin: 1 }}>
+          <Card key={myClass.id} variant="outlined" sx={{ maxWidth: 275, margin: 1, backgroundColor: '#679dc6'}}>
             <CardContent>
               <Typography variant="h6" component="div">
                 {myClass.title}
@@ -79,7 +79,7 @@ const ParentComponent = () => {
                 size="small" 
                 color="secondary" 
                 onClick={() => removeClass(myClass.id)}
-                sx={{ backgroundColor: 'gold', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
+                sx={{ backgroundColor: '#ffc649', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
                 Remove Class
               </Button>
             </CardActions>
