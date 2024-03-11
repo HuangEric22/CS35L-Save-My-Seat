@@ -23,6 +23,9 @@
 
 
 /*classes formatting*/
+.rbc-event{
+    background-color: rgb(39, 167, 199);
+}
 
 .rbc-event-label{
     display: none;
