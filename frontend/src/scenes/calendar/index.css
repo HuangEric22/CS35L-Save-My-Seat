@@ -1,0 +1,35 @@
+.rbc-header{
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rbc-allday-cell{
+    display: none;
+    
+}
+
+
+.rbc-time-header-gutter{
+    background: none;
+}
+
+.rbc-time-gutter.rbc-time-column{
+    background: none;
+    font-weight: bold !important;
+}
+
+
+/*classes formatting*/
+.rbc-event{
+    background-color: #ffc649;
+}
+
+.rbc-event-label{
+    display: none;
+}
+
+.rbc-event-content{
+    text-align: center;
+    color: #000000
+}

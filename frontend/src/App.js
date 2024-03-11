@@ -12,6 +12,9 @@ import Signup from "./Signup";
 import Login from "./Login";
 
 import History from "./scenes/history";
+
+import ParentComponent from "./scenes/calendar/ParentComponent.jsx";
+
 import { useEffect } from 'react';
 // import Bar from "./scenes/bar";
 // import Form from "./scenes/form";
@@ -56,6 +59,8 @@ function App() {
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
                <Route path="/test" element={<Test/>}/>
                
+               
+               <Route path="/calendar" element= {<ParentComponent/>}/>
               
             
             </Routes>
