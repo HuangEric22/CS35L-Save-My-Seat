@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
-import Header from '../../components/Header';
+import { Box, Card, CardContent, Typography, CardActions, Button } from '@mui/material';import Header from '../../components/Header';
 import ResourceCalendar from './ResourceCalendar';
 import ClassPlanner from './ClassPlanner';
 
@@ -64,6 +63,30 @@ const ParentComponent = () => {
         setMyClasses(myClasses.filter((c) => c.id !== classId));
     };
 
+
+    //display list of user's current classes in planner
+    const renderMyClassesCard = (myClass) => {
+        return (
+          <Card key={myClass.id} variant="outlined" sx={{ maxWidth: 275, margin: 1 }}>
+            <CardContent>
+              <Typography variant="h6" component="div">
+                {myClass.title}
+              </Typography>
+              
+            </CardContent>
+            <CardActions>
+              <Button 
+                size="small" 
+                color="secondary" 
+                onClick={() => removeClass(myClass.id)}
+                sx={{ backgroundColor: 'gold', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
+                Remove Class
+              </Button>
+            </CardActions>
+          </Card>
+        );
+      };
+
     return (
     <Box>
         <Header title="Class Planner" subtitle="My Classes for Spring 2024" />
@@ -75,12 +98,22 @@ const ParentComponent = () => {
             removeClass={removeClass}
         />
         <hr />
-        
+        <h1>Search & Manage Classes</h1>
+
         <ClassPlanner 
             myClasses={myClasses}
         addClass={addClass}
         removeClass={removeClass}
         />
+
+        <hr />
+        {/* LIST OF CURRENT CLASSES */}
+        <h2>My Current Classes</h2>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'left' }}>
+            {myClasses.map(renderMyClassesCard)}
+      </Box>
+
+
     </Box>
     );
 };

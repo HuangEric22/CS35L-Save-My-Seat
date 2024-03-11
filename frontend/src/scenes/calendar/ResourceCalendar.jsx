@@ -44,24 +44,32 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
     views: ['day'],
     }), []);
 
+    
+    //time display stuff
 
     // find earliest and latest class to adapt the calendar hours flexibly
     //if no classes, then set to default hours 8 AM - 5 PM
-    const minClass = myClasses.length > 0
-        ? myClasses.reduce((min, classEvent) => (
-            classEvent.start < min ? classEvent.start : min
-        ), myClasses[0].start)
-        : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8); 
+    //ONLY ONCE ON INITIAL RENDER, use useEffect to do this
 
-    const maxClass = myClasses.length > 0
-        ? myClasses.reduce((max, classEvent) => (
-            classEvent.end > max ? classEvent.end : max
-        ), myClasses[0].end)
-        : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 59, 59); 
+    const defaultMinTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8); 
+    const defaultMaxTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 59, 59);
+    
+    // states
+    const [minTime, setMinTime] = useState();
+    const [maxTime, setMaxTime] = useState();
 
-    // set min and max prop for hours flexibility
-    const min = new Date(minClass.getFullYear(), minClass.getMonth(), minClass.getDate(), minClass.getHours(), minClass.getMinutes());
-    const max = new Date(maxClass.getFullYear(), maxClass.getMonth(), maxClass.getDate(), maxClass.getHours(), maxClass.getMinutes(), maxClass.getSeconds());
+    useEffect(() => {
+        const computedMinClass = myClasses.length > 0
+            ? myClasses.reduce((min, classEvent) => (classEvent.start < min ? classEvent.start : min), myClasses[0].start)
+            : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8);
+
+        const computedMaxClass = myClasses.length > 0
+            ? myClasses.reduce((max, classEvent) => (classEvent.end > max ? classEvent.end : max), myClasses[0].end)
+            : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 59, 59);
+
+        setMinTime(new Date(computedMinClass.getFullYear(), computedMinClass.getMonth(), computedMinClass.getDate(), computedMinClass.getHours(), computedMinClass.getMinutes()));
+        setMaxTime(new Date(computedMaxClass.getFullYear(), computedMaxClass.getMonth(), computedMaxClass.getDate(), computedMaxClass.getHours(), computedMaxClass.getMinutes(), computedMaxClass.getSeconds()));
+    }, []);
 
 
     //when class clicked, popup with additinal info
@@ -72,31 +80,8 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
         alert(`Class: ${event.title}\nLocation: ${event.location}\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
     }
 
-    /*
-    //IN PROGRESS, MOVED TO PARENT COMPONENT
-    //FOR ADDING OR DELETING CLASSES TO PLAN AND HAVING IT SHOW UP ON THE CALENDAR
     
-    //test for button ADDING CLASS
-    const handleAddTestClass = () => {
-        const testClass = {
-            title: "TESTING Lec 1",
-            start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8),
-            end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 50),
-            location: "MS 4000",
-            resourceId: 4,
-        };
-    
-        //update myClasses state for
-        setClasses(prevClasses => [...prevClasses, testClass]);
-    };
 
-    //TEST FOR DELETING CLASS
-    const handleRemoveClass = (eventId) => {
-        const updatedClasses = myClasses.filter(event => event.id !== eventId);
-        setClasses(updatedClasses);
-    };
-
-    */
     return (
 
     <Box> 
@@ -113,8 +98,8 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
             resources={resourceMap}
             resourceTitleAccessor="resourceTitle"
             views={views}
-            min={min}
-            max={max}
+            min={minTime || defaultMinTime}
+            max={maxTime || defaultMaxTime}
             timeslots={4}
             step={15}
             onSelectEvent={handleSelectClass} //display popup when clicked

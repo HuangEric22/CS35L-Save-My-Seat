@@ -44,7 +44,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     };
 
     //function- render each class as a MUI Card
-    const renderClassCard = (classInfo) => {
+    const renderMajorClassCard = (classInfo) => {
         return (
             <Card key={classInfo.id} variant="outlined" sx={{ marginBottom: 2, maxWidth: 300, }}>
                 <CardContent>
@@ -81,7 +81,6 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
     return (
         <Box>
-            <h1>Search for Classes</h1>
             <div className="major-select-container">
                 <h2>Select Your Major</h2>
                 <Select
@@ -117,7 +116,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
                 ))}
                 */}
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'left' }}>
-                    {majorClasses.map(renderClassCard)}
+                    {majorClasses.map(renderMajorClassCard)}
                 </Box>
 
             </div>
