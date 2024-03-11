@@ -1,0 +1,36 @@
+.rbc-header{
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rbc-row.rbc-row-resources{
+    height: 48px !important;
+}
+
+
+.rbc-allday-cell{
+    display: none;
+    
+}
+
+
+
+.rbc-time-gutter.rbc-time-column{
+    background: none;
+    font-weight: bold !important;
+}
+
+
+/*classes formatting*/
+.rbc-event{
+    background-color: rgb(39, 167, 199);
+}
+
+.rbc-event-label{
+    display: none;
+}
+
+.rbc-event-content{
+    text-align: center
+}
