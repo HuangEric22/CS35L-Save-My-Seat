@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Card, CardContent, Typography, CardActions, Button } from '@mui/material';import Header from '../../components/Header';
+import { Box, Card, CardContent, Typography, CardActions, Button, useTheme } from '@mui/material';import Header from '../../components/Header';
 import ResourceCalendar from './ResourceCalendar';
 import ClassPlanner from './ClassPlanner';
-
+import { tokens } from "../../theme";
 //add localizer for calendar
 import { momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -51,6 +51,8 @@ const initialClasses = [
 
 const ParentComponent = () => {
     //lifting state up
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
     const [myClasses, setMyClasses] = useState(initialClasses);
 
     //function- add a class to the planner
@@ -67,7 +69,7 @@ const ParentComponent = () => {
     //display list of user's current classes in planner
     const renderMyClassesCard = (myClass) => {
         return (
-          <Card key={myClass.id} variant="outlined" sx={{ maxWidth: 275, margin: 1, backgroundColor: '#679dc6'}}>
+          <Card key={myClass.id} variant="outlined" sx={{ maxWidth: 275, margin: 1, backgroundColor: colors.primary[400]}}>
             <CardContent>
               <Typography variant="h6" component="div">
                 {myClass.title}
@@ -88,7 +90,7 @@ const ParentComponent = () => {
       };
 
     return (
-    <Box>
+    <Box m="20px">
         <Header title="Class Planner" subtitle="My Classes for Spring 2024" />
         
         <ResourceCalendar 
@@ -101,6 +103,7 @@ const ParentComponent = () => {
         <h1>Search & Manage Classes</h1>
 
         <ClassPlanner 
+         backgroundColor={colors.primary[400]}
             myClasses={myClasses}
         addClass={addClass}
         removeClass={removeClass}
