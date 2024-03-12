@@ -24,6 +24,8 @@ const createAuction = async (req, res) => {
         });
         await auction.save();
         res.status(201).json(auction);
+        const user = await User.findById(ownerId);
+        user.courses.push(courseName);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });

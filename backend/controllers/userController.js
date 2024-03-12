@@ -120,6 +120,7 @@ const getUser = async (req, res) => {
 };
 
 
+
 const getHighestBiddersForAllAuctions = async (req, res) => {
     try {
         // Find all auctions

@@ -151,6 +151,7 @@ const MyAuctions = () => {
                 return acc;
             }, {});
             setAuctions(data);
+            console.log(data);
             fetchSellers();
             fetchHighestBidder();
             fetchTimes();
