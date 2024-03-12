@@ -42,25 +42,31 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/" element={
-                user ? <Dashboard /> : <Navigate to="/login" />
-                 
+            // user ? <Dashboard /> : <Navigate to="/login" />
+              <ProtectedRoute> <Dashboard/> </ProtectedRoute>  
                
               }/>
               <Route path="/history" element={
-                user ? <History /> : <Navigate to="/login" />
+               // user ? <History /> : <Navigate to="/login" />
+               <ProtectedRoute> <History/> </ProtectedRoute>
               }/>
               <Route path="/buy" element={
-               user ? <Buy /> : <Navigate to="/login" />
+             // user ? <Buy /> : <Navigate to="/login" />
+             <ProtectedRoute> <Buy/> </ProtectedRoute>
               }/>
               <Route path="/auctions" element= {
-                 user ? <Auctions /> : <Navigate to="/login" />
+              //  user ? <Auctions /> : <Navigate to="/login" />
+                 <ProtectedRoute> <Auctions/> </ProtectedRoute>
               }/>
-               <Route path="/login" element={<Login/>}/> 
+               <Route path="/login" element={ <Login/> }/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
                <Route path="/test" element={<Test/>}/>
                
                
-               <Route path="/calendar" element= {user ? <ParentComponent /> : <Navigate to="/login" />}/>
+               <Route path="/calendar" element= {
+               // user ? <ParentComponent /> : <Navigate to="/login" />
+                <ProtectedRoute> <ParentComponent/> </ProtectedRoute>
+                }/>
               
             
             </Routes>

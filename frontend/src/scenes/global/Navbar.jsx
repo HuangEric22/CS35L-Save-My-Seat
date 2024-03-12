@@ -25,7 +25,7 @@ import { ExitToApp } from '@mui/icons-material';
 import { useLogout } from '../../hooks/useLogout'
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext'
-
+import { NavLink } from 'react-router-dom';
 const Item = ({ title, to, icon, selected, setSelected }) => {
   
   // Retrieve the user string from localStorage
@@ -79,7 +79,7 @@ if (userString) {
   const logoUrl = isDarkMode
     ? `${process.env.PUBLIC_URL}/assets/bear2.png`
     : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
-   // if (!user) {return null}
+   if (!user) {return null}
     return (
       <Box
         sx={{
