@@ -670,12 +670,12 @@ def load_courses():
    # for course in courses:
    #     print("Processing:", course)
        # create_course_node("PHYSICS", course, "24S")
-   # load_data("Computer Science", "24S")
-   # load_data("Mathematics", "24S")
+   load_data("Computer Science", "24S")
+   load_data("Mathematics", "24S")
    load_data('Physics', '24S')
-   # load_data("Physics", "24S")
-   # load_data("Electrical and Computer Engineering", "24S")
-   # load_data("Program in Computing", "24S")
+   load_data("Physics", "24S")
+   load_data("Electrical and Computer Engineering", "24S")
+   load_data("Program in Computing", "24S")
    set_reqs_to_nodes()
    return course_list
 

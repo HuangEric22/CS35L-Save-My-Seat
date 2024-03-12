@@ -16,7 +16,7 @@ except Exception as e:
 
 
 def insert_course(course):
-   db = client['Class_Data']
+   db = client['test']
    collection = db['Courses'] 
    print("Inserting:", course.id)
    course_dict = course.__dict__
@@ -48,8 +48,8 @@ def insert_course(course):
 
 
 def insert_major(major):
-   db = client['Major_Requirements']
-   collection = db['Course_List']
+   db = client['test']
+   collection = db['Major_Reqs']
    print("Inserting:", major.name)
    major_dict = major.__dict__
    result = collection.replace_one({'name': major_dict['name']}, major_dict, upsert=True)
@@ -59,7 +59,7 @@ def insert_major(major):
        print(f"Inserted a new document with id {major_dict['name']}") 
   
 def insert_abbreviations():
-   db = client['Class_Data']
+   db = client['test']
    collection = db['Abbreviations']
    abbrv_dict = Course_Scraper.get_abbrv_dict()
 
@@ -71,14 +71,15 @@ def insert_abbreviations():
        print("Inserted Abbreviation Dictionary")
  
   
-# course_list = Course_Scraper.load_courses()
-# major_list = Course_Scraper.load_majors()
+course_list = Course_Scraper.load_courses()
+major_list = Course_Scraper.load_majors()
 
 
-# for course in course_list.values():
-#     insert_course(course)
-# for major in major_list.values():
-#     insert_major(major)
+for course in course_list.values():
+    insert_course(course)
+
+for major in major_list.values():
+    insert_major(major)
   
 insert_abbreviations()
 
