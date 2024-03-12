@@ -7,6 +7,6 @@ const requireAuthent = require('../middleware/requireAuthent');
 router.route('/signup').post(registerUser); 
 router.post('/login', authUser);
 //router.route('/login').post(authUser);
-router.route('/').get(requireAuthent, getUser);
-router.route('/highestBidder').get( requireAuthent, getHighestBiddersForAllAuctions);
+router.route('/').get(/*requireAuthent,*/ getUser);
+router.route('/highestBidder').get( /*requireAuthent, */getHighestBiddersForAllAuctions);
 module.exports = router;
