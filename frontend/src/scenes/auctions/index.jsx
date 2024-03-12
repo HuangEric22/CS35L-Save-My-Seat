@@ -14,12 +14,14 @@ const Auctions = () => {
     
     const {user} = useAuthContext();
     const id = user.userID;
+    const username = user.name;
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     
     const [fetchAgain, setFetchAgain] = useState(false);
     const [realAuctions, setAuctions] = useState([]);
+    const [highestBidders, setHighestBidders] = useState([]);
 
     const fetchAuctions = async () => {
         try {
@@ -42,10 +44,34 @@ const Auctions = () => {
                 return acc;
             }, {});
             setAuctions(data);
+            fetchHighestBidder();
         } catch (error) {
             console.error(error);
         }
     };
+    const fetchHighestBidder = async () => {
+       
+        try {
+            const response = await fetch("http://localhost:4000/api/user/highestBidder", {
+                method: "GET", 
+                
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      }
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data`);
+            }
+            const bidders = await response.json();
+            console.log(bidders);
+            setHighestBidders(bidders);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
 
     useEffect(() => {
         fetchAuctions();
@@ -54,10 +80,15 @@ const Auctions = () => {
 
     console.log(realAuctions);
     console.log(id);
+
     const auctionsFilteredByOwner = realAuctions.filter(auction => auction.ownerId === id);
 
-    const userAuctions = auctions;
-    const userBids = bids;
+    const filteredIDs = Object.entries(highestBidders)
+    .filter(([id, [bidAmount, bidderName]]) => bidderName === username)
+    .map(([id]) => id);
+
+    const auctionsFilteredByBids = realAuctions.filter(auction => filteredIDs.includes(auction._id));
+
 
     const cardStyle = {
         width: '100%',
@@ -65,18 +96,6 @@ const Auctions = () => {
         
         backgroundColor: `${colors.primary[400]}`
     };
-
-    const flameAnimation = keyframes`
-        0% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
-        50% { box-shadow: 0 0 20px 10px rgba(255, 140, 0, 0.9); }
-        100% { box-shadow: 0 0 5px 2px rgba(255, 165, 0, 0.7); }
-    `;
-
-// Styled Box component with the animation
-    const FieryCard = styled(Card)(({ theme }) => ({
-        backgroundColor: colors.primary[400],
-        animation: `${flameAnimation} 2s infinite ease-in-out`,
-    }));
 
     return (
         <Box m={2}>
@@ -95,12 +114,13 @@ const Auctions = () => {
                                             {auction.courseName}
                                         </Typography>
                                         <Typography color="textSecondary">
-                                            Highest Bid: ${auction.startingBid}
+                                            Highest Bid: ${highestBidders[auction._id][0]}
+                                            <br/>
+                                            Bidder: {highestBidders[auction._id][1]}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small" sx={{ color: `${colors.primary[50]}` }}>View</Button>
-                                        <Button size="small" sx={{ color: `${colors.primary[50]}` }}>Edit</Button>
+                                        <Button size="medium" sx={{ color: `${colors.primary[50]}` }}>Delete</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -110,26 +130,25 @@ const Auctions = () => {
                 <Grid item xs={12} mt={3}>
                     <Typography variant="h4">Auctions I've Bid On</Typography>
                     <Grid container spacing={2}>
-                        {userBids.map((bid) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={bid.id}>
-                                <Card raised className={bid.highestBid > bid.userBid ? 'someoneOutbidYou' : ''} sx={cardStyle}>
+                        {auctionsFilteredByBids.map((auction) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={auction._id}>
+                                <Card raised className={auction.startingBid > auction.startingBid + 1 ? 'someoneOutbidYou' : ''} sx={cardStyle}>
                                     <CardContent>
                                         <Typography variant="h5" component="h2">
-                                            {bid.title}
+                                            {auction.courseName}
                                         </Typography>
                                         <Typography color="textSecondary">
-                                            My Bid: ${bid.userBid}
+                                            Highest Bid: ${highestBidders[auction._id][0]}
                                         </Typography>
                                         <Typography color="textSecondary"
                                             sx={{
-                                                color: bid.highestBid > bid.userBid ? 'red' : 'green',
+                                                color: username === highestBidders[auction._id][1] ? 'green' : 'red',
                                             }}>
-                                            Highest Bid: ${bid.highestBid}
+                                                {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small" sx={{ color: `${colors.primary[50]}` }}>View</Button>
-                                        <Button size="small" className={bid.highestBid > bid.userBid ? 'fieryGlowingText' : ' '} sx={{ color: bid.highestBid > bid.userBid ? 'red' : `${colors.primary[50]}` }} >
+                                        <Button size="medium" className={username != highestBidders[auction._id][1] ? 'fieryGlowingText' : ' '} sx={{ color: username != highestBidders[auction._id][1] ? 'red' : `${colors.primary[50]}` }} >
                                             Increase Bid
                                         </Button>
                                     </CardActions>
