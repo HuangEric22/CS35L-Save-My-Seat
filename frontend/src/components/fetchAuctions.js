@@ -220,6 +220,11 @@ const MyAuctions = () => {
                 {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
                         Seller: {sellers[auction._id]} | Highest Bid: ${highestBidders[auction._id][0]} ({highestBidders[auction._id][1]})
                 </Typography>}
+                {auction.message && // Check if there is a message
+            <Typography variant="body1" gutterBottom>
+                Message from {sellers[auction._id]}: {auction.message}
+            </Typography>
+        }
                 <Box display="flex" alignItems="center">
                     {times[auction._id] && !times[auction._id].completed && 
                     <Button sx={lighterBoxStyle} variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
