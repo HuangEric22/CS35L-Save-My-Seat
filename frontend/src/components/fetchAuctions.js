@@ -33,6 +33,7 @@ const MyAuctions = () => {
                 throw new Error(`Failed to fetch data`);
             }
             const bidders = await response.json();
+            console.log(bidders);
             setHighestBidders(bidders);
         } catch (error) {
             console.error(error);
@@ -166,6 +167,8 @@ const MyAuctions = () => {
     useEffect(() => {
         fetchAuctions();
     }, [fetchAgain]);
+
+    console.log(auctions);
     const handleSubmit = (event, auctionId) => {
         let userString = localStorage.getItem('user'); 
         let { userID, name } = JSON.parse(userString);
