@@ -192,7 +192,7 @@ const MyAuctions = () => {
         const bidAmount = parseFloat(bidAmountInput);
         const highestbid =parseFloat(highestBidders[auctionId][0])
         createBids(auctionId, bidAmount);
-        setFetchAgain(!fetchAgain)
+        setFetchAgain(!fetchAgain);
         window.location.reload();
     };
 

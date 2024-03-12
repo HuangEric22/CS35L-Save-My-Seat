@@ -40,6 +40,10 @@ const createBid = async (req, res) => {
     if(expired_auction(auction.createdAt) || auction.completed){
         res.status(404).send("Auction Expired")
     }
+    if(bidderId == auction.ownerId){
+        console.log("err")
+        res.status(404).send("Can't Bid on Own Auction");
+    }
     const bid = new Bid({
         bidderID, 
         amount, 
