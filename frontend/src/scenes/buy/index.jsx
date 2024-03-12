@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { classesList, auctionDurations } from '../../data/mockClassData';
-
+import { useAuthContext } from "../../hooks/useAuthContext";
 const Buy = () => {
+    const {user} = useAuthContext();
     const [selectedClass, setSelectedClass] = useState('');
     const [startingBid, setStartingBid] = useState('');
     const [duration, setDuration] = useState('');
-
+    const [message, setMessage] = useState('');
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
     };
@@ -29,16 +30,48 @@ const Buy = () => {
         backgroundColor: colors.primary[400],
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const auctionData = {
-            class: selectedClass,
-            startingBid,
-            duration,
+
+        try {
+            let userString = localStorage.getItem('user'); 
+            let { userID } = JSON.parse(userString);
+        
+            const auctionData = {
+                message,
+                courseName: selectedClass,
+                startingBid,
+                expDays: duration,
+                completed: false, 
+                ownerId: user.userID,
+            };
+    
+            const response = await fetch("http://localhost:4000/api/auction/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify(auctionData)
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to create auction`);
+            }
+    
+            console.log("Auction created successfully!");
+    
+            // Reset form fields after successful submission if needed
+            setSelectedClass('');
+            setStartingBid('');
+            setDuration('');
+            setMessage('')
+    
+        } catch (error) {
+            console.error(error);
+        }
     };
-    //SEND THIS TO BACKEND
-    console.log(auctionData);
-  };
+    
 
   return (
     <Box>
@@ -79,6 +112,20 @@ const Buy = () => {
               onChange={handleBidChange}
               sx={cardStyle}
           />
+          <TextField
+              margin="normal"
+             // required
+              fullWidth
+              id="message"
+              label="Message"
+              name="message"
+              autoComplete="off"
+              type="text"
+              InputProps={{ inputProps: { min: 0 } }}
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              sx={cardStyle}
+          />
           <FormControl fullWidth margin="normal">
               <InputLabel id="duration-select-label">Duration</InputLabel>
               <Select
@@ -96,7 +143,7 @@ const Buy = () => {
                   ))}
               </Select>
           </FormControl>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }} onClick={handleSubmit}>
               Start Auction
           </Button>
       </Box>

@@ -32,7 +32,7 @@ const generateToken = (_id) => {
         username: user.username,
         email: user.email,
         major: user.major,
-        
+        userID: user._id,
         
          token})
     } catch (error) {
@@ -80,8 +80,7 @@ const authUser = async(req, res) => {
     
         // create a token
         const token = generateToken(user._id)
-    userID = user._id
-    
+        const userID = user._id
         res.status(200).json({username: user.username, name: user.name, email,userID,  token})
       } catch (error) {
         res.status(400).json({error: error.message})
@@ -140,7 +139,7 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
                 highestBidders[auction._id] = [bid.amount, bid.name];
             } else {
                 // If there are no bids for the auction, set the highest bidder to 'Unknown'
-                highestBidders[auction._id] = ['0', 'No Bids'];
+                highestBidders[auction._id] = [auction.startingBid, 'No Bids'];
             }
         }
 

@@ -8,23 +8,8 @@ import { light } from "@mui/material/styles/createPalette";
 import '../animations.css';
 
 const MyAuctions = () => {
-/*
-    const userString = localStorage.getItem('user');
 
-    // Check if userString is not null
-   
-      // Parse the JSON string back into an object
-      const userObject = JSON.parse(userString);
-    
-      // Access the name property of the user object
-      const token = userObject.token;
-     // const email = userObject.email;*/
-      
-   
     const {user} = useAuthContext();
-    
-    //console.log(user.token)
-   // console.log(user.email)
     const [auctions, setAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
@@ -43,35 +28,56 @@ const MyAuctions = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token}`
       }
-              /*headers: {
-                    // Added Authorization header with Bearer token
-                    'Authorization': `Bearer ${user.token}`
-                }
-*/
             });
             if (!response.ok) {
                 throw new Error(`Failed to fetch data`);
             }
-            const bidders = await response.json(); // Await the response.json() call
+            const bidders = await response.json();
             setHighestBidders(bidders);
         } catch (error) {
             console.error(error);
         }
     }
-    // const createBids = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:4000/api/user/highestBidder", {
-    //             method: "PUT"
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error(`Failed to fetch data`);
-    //         }
-    //         const bidders = await response.json(); // Await the response.json() call
-    //         setHighestBidders(bidders);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    const createBids = async (auctionId, bidAmount) => {
+     //   let userString = localStorage.getItem('user');
+      //  let { userID, name } = JSON.parse(userString);
+      //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
+      //user.name now provides the name; it is more stable this way
+        try {   
+            const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add authorization token if needed
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name })
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to place bid for auction ${auctionId}`);
+            }
+    
+            const data = await response.json();
+            
+            // Check if the current bid is higher than the existing highest bid
+            if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
+                // Update the highestBidders state only if the current bid is higher
+                const updatedBidder = [bidAmount.toString(), user.name];
+                setHighestBidders(prevHighestBidders => ({
+                    ...prevHighestBidders,
+                    [auctionId]: updatedBidder
+                }));
+            }
+            
+            // Update state or perform any other necessary actions upon successful bid placement
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+            // Handle errors appropriately
+        }
+    };
+    
     const fetchSellers = async () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
@@ -163,16 +169,15 @@ const MyAuctions = () => {
 
     console.log(auctions);
     const handleSubmit = (event, auctionId) => {
+        let userString = localStorage.getItem('user'); 
+        let { userID, name } = JSON.parse(userString);
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
         const bidAmount = parseFloat(bidAmountInput);
         const highestbid =parseFloat(highestBidders[auctionId][0])
-        console.log(highestbid, bidAmount)
-        if(!isNaN(bidAmount) && bidAmount > highestbid){
-            highestBidders[auctionId] = [bidAmountInput, "nameless"]
-            
-        }
-        // setFetchAgain(!fetchAgain)
+        createBids(auctionId, bidAmount);
+        setFetchAgain(!fetchAgain);
+        // window.location.reload();
     };
 
        const handleToggleForm = (auctionId) => {
@@ -195,14 +200,14 @@ const MyAuctions = () => {
 
     return (
         <Box m="20px">
-            {auctions.map((auction)=>
+            {[...auctions].reverse().map((auction) => 
             <Box key={auction._id} className={times[auction._id] && times[auction._id].hours < 2 ? 'fieryBox' : ''} sx={boxStyle} width='65%' p={2} color='white' borderRadius='10px' mb={3}>
                 <Grid container justifyContent="space-between" alignItems="center">
                     {times[auction._id] ? (
                 <>
                     <Grid item>
                         <Typography variant="h3" gutterBottom>
-                            {auction.auctionName}
+                            {auction.courseName}
                         </Typography>
                     </Grid>
                     <Grid item>
@@ -214,9 +219,14 @@ const MyAuctions = () => {
                 
                 ) : null}
                 </Grid>
-                {highestBidders[auction._id] &&<Typography variant="body1" gutterBottom>
+                {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
                         Seller: {sellers[auction._id]} | Highest Bid: ${highestBidders[auction._id][0]} ({highestBidders[auction._id][1]})
                 </Typography>}
+                {auction.message && // Check if there is a message
+            <Typography variant="body1" gutterBottom>
+                Message from {sellers[auction._id]}: {auction.message}
+            </Typography>
+        }
                 <Box display="flex" alignItems="center">
                     {times[auction._id] && !times[auction._id].completed && 
                     <Button sx={lighterBoxStyle} variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
