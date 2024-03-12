@@ -170,16 +170,28 @@ const MyAuctions = () => {
 
     console.log(auctions);
     const handleSubmit = (event, auctionId) => {
-        let userString = localStorage.getItem('user'); 
-        let { userID, name } = JSON.parse(userString);
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
         const bidAmount = parseFloat(bidAmountInput);
-        const highestbid =parseFloat(highestBidders[auctionId][0])
-        createBids(auctionId, bidAmount);
-        setFetchAgain(!fetchAgain);
-        // window.location.reload();
+        // Check if there's an existing highest bid for this auction
+        if (highestBidders[auctionId]) {
+            const highestBid = parseFloat(highestBidders[auctionId][0]);
+            // Proceed only if the new bid is higher than the current highest bid
+            if (bidAmount > highestBid) {
+                createBids(auctionId, bidAmount);
+                setFetchAgain(!fetchAgain);
+            } else {
+                // Handle the case where the new bid is not higher than the current highest bid
+                // For example, show an alert or update the UI with a message
+                alert("Your bid must be higher than the current highest bid.");
+            }
+        } else {
+            // If there's no existing bid, proceed with creating the new bid
+            createBids(auctionId, bidAmount);
+            setFetchAgain(!fetchAgain);
+        }
     };
+    
 
        const handleToggleForm = (auctionId) => {
         setFormVisibleMap(prevState => ({
