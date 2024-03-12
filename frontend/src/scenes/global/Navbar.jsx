@@ -25,41 +25,28 @@ import { ExitToApp } from '@mui/icons-material';
 import { useLogout } from '../../hooks/useLogout'
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext'
-
+import { NavLink } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 const Item = ({ title, to, icon, selected, setSelected }) => {
-  
-  // Retrieve the user string from localStorage
-const userString = localStorage.getItem('user');
 
-// Check if userString is not null
-if (userString) {
-  // Parse the JSON string back into an object
-  const userObject = JSON.parse(userString);
+const location = useLocation();
+    const isActive = location.pathname === to;
 
-  // Access the name property of the user object
-  const name = userObject.name;
-  const username = userObject.username;
-
-  // Use the name for whatever you need
-  console.log(name);
-  console.log(username) // Example usage
-} else {
-  console.log('No user found in localStorage.');
-}
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     return (
       <MenuItem
-        active={selected === title}
-        style={{
-          color: colors.grey[100],
-        }}
-        onClick={() => setSelected(title)}
         icon={icon}
+        style={{
+          color: isActive ? colors.primary[700] : colors.grey[100],
+        }}
       >
-        <Typography>{title}</Typography>
-        <Link to={to} />
+        <Typography>
+          <Link to={to} style={{ color: 'inherit', textDecoration: 'none' }}>
+            {title}
+          </Link>
+        </Typography>
       </MenuItem>
     );
   };
@@ -79,7 +66,7 @@ if (userString) {
   const logoUrl = isDarkMode
     ? `${process.env.PUBLIC_URL}/assets/bear2.png`
     : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
-   // if (!user) {return null}
+   if (!user) {return null}
     return (
       <Box
         sx={{

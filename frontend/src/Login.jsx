@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import { Box, IconButton} from '@mui/material';
 import { useLogin } from './hooks/useLogin';
 import { Link } from 'react-router-dom'; // Import Link
+import { useContext } from "react";
+import { ColorModeContext, tokens } from "./theme";
+import { GiPolarBear, GiTrojanHorse } from "react-icons/gi";
 
-
-import { ColorModeContext } from './theme'; 
 import { TextField, Button, Card, Container, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 const Login = () => {
   const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, error, isLoading } = useLogin(); // Assuming error state holds the error message
@@ -16,6 +20,10 @@ const Login = () => {
     event.preventDefault();
     await login(email, password);
   };
+  const isDarkMode = theme.palette.mode === 'dark'; 
+  const logoUrl = isDarkMode
+    ? `${process.env.PUBLIC_URL}/assets/bear2.png`
+    : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
 
   return (
     <Container maxWidth="sm">
@@ -33,7 +41,7 @@ const Login = () => {
     // backgroundColor: theme.palette.grey[200], // adapt the 200 to get the desired shade
   }}
 >
-        <img src={`${process.env.PUBLIC_URL}/assets/bear2.png`} alt="Logo" style={{ maxWidth: '150px', marginBottom: theme.spacing(4) }} />
+        <img src={logoUrl} alt="Logo" style={{ maxWidth: '150px', marginBottom: theme.spacing(4) }} />
       <Typography variant="h3" color={theme.palette.primary.main} sx={{ mb: 4, textAlign: 'center' }}>
           Save My Seat
         </Typography> 
@@ -72,6 +80,14 @@ const Login = () => {
           </Typography>
         </form>
       </Card>
+      <IconButton onClick={colorMode.toggleColorMode}>
+                {theme.palette.mode === 'dark' ? (
+                    <GiPolarBear />
+                ) : (
+                    <GiTrojanHorse />
+                )}
+               
+            </IconButton>
     </Container>
   );
 };

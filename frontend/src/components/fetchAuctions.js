@@ -21,8 +21,10 @@ const MyAuctions = () => {
      // const email = userObject.email;*/
       
    
-    const user = useAuthContext();
-
+    const {user} = useAuthContext();
+    
+    //console.log(user.token)
+   // console.log(user.email)
     const [auctions, setAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
@@ -37,10 +39,10 @@ const MyAuctions = () => {
             const response = await fetch("http://localhost:4000/api/user/highestBidder", {
                 method: "GET", 
                 
-      /*headers: {
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }*/
+        'Authorization': `Bearer ${user.token}`
+      }
               /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -99,10 +101,10 @@ const MyAuctions = () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
                     method: "GET",
-                  /*  headers: {
+                    headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                      }*/
+                        'Authorization': `Bearer ${user.token}`
+                      }
                    /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -123,10 +125,10 @@ const MyAuctions = () => {
         try {
             const res = await fetch("http://localhost:4000/api/auction/times", {
                 method:"GET",
-             /*   headers: {
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  }*/
+                    'Authorization': `Bearer ${user.token}`
+                  }
                 /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -147,10 +149,10 @@ const MyAuctions = () => {
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
-             /*   headers: {
+              headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  }*/
+                    'Authorization': `Bearer ${user.token}`
+                  }
                 /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`

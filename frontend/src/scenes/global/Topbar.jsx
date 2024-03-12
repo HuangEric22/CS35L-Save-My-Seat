@@ -24,7 +24,7 @@ const Topbar = () => {
         logout();
         navigate('/login');
       }
-   //   if (!user) return null;
+     if (!user) return null;
     return (<Box display="flex" justifyContent="space-between" p={2}>
         {/*search bar*/}
         <Box display="flex" 

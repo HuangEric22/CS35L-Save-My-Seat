@@ -8,6 +8,8 @@ export const authReducer = (state, action) => {
       return { user: action.payload }
     case 'LOGOUT':
       return { user: null }
+      case 'SET_LOADING':
+        return { ...state, loading: action.payload };
     default:
       return state
   }
@@ -15,7 +17,9 @@ export const authReducer = (state, action) => {
 
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, { 
-    user: null
+    user: null,
+    
+    loading: true,
   })
 
   useEffect(() => {
@@ -24,6 +28,7 @@ export const AuthContextProvider = ({ children }) => {
     if (user) {
       dispatch({ type: 'LOGIN', payload: user }) 
     }
+    dispatch({ type: 'SET_LOADING', payload: false });
   }, [])
 
   console.log('AuthContext state:', state)
