@@ -39,17 +39,19 @@ const MyAuctions = () => {
         }
     }
     const createBids = async (auctionId, bidAmount) => {
-        let userString = localStorage.getItem('user');
-        let { userID, name } = JSON.parse(userString);
+     //   let userString = localStorage.getItem('user');
+      //  let { userID, name } = JSON.parse(userString);
+      //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
+      //user.name now provides the name; it is more stable this way
         try {
             const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     // Add authorization token if needed
-                    // 'Authorization': `Bearer ${user.token}`
+                    'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: userID, name })
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: user.userID, name: user.name })
     
             });
     
@@ -62,7 +64,7 @@ const MyAuctions = () => {
             // Check if the current bid is higher than the existing highest bid
             if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
                 // Update the highestBidders state only if the current bid is higher
-                const updatedBidder = [bidAmount.toString(), name];
+                const updatedBidder = [bidAmount.toString(), user.name];
                 setHighestBidders(prevHighestBidders => ({
                     ...prevHighestBidders,
                     [auctionId]: updatedBidder

@@ -32,7 +32,7 @@ const generateToken = (_id) => {
         username: user.username,
         email: user.email,
         major: user.major,
-        
+        userID: user._id,
         
          token})
     } catch (error) {
@@ -80,7 +80,7 @@ const authUser = async(req, res) => {
     
         // create a token
         const token = generateToken(user._id)
-    userID = user._id
+   const userID = user._id
     
         res.status(200).json({username: user.username, name: user.name, email,userID,  token})
       } catch (error) {
