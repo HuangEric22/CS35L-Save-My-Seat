@@ -172,8 +172,17 @@ const MyAuctions = () => {
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
         const bidAmount = parseFloat(bidAmountInput);
         const highestbid =parseFloat(highestBidders[auctionId][0])
-        createBids(auctionId, bidAmount);
-        setFetchAgain(!fetchAgain);
+        if(name != sellers[auctionId])
+        {
+
+            createBids(auctionId, bidAmount);
+            setFetchAgain(!fetchAgain);
+        }
+        else{
+            console.log("free");    
+        }
+
+
         // window.location.reload();
     };
 
