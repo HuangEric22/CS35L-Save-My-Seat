@@ -2,10 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema; 
 const Bid = require('./bidModel.js')
 const auctionModel = new Schema({
-    auctionName:{
-        type:String,
-        required:true
-    }, 
     courseName:{
         type:String, 
         required:true
@@ -14,6 +10,14 @@ const auctionModel = new Schema({
         type:String,
         required:true
     }, 
+    startingBid:{
+        type:String, 
+        required:true
+    },
+    expDays:{
+        type:String, 
+        required:true
+    },
     completed:{
         type: Boolean, 
         default:false

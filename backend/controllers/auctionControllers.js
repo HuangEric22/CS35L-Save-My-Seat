@@ -14,12 +14,12 @@ function expired_auction(createdAt){
 
 const createAuction = async (req, res) => {
     try {
-        const {auctionName, ownerId, courseName} = req.body;
-        
+        const {ownerId, courseName, expDays, startingBid} = req.body;
         const auction = new Auction({
-            auctionName,
             courseName,
             ownerId,
+            expDays, 
+            startingBid
         });
         await auction.save();
         res.status(201).json(auction);
@@ -38,7 +38,7 @@ const createBid = async (req, res) => {
     }
     const auction = await Auction.findById(auctionId);
     if(expired_auction(auction.createdAt) || auction.completed){
-        res.stataus(404).send("Auction Expired")
+        res.status(404).send("Auction Expired")
     }
     const bid = new Bid({
         bidderID, 
@@ -92,7 +92,6 @@ const deleteAuction = async (req, res) => {
                 return await Bid.findOneAndDelete({ _id: id });
             } catch (error) {
                 console.error("Error deleting bid:", error);
-                // Handle error if needed
             }
         }));
         
@@ -118,17 +117,16 @@ const completeAuction = async (req, res) => {
 
 const getTime = async (auctionIds) => {
     const times = {};
-    const totalDurationMs = 24 * 60 * 60 * 1000; // Total duration in milliseconds (24 hours)
-
     for (const auctionId of auctionIds) {
         const auction = await Auction.findById(auctionId);
         if (auction) {
+            const ttl = parseInt(auction.expDays) * 24* 60 * 60 * 1000;
             const currentTime = new Date(); // Get the current time
             const auctionTime = new Date(auction.createdAt); // Convert auction creation time to Date object
             const elapsedTime = currentTime - auctionTime; // Calculate the elapsed time in milliseconds
 
             // Calculate the remaining time by subtracting the elapsed time from the total duration
-            const remainingTimeMs = Math.max(totalDurationMs - elapsedTime, 0);
+            const remainingTimeMs = Math.max(ttl - elapsedTime, 0);
 
             // Convert remaining time from milliseconds to hours and minutes
             const remainingHours = Math.floor(remainingTimeMs / (1000 * 60 * 60));

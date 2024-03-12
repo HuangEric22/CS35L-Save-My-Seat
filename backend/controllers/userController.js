@@ -140,7 +140,7 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
                 highestBidders[auction._id] = [bid.amount, bid.name];
             } else {
                 // If there are no bids for the auction, set the highest bidder to 'Unknown'
-                highestBidders[auction._id] = ['0', 'No Bids'];
+                highestBidders[auction._id] = [auction.startingBid, 'No Bids'];
             }
         }
 

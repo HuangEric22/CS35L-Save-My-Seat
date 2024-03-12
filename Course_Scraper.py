@@ -34,7 +34,11 @@ def get_abbrv_dict():
     return abbrv_dict
 
 abbrv_dict = get_abbrv_dict()
-
+class Major:
+    def __init__(self, major_name, course_list):
+        self.name = major_name
+        self.courses = course_list
+        
 class Course:
     def __init__(self, id, abbrv='', title='', num='', lec=[], reqs=[], coreqs=[], page='', term=''):
         self.id = id
@@ -89,9 +93,10 @@ def get_courses_offered(subject_abbrv, term):
 #the last number in the list tells you how many courses from the list one must complete to meet requirement
 #the first value of the tuple is the course title, the 2nd is the link to the course page
 
-def get_major_reqs(major_name):
-    
-    url = f"https://catalog.registrar.ucla.edu/major/2023/{major_name}bs"
+def load_major_reqs(major_name):
+    parsed_major_name = major_name.lower().replace(" ", "")
+    print("Processing:", major_name)
+    url = f"https://catalog.registrar.ucla.edu/major/2023/{parsed_major_name}bs"
     driver = webdriver.Chrome(options=chrome_options)
     driver.get(url)
     visited_courses = dict()
@@ -101,7 +106,7 @@ def get_major_reqs(major_name):
     soup = BeautifulSoup(html, 'lxml')
     containers = soup.find_all('div', class_='epj23730')
     if not containers:
-        url = f"https://catalog.registrar.ucla.edu/major/2023/{major_name}ba"
+        url = f"https://catalog.registrar.ucla.edu/major/2023/{parsed_major_name}ba"
         driver.get(url)
         html = driver.page_source
         soup = BeautifulSoup(html, 'lxml')
@@ -135,6 +140,7 @@ def get_major_reqs(major_name):
                             course_name = course.find('span', class_='relationshipName').text  # Extract the course name
                             if course_name not in visited_courses.keys():
                                 visited_courses[course_name] = True
+                                course_name = course_name.split('-')[0].strip()
                                 series_group.append(course_name)  # Append the tuple to the series group list
 
                     # Print and append the series group only if it's not empty
@@ -152,10 +158,12 @@ def get_major_reqs(major_name):
                 if "Select one course from:" in req_description:
                     if course_name not in visited_courses.keys():
                         visited_courses[course_name] = True
+                        course_name = course_name.split('-')[0].strip()                      
                         course_options.append(course_name)
                 else:
                     if course_name not in visited_courses.keys():
                         visited_courses[course_name] = True
+                        course_name = course_name.split('-')[0].strip()                        
                         major_reqs.append(course_name)
             
         
@@ -169,9 +177,8 @@ def get_major_reqs(major_name):
                 course_options.append(1)
                 major_reqs.append(course_options)
         
-
-    return major_reqs
-
+    major_node = Major(major_name, major_reqs)
+    major_list[major_name] = major_node
 
 def add_course_list(courses, dictionary):
     
@@ -602,5 +609,16 @@ def load_courses():
     #     create_course_node("COM SCI", course, "24S")
     # set_reqs_to_nodes()
     load_data("Computer Science", "24S")
+    load_data("Mathematics", "24S")
+    load_data("Physics", "24S")
+    load_data("Electrical and Computer Engineering", "24S")
     set_reqs_to_nodes()
     return course_list
+
+def load_majors():
+    load_major_reqs("Computer Science")
+    load_major_reqs("Mathematics")
+    load_major_reqs("Physics")
+    load_major_reqs("ComputerEngineering")
+
+    return major_list
