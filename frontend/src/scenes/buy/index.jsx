@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { classesList, auctionDurations } from '../../data/mockClassData';
-
+import { useAuthContext } from "../../hooks/useAuthContext";
 const Buy = () => {
+    const {user} = useAuthContext();
     const [selectedClass, setSelectedClass] = useState('');
     const [startingBid, setStartingBid] = useState('');
     const [duration, setDuration] = useState('');
+    const [message, setMessage] = useState('');
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
     };
@@ -30,22 +32,25 @@ const Buy = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         try {
             let userString = localStorage.getItem('user'); 
             let { userID } = JSON.parse(userString);
-            
+        
             const auctionData = {
+                message,
                 courseName: selectedClass,
                 startingBid,
                 expDays: duration,
                 completed: false, 
-                ownerId: userID,
+                ownerId: user.userID,
             };
     
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${user.token}`
                 },
                 body: JSON.stringify(auctionData)
             });
@@ -60,6 +65,7 @@ const Buy = () => {
             setSelectedClass('');
             setStartingBid('');
             setDuration('');
+            setMessage('')
     
         } catch (error) {
             console.error(error);
@@ -104,6 +110,20 @@ const Buy = () => {
               InputProps={{ inputProps: { min: 0 } }}
               value={startingBid}
               onChange={handleBidChange}
+              sx={cardStyle}
+          />
+          <TextField
+              margin="normal"
+             // required
+              fullWidth
+              id="message"
+              label="Message"
+              name="message"
+              autoComplete="off"
+              type="text"
+              InputProps={{ inputProps: { min: 0 } }}
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
               sx={cardStyle}
           />
           <FormControl fullWidth margin="normal">

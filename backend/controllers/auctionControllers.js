@@ -14,12 +14,13 @@ function expired_auction(createdAt){
 
 const createAuction = async (req, res) => {
     try {
-        const {ownerId, courseName, expDays, startingBid} = req.body;
+        const {message, ownerId, courseName, expDays, startingBid} = req.body;
         const auction = new Auction({
             courseName,
             ownerId,
             expDays, 
-            startingBid
+            startingBid,
+            message
         });
         await auction.save();
         res.status(201).json(auction);

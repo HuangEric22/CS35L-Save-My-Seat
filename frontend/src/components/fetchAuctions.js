@@ -8,23 +8,8 @@ import { light } from "@mui/material/styles/createPalette";
 import '../animations.css';
 
 const MyAuctions = () => {
-/*
-    const userString = localStorage.getItem('user');
 
-    // Check if userString is not null
-   
-      // Parse the JSON string back into an object
-      const userObject = JSON.parse(userString);
-    
-      // Access the name property of the user object
-      const token = userObject.token;
-     // const email = userObject.email;*/
-      
-   
     const {user} = useAuthContext();
-    
-    //console.log(user.token)
-   // console.log(user.email)
     const [auctions, setAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
@@ -43,33 +28,30 @@ const MyAuctions = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${user.token}`
       }
-              /*headers: {
-                    // Added Authorization header with Bearer token
-                    'Authorization': `Bearer ${user.token}`
-                }
-*/
             });
             if (!response.ok) {
                 throw new Error(`Failed to fetch data`);
             }
-            const bidders = await response.json(); // Await the response.json() call
+            const bidders = await response.json();
             setHighestBidders(bidders);
         } catch (error) {
             console.error(error);
         }
     }
     const createBids = async (auctionId, bidAmount) => {
-        let userString = localStorage.getItem('user');
-        let { userID, name } = JSON.parse(userString);
+     //   let userString = localStorage.getItem('user');
+      //  let { userID, name } = JSON.parse(userString);
+      //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
+      //user.name now provides the name; it is more stable this way
         try {
             const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     // Add authorization token if needed
-                    // 'Authorization': `Bearer ${user.token}`
+                    'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: userID, name })
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: user.userID, name: user.name })
     
             });
     
@@ -82,7 +64,7 @@ const MyAuctions = () => {
             // Check if the current bid is higher than the existing highest bid
             if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
                 // Update the highestBidders state only if the current bid is higher
-                const updatedBidder = [bidAmount.toString(), name];
+                const updatedBidder = [bidAmount.toString(), user.name];
                 setHighestBidders(prevHighestBidders => ({
                     ...prevHighestBidders,
                     [auctionId]: updatedBidder
@@ -238,6 +220,11 @@ const MyAuctions = () => {
                 {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
                         Seller: {sellers[auction._id]} | Highest Bid: ${highestBidders[auction._id][0]} ({highestBidders[auction._id][1]})
                 </Typography>}
+                {auction.message && // Check if there is a message
+            <Typography variant="body1" gutterBottom>
+                Message from {sellers[auction._id]}: {auction.message}
+            </Typography>
+        }
                 <Box display="flex" alignItems="center">
                     {times[auction._id] && !times[auction._id].completed && 
                     <Button sx={lighterBoxStyle} variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
