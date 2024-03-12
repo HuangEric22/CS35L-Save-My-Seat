@@ -145,6 +145,7 @@ const MyAuctions = () => {
                 return acc;
             }, {});
             setAuctions(data);
+            console.log(data);
             fetchSellers();
             fetchHighestBidder();
             fetchTimes();
@@ -159,6 +160,8 @@ const MyAuctions = () => {
     useEffect(() => {
         fetchAuctions();
     }, [fetchAgain]);
+
+    console.log(auctions);
     const handleSubmit = (event, auctionId) => {
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;

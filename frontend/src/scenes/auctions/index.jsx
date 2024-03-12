@@ -6,14 +6,58 @@ import { Card, CardContent, CardActions, Typography, Button, Grid } from '@mui/m
 import { auctions, bids } from "../../data/mockAuctions"
 import { styled, keyframes } from '@mui/system';
 import '../../animations.css';
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useState, useEffect } from "react";
 
 
 const Auctions = () => {
-    const userAuctions = auctions;
-    const userBids = bids;
+    
+    const {user} = useAuthContext();
+    const id = user.userID;
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    
+    const [fetchAgain, setFetchAgain] = useState(false);
+    const [realAuctions, setAuctions] = useState([]);
+
+    const fetchAuctions = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/api/auction/", {
+                method: "GET", 
+              headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                  }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch auctions');
+            }
+
+            const data = await response.json();
+            console.log(data);
+            const initialFormVisibleMap = data.reduce((acc, auction) => {
+                acc[auction._id] = false;
+                return acc;
+            }, {});
+            setAuctions(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAuctions();
+    }, [fetchAgain]);
+
+
+    console.log(realAuctions);
+    console.log(id);
+    const auctionsFilteredByOwner = realAuctions.filter(auction => auction.ownerId === id);
+
+    const userAuctions = auctions;
+    const userBids = bids;
 
     const cardStyle = {
         width: '100%',
@@ -43,15 +87,15 @@ const Auctions = () => {
                 <Grid item xs={12}>
                     <Typography variant="h4">Auctions I've Started</Typography>
                     <Grid container spacing={2}>
-                        {userAuctions.map((auction) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={auction.id}>
+                        {auctionsFilteredByOwner.map((auction) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={auction._id}>
                                 <Card raised style={cardStyle}>
                                     <CardContent>
                                         <Typography variant="h5" component="h2">
-                                            {auction.title}
+                                            {auction.courseName}
                                         </Typography>
                                         <Typography color="textSecondary">
-                                            Highest Bid: ${auction.highestBid}
+                                            Highest Bid: ${auction.startingBid}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
