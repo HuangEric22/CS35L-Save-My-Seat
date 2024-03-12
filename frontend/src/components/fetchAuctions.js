@@ -151,6 +151,7 @@ const MyAuctions = () => {
                 return acc;
             }, {});
             setAuctions(data);
+            console.log(data);
             fetchSellers();
             fetchHighestBidder();
             fetchTimes();
@@ -165,6 +166,8 @@ const MyAuctions = () => {
     useEffect(() => {
         fetchAuctions();
     }, [fetchAgain]);
+
+    console.log(auctions);
     const handleSubmit = (event, auctionId) => {
         let userString = localStorage.getItem('user'); 
         let { userID, name } = JSON.parse(userString);
