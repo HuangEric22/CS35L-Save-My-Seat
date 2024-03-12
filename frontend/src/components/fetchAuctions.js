@@ -43,7 +43,7 @@ const MyAuctions = () => {
       //  let { userID, name } = JSON.parse(userString);
       //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
       //user.name now provides the name; it is more stable this way
-        try {
+        try {   
             const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
                 method: "PUT",
                 headers: {
@@ -51,8 +51,7 @@ const MyAuctions = () => {
                     // Add authorization token if needed
                     'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: user.userID, name: user.name })
-    
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name })
             });
     
             if (!response.ok) {
@@ -175,7 +174,7 @@ const MyAuctions = () => {
         const highestbid =parseFloat(highestBidders[auctionId][0])
         createBids(auctionId, bidAmount);
         setFetchAgain(!fetchAgain);
-        window.location.reload();
+        // window.location.reload();
     };
 
        const handleToggleForm = (auctionId) => {
@@ -198,7 +197,7 @@ const MyAuctions = () => {
 
     return (
         <Box m="20px">
-            {auctions.map((auction)=>
+            {[...auctions].reverse().map((auction) => 
             <Box key={auction._id} className={times[auction._id] && times[auction._id].hours < 2 ? 'fieryBox' : ''} sx={boxStyle} width='65%' p={2} color='white' borderRadius='10px' mb={3}>
                 <Grid container justifyContent="space-between" alignItems="center">
                     {times[auction._id] ? (

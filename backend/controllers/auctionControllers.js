@@ -32,7 +32,7 @@ const createAuction = async (req, res) => {
 
 const createBid = async (req, res) => {
     const { auctionId } = req.params;
-    const { bidderId:bidderID, amount, name } = req.body;
+    const { bidderId: bidderID, amount, name } = req.body;
     if (!mongoose.Types.ObjectId.isValid(auctionId)) 
     {
         res.status(404).send(`No auction with id: ${auctionId}`);
@@ -41,7 +41,7 @@ const createBid = async (req, res) => {
     if(expired_auction(auction.createdAt) || auction.completed){
         res.status(404).send("Auction Expired")
     }
-    if(bidderId == auction.ownerId){
+    if(bidderID == auction.ownerId){
         console.log("err")
         res.status(404).send("Can't Bid on Own Auction");
     }
