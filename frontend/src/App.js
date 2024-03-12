@@ -30,6 +30,8 @@ import { useEffect } from 'react';
 function App() {
   const [theme, colorMode] = useMode();
   const { user } = useAuthContext()
+  if (user)
+  {console.log(user.token)}
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -45,7 +47,7 @@ function App() {
                
               }/>
               <Route path="/history" element={
-                user ? <history /> : <Navigate to="/login" />
+                user ? <History /> : <Navigate to="/login" />
               }/>
               <Route path="/buy" element={
                user ? <Buy /> : <Navigate to="/login" />
