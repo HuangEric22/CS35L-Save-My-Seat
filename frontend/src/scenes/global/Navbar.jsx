@@ -79,7 +79,7 @@ if (userString) {
   const logoUrl = isDarkMode
     ? `${process.env.PUBLIC_URL}/assets/bear2.png`
     : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
-    //if (!user) {return null}
+   // if (!user) {return null}
     return (
       <Box
         sx={{
