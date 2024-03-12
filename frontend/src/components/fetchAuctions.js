@@ -8,7 +8,7 @@ import { light } from "@mui/material/styles/createPalette";
 import '../animations.css';
 
 const MyAuctions = () => {
-
+/*
     const userString = localStorage.getItem('user');
 
     // Check if userString is not null
@@ -18,7 +18,7 @@ const MyAuctions = () => {
     
       // Access the name property of the user object
       const token = userObject.token;
-     // const email = userObject.email;
+     // const email = userObject.email;*/
       
    
     const user = useAuthContext();
@@ -39,10 +39,10 @@ const MyAuctions = () => {
             const response = await fetch("http://localhost:4000/api/user/highestBidder", {
                 method: "GET", 
                 
-      headers: {
+      /*headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      }*/
               /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -76,10 +76,10 @@ const MyAuctions = () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
                     method: "GET",
-                    headers: {
+                  /*  headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
-                      }
+                      }*/
                    /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -100,10 +100,10 @@ const MyAuctions = () => {
         try {
             const res = await fetch("http://localhost:4000/api/auction/times", {
                 method:"GET",
-                headers: {
+             /*   headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                  }
+                  }*/
                 /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
@@ -124,10 +124,10 @@ const MyAuctions = () => {
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
-                headers: {
+             /*   headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
-                  }
+                  }*/
                 /*headers: {
                     // Added Authorization header with Bearer token
                     'Authorization': `Bearer ${user.token}`
