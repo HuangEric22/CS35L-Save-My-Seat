@@ -22,9 +22,7 @@ const MyAuctions = () => {
       
    
     const user = useAuthContext();
-    
-    //console.log(user.token)
-    //console.log(user.email)
+
     const [auctions, setAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
@@ -58,20 +56,45 @@ const MyAuctions = () => {
             console.error(error);
         }
     }
-    // const createBids = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:4000/api/user/highestBidder", {
-    //             method: "PUT"
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error(`Failed to fetch data`);
-    //         }
-    //         const bidders = await response.json(); // Await the response.json() call
-    //         setHighestBidders(bidders);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    const createBids = async (auctionId, bidAmount) => {
+        let userString = localStorage.getItem('user');
+        let { userID, name } = JSON.parse(userString);
+        try {
+            const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add authorization token if needed
+                    // 'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId: userID, name })
+    
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to place bid for auction ${auctionId}`);
+            }
+    
+            const data = await response.json();
+            
+            // Check if the current bid is higher than the existing highest bid
+            if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
+                // Update the highestBidders state only if the current bid is higher
+                const updatedBidder = [bidAmount.toString(), name];
+                setHighestBidders(prevHighestBidders => ({
+                    ...prevHighestBidders,
+                    [auctionId]: updatedBidder
+                }));
+            }
+            
+            // Update state or perform any other necessary actions upon successful bid placement
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+            // Handle errors appropriately
+        }
+    };
+    
     const fetchSellers = async () => {
             try {
                 const response = await fetch("http://localhost:4000/api/user/", {
@@ -160,16 +183,15 @@ const MyAuctions = () => {
         fetchAuctions();
     }, [fetchAgain]);
     const handleSubmit = (event, auctionId) => {
+        let userString = localStorage.getItem('user'); 
+        let { userID, name } = JSON.parse(userString);
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
         const bidAmount = parseFloat(bidAmountInput);
         const highestbid =parseFloat(highestBidders[auctionId][0])
-        console.log(highestbid, bidAmount)
-        if(!isNaN(bidAmount) && bidAmount > highestbid){
-            highestBidders[auctionId] = [bidAmountInput, "nameless"]
-            
-        }
-        // setFetchAgain(!fetchAgain)
+        createBids(auctionId, bidAmount);
+        setFetchAgain(!fetchAgain)
+        window.location.reload();
     };
 
        const handleToggleForm = (auctionId) => {
@@ -199,7 +221,7 @@ const MyAuctions = () => {
                 <>
                     <Grid item>
                         <Typography variant="h3" gutterBottom>
-                            {auction.auctionName}
+                            {auction.courseName}
                         </Typography>
                     </Grid>
                     <Grid item>

@@ -14,10 +14,8 @@ function expired_auction(createdAt){
 
 const createAuction = async (req, res) => {
     try {
-        const {auctionName, ownerId, courseName, expDays, startingBid} = req.body;
-        
+        const {ownerId, courseName, expDays, startingBid} = req.body;
         const auction = new Auction({
-            auctionName,
             courseName,
             ownerId,
             expDays, 
@@ -40,7 +38,7 @@ const createBid = async (req, res) => {
     }
     const auction = await Auction.findById(auctionId);
     if(expired_auction(auction.createdAt) || auction.completed){
-        res.stataus(404).send("Auction Expired")
+        res.status(404).send("Auction Expired")
     }
     const bid = new Bid({
         bidderID, 

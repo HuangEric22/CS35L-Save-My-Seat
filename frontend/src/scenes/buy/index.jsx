@@ -9,7 +9,6 @@ const Buy = () => {
     const [selectedClass, setSelectedClass] = useState('');
     const [startingBid, setStartingBid] = useState('');
     const [duration, setDuration] = useState('');
-
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
     };
@@ -29,16 +28,44 @@ const Buy = () => {
         backgroundColor: colors.primary[400],
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const auctionData = {
-            class: selectedClass,
-            startingBid,
-            duration,
+        try {
+            let userString = localStorage.getItem('user'); 
+            let { userID } = JSON.parse(userString);
+            
+            const auctionData = {
+                courseName: selectedClass,
+                startingBid,
+                expDays: duration,
+                completed: false, 
+                ownerId: userID,
+            };
+    
+            const response = await fetch("http://localhost:4000/api/auction/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(auctionData)
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Failed to create auction`);
+            }
+    
+            console.log("Auction created successfully!");
+    
+            // Reset form fields after successful submission if needed
+            setSelectedClass('');
+            setStartingBid('');
+            setDuration('');
+    
+        } catch (error) {
+            console.error(error);
+        }
     };
-    //SEND THIS TO BACKEND
-    console.log(auctionData);
-  };
+    
 
   return (
     <Box>
@@ -96,7 +123,7 @@ const Buy = () => {
                   ))}
               </Select>
           </FormControl>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }} onClick={handleSubmit}>
               Start Auction
           </Button>
       </Box>
