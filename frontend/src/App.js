@@ -10,7 +10,8 @@ import Auctions from "./scenes/auctions"
 import ProtectedRoute from "./ProtectedRoute";
 import Signup from "./Signup";
 import Login from "./Login";
-
+import { useAuthContext } from './hooks/useAuthContext.js';
+import { Navigate } from 'react-router-dom';
 import History from "./scenes/history";
 
 import ParentComponent from "./scenes/calendar/ParentComponent.jsx";
@@ -28,6 +29,7 @@ import { useEffect } from 'react';
 
 function App() {
   const [theme, colorMode] = useMode();
+  const { user } = useAuthContext()
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -38,29 +40,25 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/" element={
-                <ProtectedRoute>
-                  <Dashboard/>
-                </ProtectedRoute>
+                user ? <Dashboard /> : <Navigate to="/login" />
+                 
+               
               }/>
               <Route path="/history" element={
-                <ProtectedRoute>
-                  <History/>
-                  </ProtectedRoute>
+                user ? <history /> : <Navigate to="/login" />
               }/>
               <Route path="/buy" element={
-                <ProtectedRoute>
-                  <Buy/>
-                </ProtectedRoute>
+               user ? <Buy /> : <Navigate to="/login" />
               }/>
               <Route path="/auctions" element= {
-                  <Auctions/>
+                 user ? <Auctions /> : <Navigate to="/login" />
               }/>
                <Route path="/login" element={<Login/>}/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
                <Route path="/test" element={<Test/>}/>
                
                
-               <Route path="/calendar" element= {<ParentComponent/>}/>
+               <Route path="/calendar" element= {user ? <ParentComponent /> : <Navigate to="/login" />}/>
               
             
             </Routes>
