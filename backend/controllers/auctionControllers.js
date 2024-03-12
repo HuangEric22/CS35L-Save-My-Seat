@@ -1,6 +1,7 @@
 const Auction = require('../models/auctionModel');
 const mongoose = require('mongoose');
 const Bid = require('../models/bidModel');
+const User = require('../models/userModel');
 
 
 
@@ -22,10 +23,12 @@ const createAuction = async (req, res) => {
             startingBid,
             message
         });
+        console.log(auction);
         await auction.save();
         res.status(201).json(auction);
         const user = await User.findById(ownerId);
         user.courses.push(courseName);
+        await user.save();
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
