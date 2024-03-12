@@ -71,8 +71,6 @@ const Auctions = () => {
         }
     }
 
-
-
     useEffect(() => {
         fetchAuctions();
     }, [fetchAgain]);
@@ -88,6 +86,7 @@ const Auctions = () => {
     .map(([id]) => id);
 
     const auctionsFilteredByBids = realAuctions.filter(auction => filteredIDs.includes(auction._id));
+    console.log(highestBidders);
 
 
     const cardStyle = {
@@ -113,11 +112,12 @@ const Auctions = () => {
                                         <Typography variant="h5" component="h2">
                                             {auction.courseName}
                                         </Typography>
+                                        { highestBidders[auction._id] &&
                                         <Typography color="textSecondary">
                                             Highest Bid: ${highestBidders[auction._id][0]}
                                             <br/>
-                                            Bidder: {highestBidders[auction._id][1]}
-                                        </Typography>
+                                            Bidder: {highestBidders[auction._id][1]} 
+                                        </Typography> }
                                     </CardContent>
                                     <CardActions>
                                         <Button size="medium" sx={{ color: `${colors.primary[50]}` }}>Delete</Button>
@@ -132,25 +132,28 @@ const Auctions = () => {
                     <Grid container spacing={2}>
                         {auctionsFilteredByBids.map((auction) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={auction._id}>
-                                <Card raised className={auction.startingBid > auction.startingBid + 1 ? 'someoneOutbidYou' : ''} sx={cardStyle}>
+                                <Card raised className={ highestBidders[auction._id] && username != highestBidders[auction._id][1] ? 'someoneOutbidYou' : '' } sx={cardStyle}>
                                     <CardContent>
-                                        <Typography variant="h5" component="h2">
-                                            {auction.courseName}
-                                        </Typography>
+                                        { highestBidders[auction._id] && <Typography variant="h5" component="h2">
+                                            {auction.courseName} 
+                                        </Typography> }
+                                        { highestBidders[auction._id] &&
                                         <Typography color="textSecondary">
-                                            Highest Bid: ${highestBidders[auction._id][0]}
-                                        </Typography>
+                                            Highest Bid: ${highestBidders[auction._id][0]} 
+                                        </Typography> }
+                                        { highestBidders[auction._id] &&
                                         <Typography color="textSecondary"
                                             sx={{
                                                 color: username === highestBidders[auction._id][1] ? 'green' : 'red',
                                             }}>
                                                 {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
-                                        </Typography>
+                                        </Typography> }
                                     </CardContent>
                                     <CardActions>
+                                        { highestBidders[auction._id] &&
                                         <Button size="medium" className={username != highestBidders[auction._id][1] ? 'fieryGlowingText' : ' '} sx={{ color: username != highestBidders[auction._id][1] ? 'red' : `${colors.primary[50]}` }} >
                                             Increase Bid
-                                        </Button>
+                                        </Button> }
                                     </CardActions>
                                 </Card>
                             </Grid>
