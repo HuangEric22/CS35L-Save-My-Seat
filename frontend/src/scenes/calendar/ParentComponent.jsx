@@ -6,6 +6,7 @@ import { tokens } from "../../theme";
 //add localizer for calendar
 import { momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import MyClasses from '../../components/fetchClasses'
 const localizer = momentLocalizer(moment);
 
 const today = new Date();
@@ -116,7 +117,7 @@ const ParentComponent = () => {
             {myClasses.map(renderMyClassesCard)}
       </Box>
 
-
+<MyClasses/>
     </Box>
     );
 };

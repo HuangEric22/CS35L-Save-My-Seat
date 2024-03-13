@@ -150,7 +150,7 @@ const Auctions = () => {
                                         </Typography> }
                                         { times[auction._id] && 
                                         <Typography color = "#FFD100">
-                                            Time Left: {times[auction._id].hours} hours, {times[auction._id].minutes} minutes
+                                            Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
                                             </Typography>}
                                     </CardContent>
                                     <CardActions>
@@ -184,7 +184,7 @@ const Auctions = () => {
                                         </Typography> }
                                         { times[auction._id] && 
                                         <Typography color = "#FFD100">
-                                            Time Left: {times[auction._id].hours} hours, {times[auction._id].minutes} minutes
+                                            Time left: {times[auction._id]}
                                             </Typography>}
                                     </CardContent>
                                     <CardActions>

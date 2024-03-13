@@ -120,6 +120,7 @@ const getUser = async (req, res) => {
 };
 
 
+
 const getHighestBiddersForAllAuctions = async (req, res) => {
     try {
         // Find all auctions
@@ -150,10 +151,12 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
+const planClass = async (classId) => {
+    
+}
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass
 }
 
 
