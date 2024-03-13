@@ -30,10 +30,12 @@ import sortedMajorsList from "../../majorsData";
 const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
     //useClasses hook
-    const {classes, selectedClass, setSelectedClass, selectedLecture, setSelectedLecture, lectures} = useClasses();
+    const { classes, selectedClass, setSelectedClass, selectedLecture, setSelectedLecture, lectures} = useClasses();
     //added
     const filteredClasses = classes.filter((cls) => cls.course_title);
-    // const [filteredClasses, setFilteredClasses] = useState([]);
+
+
+    //~~~~~~~~~~~~~~~~~~~`
 
     //state for major
     const [selectedMajor, setSelectedMajor] = useState(null);
@@ -50,9 +52,6 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
         // } else {
         //     setMajorClasses([]); //clear classes if no major is selected 
         // }
-        // const filtered = classes.filter(cls => cls.course_abbrv.startsWith(selectedOption?.value));
-        // setFilteredClasses(filtered);
-
     };
 
 
@@ -176,7 +175,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
                 {selectedClass && (
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="lecture-select-label">Select a Department</InputLabel>
+                        <InputLabel id="lecture-select-label">Select a Lecture</InputLabel>
                         <Select
                             labelId="lecture-select-label"
                             id="lecture-select"

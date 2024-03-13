@@ -33,25 +33,9 @@ const classSchema = new Schema({
 
   course_page: { type: String, required: true }, // URL to the course page
   term: { type: String, required: true } // Term code, e.g., "24S"
-
 });
 
-classSchema.query.byDepartment = function(department) {
-  return this.where({ course_abbrv: department });
-}
-
-const abbrvSchema = new Schema ( {
-  _id: Schema.Types.ObjectId,
-  name: String,
-  abbreviation: String
-  
-});
-
-abbrvSchema.statics.getAbbrv = function(department_name, callback) {
-  return this.findOne({ name: department_name }, 'abbreviation', callback);
-};
-
-const abbrvDict = mongoose.model('Abbreviations', abbrvSchema, 'Abbreviations');
 const Class = mongoose.model('Class', classSchema, 'Courses');
 
-module.exports = { Class, abbrvDict };
+module.exports = Class;
+

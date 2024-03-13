@@ -12,6 +12,7 @@ export const ClassesProvider = ({ children }) => {
     const [lectures, setLectures] = useState([]);
     const [selectedLecture, setSelectedLecture] = useState("");
 
+
     const fetchClasses = async () => {
         try {
             const response = await fetch("http://localhost:4000/api/classes/", {
