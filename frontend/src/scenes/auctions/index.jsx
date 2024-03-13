@@ -1,14 +1,15 @@
-import { Box } from "@mui/material";
+import { Box, Typography, Button, TextField, InputBase, IconButton } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
-import { Card, CardContent, CardActions, Typography, Button, Grid } from '@mui/material';
+import { Card, CardContent, CardActions, Grid } from '@mui/material';
 import { auctions, bids } from "../../data/mockAuctions"
 import { styled, keyframes } from '@mui/system';
 import '../../animations.css';
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useBidContext } from "../../hooks/useBidContext";
 import { useState, useEffect } from "react";
+import SearchIcon from "@mui/icons-material/Search";
 
 
 const Auctions = () => {
@@ -26,6 +27,7 @@ const Auctions = () => {
     const [bidders, setBidders] = useState([]);
     const [times, setTimes] = useState([]);
 
+    
     const fetchAuctions = async () => {
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
