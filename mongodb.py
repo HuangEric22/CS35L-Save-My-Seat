@@ -14,7 +14,6 @@ try:
 except Exception as e:
    print(e)
 
-
 def insert_course(course):
    db = client['test']
    collection = db['Courses'] 
@@ -23,7 +22,7 @@ def insert_course(course):
    course_dict['lectures'] = [lec.__dict__ for lec in course_dict['lectures']]
 
 
-   if course_dict['lectures']:
+   if course_dict['course_title']:
        result = collection.replace_one({'id': course_dict['id']}, course_dict, upsert=True)
 
 
@@ -41,9 +40,6 @@ def insert_course(course):
            # Object already exists, do nothing
            print(course_dict['id'], 'already exists, no new insertion.')       
 
-
-  
-  
    print('------------------')
 
 
@@ -70,16 +66,18 @@ def insert_abbreviations():
    else:
        print("Inserted Abbreviation Dictionary")
  
-  
-course_list = Course_Scraper.load_courses()
-major_list = Course_Scraper.load_majors()
+#api functions:
+def load_course_data(department_list, term):
+    course_list = Course_Scraper.load_courses(department_list, term)
+    
+    for course in course_list.values():
+        insert_course(course)
+    
+        
+def load_major_data(requsted_majors):
+    major_list = Course_Scraper.load_majors(requsted_majors)
 
+    for major in major_list.values():
+        insert_major(major)
 
-for course in course_list.values():
-    insert_course(course)
-
-# for major in major_list.values():
-#     insert_major(major)
-  
-# insert_abbreviations()
-
+insert_abbreviations()
