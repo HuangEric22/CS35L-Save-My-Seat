@@ -35,7 +35,16 @@ const classSchema = new Schema({
   term: { type: String, required: true } // Term code, e.g., "24S"
 });
 
+const abbrvSchema = new Schema ( {
+  _id: Schema.Types.ObjectId,
+  name: String,
+  abbreviation: String
+});
+
+const abbrvDict = mongoose.model('abbrvDict', abbrvSchema, "Abbreviations")
 const Class = mongoose.model('Class', classSchema, 'Courses');
 
-module.exports = Class;
-
+module.exports = {
+  Class,
+  abbrvDict
+}

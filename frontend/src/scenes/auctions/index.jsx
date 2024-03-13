@@ -27,6 +27,7 @@ const Auctions = () => {
     const [bidders, setBidders] = useState([]);
     const [times, setTimes] = useState([]);
     const [mybids, setBids] = useState([]);
+    const [formVisibleMap, setFormVisibleMap] = useState({});
 
     const fetchMyBids = async () => {
 
@@ -55,6 +56,7 @@ const Auctions = () => {
             }, {});
             setAuctions(data);
             fetchHighestBidder();
+            setFormVisibleMap(initialFormVisibleMap);
             fetchTimes();
         } catch (error) {
             console.error(error);
@@ -166,6 +168,10 @@ catch (error) {
    // console.log(times);
     //console.log(user.userID)
 
+    const lighterBoxStyle = {
+        backgroundColor: colors.primary[500],
+    }
+
 
     const cardStyle = {
         width: '100%',
@@ -199,8 +205,92 @@ catch (error) {
         }
     };
 
+    const createBids = async (auctionId, bidAmount) => {
+        //   let userString = localStorage.getItem('user');
+         //  let { userID, name } = JSON.parse(userString);
+         //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
+         //user.name now provides the name; it is more stable this way
+           try {   
+               const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
+                   method: "PUT",
+                   headers: {
+                       'Content-Type': 'application/json',
+                       // Add authorization token if needed
+                       'Authorization': `Bearer ${user.token}`
+                   },
+                   body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name })
+               });
+       
+               if (!response.ok) {
+                   throw new Error(`Failed to place bid for auction ${auctionId}`);
+               }
+       
+               const data = await response.json();
+               
+               // Check if the current bid is higher than the existing highest bid
+               if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
+                   // Update the highestBidders state only if the current bid is higher
+                   const updatedBidder = [bidAmount.toString(), user.name];
+                   setHighestBidders(prevHighestBidders => ({
+                       ...prevHighestBidders,
+                       [auctionId]: updatedBidder
+                   }));
+               }
+               
+               // Update state or perform any other necessary actions upon successful bid placement
+               console.log(data);
+           } catch (error) {
+               console.error(error);
+               // Handle errors appropriately
+           }
+       };
+
     const handleDeleteClick = (auctionId) => {
         deleteAuction(auctionId);
+    };
+
+    const handleSubmit = (event, auctionId) => {
+        event.preventDefault();
+        const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
+        const bidAmount = parseFloat(bidAmountInput);
+        // Ensure bidAmount is a valid number
+        if (isNaN(bidAmount)) {
+            alert("Please enter a valid bid amount.");
+            return;
+        }
+        // Find the auction being bid on
+        const auction = realAuctions.find(a => a._id === auctionId);
+        if (!auction) {
+            alert("Auction not found.");
+            return;
+        }
+        // Prevent bidding on own auction
+        if (auction.ownerId === user.userID) {
+            alert("You cannot bid on your own auction.");
+            return;
+        }
+        // Check if the auction has been bid on before
+        if (highestBidders[auctionId]) {
+            const highestBid = parseFloat(highestBidders[auctionId][0]);
+            // New bid must be higher than the current highest bid
+            if (bidAmount > highestBid) {
+                createBids(auctionId, bidAmount); 
+                setFetchAgain(!fetchAgain); 
+            } else {
+                alert("Your bid must be higher than the current highest bid.");
+            }
+        } else {
+            // No existing bids for this auction, any bid amount is acceptable
+            createBids(auctionId, bidAmount);
+            setFetchAgain(!fetchAgain); 
+        }
+    };
+
+    const handleToggleForm = (auctionId) => {
+        setFormVisibleMap(prevState => ({
+            ...prevState,
+            [auctionId]: !prevState[auctionId],
+        }));
     };
 
     const [isVisible, setIsVisible] = useState(true);
@@ -260,18 +350,41 @@ catch (error) {
                                             sx={{
                                                 color: username === highestBidders[auction._id][1] ? 'green' : 'red',
                                             }}>
-                                                {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
-                                        </Typography> }
+                                                {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : `Highest Bidder: ${highestBidders[auction._id][1]}`}
+                                    </Typography>}
                                         { times[auction._id] &&
     <Typography color="#FFD100">
         Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
     </Typography>}
                                     </CardContent>
                                     <CardActions>
-                                        { highestBidders[auction._id] &&
-                                        <Button size="medium" className={username != highestBidders[auction._id][1] ? 'fieryGlowingText' : ' '} sx={{ color: username != highestBidders[auction._id][1] ? 'red' : `${colors.primary[50]}` }} >
-                                            Increase Bid
-                                        </Button> }
+                                        {highestBidders[auction._id] &&
+                                        <Box display="flex" alignItems="center">
+                                        {times[auction._id] && !times[auction._id].completed && 
+                                        <Button sx={lighterBoxStyle} variant="contained" color="primary" onClick={() => handleToggleForm(auction._id)}>
+                                            {formVisibleMap[auction._id] ? "Cancel" : "INCREASE BID"}
+                                        </Button>}
+                                        {formVisibleMap[auction._id] && (!times[auction._id].completed)&& (
+                                            <Box ml={1}>
+                                                <form onSubmit={(event) => handleSubmit(event, auction._id)} style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <Button type="button" variant="contained" color="secondary" onClick={(event) => handleSubmit(event, auction._id)} >
+                                                        Submit
+                                                    </Button>
+                                                    <Box ml={1} flexGrow={1}>
+                                                    <TextField
+                                                        sx={lighterBoxStyle}
+                                                        variant="outlined"
+                                                        label="Bid Amount"
+                                                        name={`bid_${auction._id}`} // Using auction ID to make the name unique
+                                                        margin="normal"
+                                                        fullWidth
+                                                        id={`bidAmount_${auction._id}`} // Using auction ID to make the ID unique
+                                                    />
+                                                    </Box>
+                                                </form>
+                                            </Box>
+                                        )}
+                                    </Box>}
                                     </CardActions>
                                 </Card>
                             </Grid>
