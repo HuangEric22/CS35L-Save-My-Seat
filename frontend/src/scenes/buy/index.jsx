@@ -8,7 +8,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useBidContext } from "../../hooks/useBidContext";
 const Buy = () => {
     const {user} = useAuthContext();
-    const {bid} = useBidContext();
+    const {getBidderUserIdByBidId} = useBidContext();
     //console.log(bid.bidderID)
     const [selectedClass, setSelectedClass] = useState('');
     const [startingBid, setStartingBid] = useState('');
