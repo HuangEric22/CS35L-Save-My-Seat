@@ -30,23 +30,49 @@ import sortedMajorsList from "../../majorsData";
 const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
     //useClasses hook
-    const { classes, selectedClass, setSelectedClass, selectedLecture, setSelectedLecture, lectures} = useClasses();
+    const { classes, abbreviations, selectedClass, setSelectedClass, selectedLecture, setSelectedLecture, lectures} = useClasses();
     //added
-    const filteredClasses = classes.filter((cls) => cls.course_title);
+    const [filteredClasses, setFilteredClasses] = useState(classes.filter((cls) => cls.course_title));
 
+    const [deptList, setDeptList] = useState([]);
 
+    useEffect( () => {
+        const deptObjects = abbreviations.map(dept => ({
+            label: dept.name,
+            value: dept.name
+        }));
+        setDeptList(deptObjects)
+    }, [abbreviations]);
     //~~~~~~~~~~~~~~~~~~~`
 
-    //state for major
+    const getAbbrv = (deptName) => {
+        const department = abbreviations.find(dept => dept.name === deptName);
+        return department ? department.abbreviation : "Abbreviation not found";
+    };
+
+    //state for major   
     const [selectedMajor, setSelectedMajor] = useState(null);
     //state for major classes
     const [majorClasses, setMajorClasses] = useState([]);
-
+    
+    //state for department abbreviation
+    const [selectedAbbrv, setAbbrv] = useState("")
+    console.log(selectedMajor);
+    console.log(selectedAbbrv);
     //update selectedMajor, classesForMajor
     //use will's selectedMajor to find the corresponding major object in eric's data (my mock data)
     const handleMajorChange = (selectedOption) => {
+        if (selectedOption != null){
         setSelectedMajor(selectedOption);
-        
+        setAbbrv(getAbbrv(selectedOption.label))
+        setFilteredClasses(classes.filter((cls) => cls.course_title && cls.course_abbrv === getAbbrv(selectedOption.label)))
+        }
+        else {
+            setSelectedMajor(null)
+            setAbbrv(null)
+            setFilteredClasses(classes.filter((cls) => cls.course_title))            
+        }
+
         // if (selectedOption && majorClasses) {
         //     setMajorClasses(mockData[selectedOption.label]); //set classes to be ones from mock data
         // } else {
@@ -136,11 +162,11 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     return (
         <Box> 
             <Box className="major-select-container">
-                <h2>Select Your Major</h2>
+                <h2>Select Department</h2>
                 <ReactSelect
                     value={selectedMajor}
                     onChange={handleMajorChange}
-                    options={sortedMajorsList}
+                    options={deptList}
                     className="major-select"
                     placeholder="Select a major..."
                     isClearable={true}
@@ -184,7 +210,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
                         >
                             {lectures.map((lecture) => (
                                 <MenuItem key={lecture.num} value={lecture.num}>
-                                    {`${lecture.instructors}: ${lecture.title} - ${lecture.days} ${lecture.time} at ${lecture.location}`}
+                                    {`${lecture.num}: ${lecture.instructors} - ${lecture.title} - ${lecture.days} ${lecture.time} at ${lecture.location}`}
                                 </MenuItem>
                             ))}
                         </Select>
