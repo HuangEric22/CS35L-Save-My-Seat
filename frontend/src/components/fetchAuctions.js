@@ -53,7 +53,6 @@ const MyAuctions = () => {
                 throw new Error(`Failed to fetch data`);
             }
             const bidders = await response.json();
-            console.log(bidders);
             setHighestBidders(bidders);
         } catch (error) {
             console.error(error);
@@ -142,7 +141,22 @@ const MyAuctions = () => {
             }
             const auctiontimes = await res.json(); 
             setTimes(auctiontimes);
-            console.log(auctiontimes)
+            console.log(auctiontimes);
+            const auctiontimesArray = Object.entries(auctiontimes).map(([key, value]) => ({ ...value, id: key }));
+            const completedAuctions = auctiontimesArray.filter(auction => auction.completed);
+            try {
+                const response = await fetch("http://localhost:4000/api/user/swap", {
+                    method:"PUT", 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                      },
+                body: JSON.stringify({completedAuctions})   
+                });
+            } catch (error) {
+                console.log(error)
+            }
+
         } catch (error) {
             console.log(error)
         }
@@ -173,7 +187,6 @@ const MyAuctions = () => {
                 return acc;
             }, {});
             setAuctions(data);
-            console.log(data);
             fetchSellers();
             fetchHighestBidder();
             fetchTimes();
@@ -188,9 +201,9 @@ const MyAuctions = () => {
 
     useEffect(() => {
         fetchAuctions();
+
     }, [fetchAgain]);
 
-    console.log(auctions);
     const handleSubmit = (event, auctionId) => {
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
@@ -248,7 +261,6 @@ const MyAuctions = () => {
         backgroundColor: colors.primary[500],
     }
 
-    console.log(auctions);
     return (
         <>
         <Box display="flex" 

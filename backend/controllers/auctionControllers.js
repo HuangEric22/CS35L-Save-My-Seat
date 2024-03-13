@@ -159,7 +159,6 @@ const getTime = async (auctionIds) => {
 };
 
 
-
 const getTimes = async (req, res) => {
     const auctions = await Auction.find({});
     const auctionIds = auctions.map(auction => auction._id);
@@ -171,3 +170,4 @@ const getTimes = async (req, res) => {
 module.exports = {
     createAuction, createBid, getAuctions, deleteAuction, completeAuction, getTimes
 }
+
