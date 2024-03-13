@@ -25,19 +25,12 @@ const Topbar = () => {
         navigate('/login');
       }
      if (!user) return null;
-    return (<Box display="flex" justifyContent="space-between" p={2}>
-        {/*search bar*/}
-        <Box display="flex" 
-            backgroundColor={colors.primary[400]}
-            borderRadius="3px"
-            >
-                <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Need something?"/>
-                <IconButton type="button" sx= {{ p: 1 }}>
-                    <SearchIcon/>
-                </IconButton>
-        </Box>
-        {/*icons*/}
-        <Box display="flex">
+    return (
+    <>
+    
+    <Box display="flex" justifyContent="space-between" p={2}>
+        
+        <Box display="flex" marginLeft="auto">
        
             <IconButton onClick={colorMode.toggleColorMode}>
                 {theme.palette.mode === 'dark' ? (
@@ -57,7 +50,8 @@ const Topbar = () => {
                 <LogoutOutlinedIcon />
             </IconButton>
         </Box>
-    </Box>);
+    </Box>
+    </>);
 };
 
 export default Topbar;

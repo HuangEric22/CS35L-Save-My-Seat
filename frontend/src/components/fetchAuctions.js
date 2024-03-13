@@ -1,10 +1,11 @@
-import { Box, Typography, Button, TextField, CircularProgress, Grid } from "@mui/material";
+import { Box, Typography, Button, TextField, CircularProgress, Grid, InputBase, IconButton } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { tokens } from "../theme";
 import { useTheme } from '@mui/material/styles';
 import { styled, keyframes } from '@mui/system';
 import { light } from "@mui/material/styles/createPalette";
+import SearchIcon from "@mui/icons-material/Search";
 import '../animations.css';
 
 const MyAuctions = () => {
@@ -18,6 +19,26 @@ const MyAuctions = () => {
     const [fetchAgain, setFetchAgain] = useState(false);
     const [loading, setLoading] = useState(true);
     const [formVisibleMap, setFormVisibleMap] = useState({});
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearch = async () => {
+        if (searchTerm.trim()) {
+            const trimmedSearchTerm = searchTerm.trim().toLowerCase();
+            const filtered = auctions.filter(auction =>
+              auction.courseName.toLowerCase() === trimmedSearchTerm
+            );
+            setAuctions(filtered);
+          } else {
+            // If the search term is empty, show all auctions
+            setAuctions(auctions);
+          }
+    };
+
+
     const fetchHighestBidder = async () => {
        
         try {
@@ -128,6 +149,7 @@ const MyAuctions = () => {
         }
     }
     const fetchAuctions = async () => {
+        
         try {
             const response = await fetch("http://localhost:4000/api/auction/", {
                 method: "GET", 
@@ -161,7 +183,7 @@ const MyAuctions = () => {
         } catch (error) {
             console.error(error);
             setError('Failed to fetch auctions. Please try again later.');
-        }
+        } 
     };
 
     useEffect(() => {
@@ -228,6 +250,23 @@ const MyAuctions = () => {
 
     console.log(auctions);
     return (
+        <>
+        <Box display="flex" 
+            backgroundColor={colors.primary[400]}
+            borderRadius="3px"
+            marginLeft="22px"
+            marginRight="500px"
+            >
+                <InputBase 
+                sx={{ ml: 2, flex: 1 }} 
+                placeholder="Need something?"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                />
+                <IconButton type="button" sx= {{ p: 1 }} onClick={handleSearch}>
+                    <SearchIcon/>
+                </IconButton>
+            </Box>
         <Box m="20px">
             {[...auctions].reverse().map((auction) => 
             <Box key={auction._id} className={times[auction._id] && times[auction._id].hours < 2 ? 'fieryBox' : ''} sx={boxStyle} width='65%' p={2} color='white' borderRadius='10px' mb={3}>
@@ -294,6 +333,7 @@ const MyAuctions = () => {
                 </Box>
             )}
         </Box>
+        </>
     );
 };
 
