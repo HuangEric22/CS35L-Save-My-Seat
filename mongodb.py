@@ -78,8 +78,8 @@ major_list = Course_Scraper.load_majors()
 for course in course_list.values():
     insert_course(course)
 
-for major in major_list.values():
-    insert_major(major)
+# for major in major_list.values():
+#     insert_major(major)
   
-insert_abbreviations()
+# insert_abbreviations()
 
