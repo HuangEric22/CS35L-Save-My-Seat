@@ -2,6 +2,7 @@ const EnrolledClass = require('../models/enrolledClassModel')
 const mongoose = require('mongoose');
 
 const enrollClass = async (req,res) => {
+    const {userid} = req.params;
     try {
 const {userId, classId,courseAbbrv, courseTitle,catNum, lectures,  prereqs, coreqs, coursePage, term } = req.body;
 const enrolledClass = new EnrolledClass({
