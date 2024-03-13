@@ -7,6 +7,7 @@ import { auctions, bids } from "../../data/mockAuctions"
 import { styled, keyframes } from '@mui/system';
 import '../../animations.css';
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { useBidContext } from "../../hooks/useBidContext";
 import { useState, useEffect } from "react";
 
 
@@ -22,6 +23,7 @@ const Auctions = () => {
     const [fetchAgain, setFetchAgain] = useState(false);
     const [realAuctions, setAuctions] = useState([]);
     const [highestBidders, setHighestBidders] = useState([]);
+    const [bidders, setBidders] = useState([]);
     const [times, setTimes] = useState([]);
 
     const fetchAuctions = async () => {
@@ -104,6 +106,7 @@ const Auctions = () => {
 
     console.log(realAuctions);
     console.log(id);
+    
 
     const auctionsFilteredByOwner = realAuctions.filter(auction => auction.ownerId === id);
 
@@ -124,6 +127,37 @@ const Auctions = () => {
         
         backgroundColor: `${colors.primary[400]}`
     };
+
+    const deleteAuction = async (auctionId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, { // Corrected template string syntax
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`, // Corrected template string syntax
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete auction');
+            }
+
+            const message = await response.json();
+            console.log(message);
+
+            const updatedAuctions = realAuctions.filter(auction => auction._id !== auctionId);
+            setAuctions(updatedAuctions);
+
+        } catch (error) {
+            console.error(error);
+            
+        }
+    };
+
+    const handleDeleteClick = (auctionId) => {
+        deleteAuction(auctionId);
+    };
+
+    const [isVisible, setIsVisible] = useState(true);
 
     return (
         <Box m={2}>
@@ -154,7 +188,7 @@ const Auctions = () => {
                                             </Typography>}
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="medium" sx={{ color: `${colors.primary[50]}` }}>Delete</Button>
+                                        <Button onClick={() => handleDeleteClick(auction._id)} size="medium" sx={{ color: `${colors.primary[50]}` }}>Delete</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
