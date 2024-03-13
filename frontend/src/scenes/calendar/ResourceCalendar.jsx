@@ -6,6 +6,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import "./index.css"
 import React, { Fragment, useMemo, useState, useEffect } from 'react';
 import { Calendar, Views } from 'react-big-calendar';
+import { useClasses } from '../../hooks/useClasses' 
+
 
 const today = new Date()
 

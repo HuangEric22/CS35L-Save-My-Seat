@@ -1,6 +1,6 @@
 import { Box, FormControl, InputLabel, Select, MenuItem, TextField, Button } from "@mui/material";
 import Header from "../../components/Header";
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { classesList, auctionDurations } from '../../data/mockClassData';
@@ -14,6 +14,10 @@ const Buy = () => {
     const [startingBid, setStartingBid] = useState('');
     const [duration, setDuration] = useState('');
     const [message, setMessage] = useState('');
+    const [classes, setClasses] = useState([]);
+    const [selectedCourseAbbrev, setSelectedCourseAbbrev] = useState('');
+    const courseAbbrevs = [...new Set(classes.map(cls => cls.course_abbrv))];
+    const filteredClasses = classes.filter((cls) => cls.course_title && cls.course_abbrv === selectedCourseAbbrev);
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
     };
@@ -26,6 +30,29 @@ const Buy = () => {
         setDuration(event.target.value);
     };
 
+    const fetchClasses = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/api/classes/", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data`);
+            }
+            const classesData = await response.json();
+            setClasses(classesData);
+            
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchClasses();
+    }, []); 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
@@ -69,7 +96,7 @@ const Buy = () => {
             setStartingBid('');
             setDuration('');
             setMessage('')
-    
+    setSelectedCourseAbbrev('');
         } catch (error) {
             console.error(error);
         }
@@ -84,23 +111,41 @@ const Buy = () => {
             </Box>
         </Box>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, mx: '20px' }}>
-          <FormControl fullWidth margin="normal">
-              <InputLabel id="class-select-label">Class</InputLabel>
-              <Select
-                  labelId="class-select-label"
-                  id="class-select"
-                  value={selectedClass}
-                  label="Class" 
-                  onChange={handleClassChange}
-                  sx={cardStyle}
-              >
-                  {classesList.map((className, index) => (
-                      <MenuItem key={index} value={className}>
-                          {className}
-                      </MenuItem>
-                  ))}
-              </Select>
-          </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <InputLabel id="course-abbrev-select-label">Course Abbreviation</InputLabel>
+                    <Select
+                        labelId="course-abbrev-select-label"
+                        id="course-abbrev-select"
+                        value={selectedCourseAbbrev}
+                        label="Course Abbreviation"
+                        onChange={(e) => {
+                            setSelectedCourseAbbrev(e.target.value);
+                            setSelectedClass(''); // Reset selected class when changing abbreviation
+                        }}
+                        sx={cardStyle}
+                    >
+                        {courseAbbrevs.map((abbrev) => (
+                            <MenuItem key={abbrev} value={abbrev}>{abbrev}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                {selectedCourseAbbrev && (
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="class-select-label">Class</InputLabel>
+                        <Select
+                            labelId="class-select-label"
+                            id="class-select"
+                            value={selectedClass}
+                            label="Select a Class"
+                            onChange={(e) => setSelectedClass(e.target.value)}
+                            sx={cardStyle}
+                        >
+                            {filteredClasses.map((cls) => (
+                                <MenuItem key={cls.id} value={cls.id}>{cls.course_abbrv + ' ' + cls.course_title}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
           <TextField
               margin="normal"
               required
