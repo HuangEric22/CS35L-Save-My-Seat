@@ -257,11 +257,11 @@ catch (error) {
                                         </Typography> }
                                         { highestBidders[auction._id] &&
                                         <Typography color="textSecondary"
-                                            sx={{
-                                                color: username === highestBidders[auction._id][1] ? 'green' : 'red',
-                                            }}>
-                                                {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
-                                        </Typography> }
+                                        sx={{
+                                            color: username === highestBidders[auction._id][1] ? 'green' : 'red',
+                                        }}>
+                                            {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : `Highest Bidder: ${highestBidders[auction._id][1]}`}
+                                    </Typography>}
                                         { times[auction._id] &&
     <Typography color="#FFD100">
         Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
