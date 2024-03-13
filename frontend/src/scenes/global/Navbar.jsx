@@ -68,8 +68,12 @@ const location = useLocation();
     : `${process.env.PUBLIC_URL}/assets/trojan2.png`;
    if (!user) {return null}
     return (
+      <Box sx={{ display: 'flex' }}>
       <Box
         sx={{
+          position: 'fixed',
+          zIndex: 1200,
+          height: '100%',
           "& .pro-sidebar-inner": {
             background: `${colors.primary[400]} !important`,
           },
@@ -86,6 +90,7 @@ const location = useLocation();
             color: `${colors.primary[700]} !important`,
           },
         }}
+      
       >
         <ProSidebar collapsed={isCollapsed}>
           <Menu iconShape="square">
@@ -214,6 +219,16 @@ const location = useLocation();
             </Box>
           </Menu>
         </ProSidebar>
+      </Box>
+      <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 3,
+        marginLeft: isCollapsed ? '80px' : '250px', // Adjust based on the sidebar's width
+        transition: 'margin 0.3s ease', // Smooth transition for when the sidebar collapses/expands
+        }}
+      ></Box>
       </Box>
     );
   };

@@ -16,7 +16,7 @@ const Dashboard = () => {
         {/* Empty Box to take up space and push icons to the right */}
         
         <Box m="20px">
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" sx={{ marginLeft: '22px' }} justifyContent="space-between" alignItems="center">
                 <Header title="Overview" subtitle="Welcome back"/>
             </Box>
             <MyAuctions/>
