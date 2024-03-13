@@ -132,6 +132,15 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     // };
     
     
+    const handleClassChange = (selectedOption) => {
+        // Check if selectedOption is null
+        if (selectedOption) {
+          setSelectedClass(selectedOption.value);
+        } else {
+          // Handle the case where no option is selected
+          setSelectedClass(""); // or any other default state
+        }
+      };
     
     return (
         <Box> 
@@ -161,16 +170,26 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
             <StyledBox> {/* New content wrapped in a Box */}
                 <FormControl fullWidth margin="normal">
                     <InputLabel id="class-select-label">Select a Class</InputLabel>
-                    <Select
-                        labelId="class-select-label"
-                        id="class-select"
-                        value={selectedClass}
-                        onChange={(e) => setSelectedClass(e.target.value)}
-                    >
-                        {filteredClasses.map((cls) => (
-                            <MenuItem key={cls.id} value={cls.id}>{cls.course_abbrv + ' ' + cls.course_title}</MenuItem>
-                        ))}
-                    </Select>
+                    <ReactSelect
+                id="class-search"
+                className="class-search"
+                options={filteredClasses.map((cls) => ({ value: cls.id, label: `${cls.course_abbrv} ${cls.course_title}` }))}
+                placeholder="Select a Class"
+                onChange={handleClassChange} //  fix bug               
+                isClearable = {true}
+                isSearchable = {true}
+                value={filteredClasses.find(cls => cls.id === selectedClass) ? { value: selectedClass, label: `${selectedClass.course_abbrv} ${selectedClass.course_title}` } : null}
+                styles={{
+                    container: (provided) => ({
+                        ...provided,
+                        width: 400,
+                    }),
+                    option: (provided, state) => ({
+                        ...provided,
+                        color: 'black',
+                    }),
+                }}
+            />
                 </FormControl>
 
                 {selectedClass && (
