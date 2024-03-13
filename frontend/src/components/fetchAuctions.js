@@ -173,29 +173,39 @@ const MyAuctions = () => {
         event.preventDefault();
         const bidAmountInput = document.getElementById(`bidAmount_${auctionId}`).value;
         const bidAmount = parseFloat(bidAmountInput);
-    
         // Ensure bidAmount is a valid number
         if (isNaN(bidAmount)) {
             alert("Please enter a valid bid amount.");
             return;
         }
-    
+        // Find the auction being bid on
+        const auction = auctions.find(a => a._id === auctionId);
+        if (!auction) {
+            alert("Auction not found.");
+            return;
+        }
+        // Prevent bidding on own auction
+        if (auction.ownerId === user.userID) {
+            alert("You cannot bid on your own auction.");
+            return;
+        }
         // Check if the auction has been bid on before
         if (highestBidders[auctionId]) {
             const highestBid = parseFloat(highestBidders[auctionId][0]);
             // New bid must be higher than the current highest bid
             if (bidAmount > highestBid) {
-                createBids(auctionId, bidAmount); // Proceed with creating the bid
-                setFetchAgain(!fetchAgain); // Trigger any needed re-fetch or UI update
+                createBids(auctionId, bidAmount); 
+                setFetchAgain(!fetchAgain); 
             } else {
                 alert("Your bid must be higher than the current highest bid.");
             }
         } else {
             // No existing bids for this auction, any bid amount is acceptable
-            createBids(auctionId, bidAmount); // Proceed with creating the bid
-            setFetchAgain(!fetchAgain); // Trigger any needed re-fetch or UI update
+            createBids(auctionId, bidAmount);
+            setFetchAgain(!fetchAgain); 
         }
     };
+    
     
 
        const handleToggleForm = (auctionId) => {
