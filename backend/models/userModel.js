@@ -71,5 +71,57 @@ if (!password) throw Error("Must provide a password.")
   
     return user;
   };
+
+
+
+  userSchema.statics.changeUsername = async function(userId, newUsername) {
+    // Validate newUsername (e.g., check for uniqueness)
+    // Update the username field in the database
+    const user = await this.findById(userId);
+    if (user.username ==newUsername) {
+      throw Error("That's already your username")
+    }
+    /* exists = await this.findOne(userId, {username: newUsername});
+    if (exists) {
+      throw Error("That's already your username.")
+    }*/
+    const existsTwo = await this.findOne({username: newUsername});
+    if(existsTwo) {
+      throw Error('Username already in use');
+    }
+    await this.findByIdAndUpdate(userId, { username: newUsername });
+  };
+  
+  // Change name
+  userSchema.statics.changeName = async function(userId, newName) {
+    // Update the name field in the database
+    const exists = await this.findOne({_id:userId});
+    if (exists.name == newName)
+    {
+      throw Error("That's already your name.")
+    }
+    await this.findByIdAndUpdate(userId, { name: newName });
+  };
+  
+  // Change password
+  userSchema.statics.changePassword = async function(userId, currentPassword, newPassword) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw Error('User not found');
+    }
+  
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      throw Error('Incorrect current password');
+    }
+  
+    // Validate newPassword (e.g., check for strength)
+    const salt = await bcrypt.genSalt(10);
+    const newHashedPassword = await bcrypt.hash(newPassword, salt);
+  
+    // Update the password field in the database
+    await this.findByIdAndUpdate(userId, { password: newHashedPassword });
+  };
 const User  = mongoose.model("User", userSchema);
 module.exports = User;
