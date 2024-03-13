@@ -45,11 +45,6 @@ export const ClassesProvider = ({ children }) => {
         }
     }, [selectedClass, classes]);
 
-    const handleEnroll = () => {
-        console.log("Enrolled in class:", selectedClass);
-        // Enrollment logic goes here, potentially involving API calls
-        // This might need to be moved to ClassPlanner or kept here based on how you want to structure your app
-    };
 
     return (
         <ClassesContext.Provider value={{ 
