@@ -10,10 +10,10 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useBidContext } from "../../hooks/useBidContext";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-
+import { useNavigate } from 'react-router-dom';
 
 const Auctions = () => {
-    
+    const navigate = useNavigate();
     const {user} = useAuthContext();
     const id = user.userID;
     const username = user.name;
@@ -27,7 +27,45 @@ const Auctions = () => {
     const [bidders, setBidders] = useState([]);
     const [times, setTimes] = useState([]);
     const [mybids, setBids] = useState([]);
-
+    const createBids = async (auctionId, bidAmount) => {
+        //   let userString = localStorage.getItem('user');
+         //  let { userID, name } = JSON.parse(userString);
+         //from now on, use the const {user} = useAuthContext(); syntax to get items from local storage. 
+         //user.name now provides the name; it is more stable this way
+           try {   
+               const response = await fetch(`http://localhost:4000/api/auction/${auctionId}`, {
+                   method: "PUT",
+                   headers: {
+                       'Content-Type': 'application/json',
+                       // Add authorization token if needed
+                       'Authorization': `Bearer ${user.token}`
+                   },
+                   body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name })
+               });
+       
+               if (!response.ok) {
+                   throw new Error(`Failed to place bid for auction ${auctionId}`);
+               }
+       
+               const data = await response.json();
+               
+               // Check if the current bid is higher than the existing highest bid
+               if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
+                   // Update the highestBidders state only if the current bid is higher
+                   const updatedBidder = [bidAmount.toString(), user.name];
+                   setHighestBidders(prevHighestBidders => ({
+                       ...prevHighestBidders,
+                       [auctionId]: updatedBidder
+                   }));
+               }
+               
+               // Update state or perform any other necessary actions upon successful bid placement
+               console.log(data);
+           } catch (error) {
+               console.error(error);
+               // Handle errors appropriately
+           }
+       };
     const fetchMyBids = async () => {
 
     }
@@ -257,11 +295,11 @@ catch (error) {
                                         </Typography> }
                                         { highestBidders[auction._id] &&
                                         <Typography color="textSecondary"
-                                            sx={{
-                                                color: username === highestBidders[auction._id][1] ? 'green' : 'red',
-                                            }}>
-                                                {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
-                                        </Typography> }
+                                        sx={{
+                                            color: username === highestBidders[auction._id][1] ? 'green' : 'red',
+                                        }}>
+                                            {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : `Highest Bidder: ${highestBidders[auction._id][1]}`}
+                                    </Typography>}
                                         { times[auction._id] &&
     <Typography color="#FFD100">
         Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
@@ -269,7 +307,9 @@ catch (error) {
                                     </CardContent>
                                     <CardActions>
                                         { highestBidders[auction._id] &&
-                                        <Button size="medium" className={username != highestBidders[auction._id][1] ? 'fieryGlowingText' : ' '} sx={{ color: username != highestBidders[auction._id][1] ? 'red' : `${colors.primary[50]}` }} >
+                                        <Button size="medium" className={username != highestBidders[auction._id][1] ? 'fieryGlowingText' : ' '} 
+                                        onClick={() => navigate('/')}
+                                        sx={{ color: username != highestBidders[auction._id][1] ? 'red' : `${colors.primary[50]}` }} >
                                             Increase Bid
                                         </Button> }
                                     </CardActions>
