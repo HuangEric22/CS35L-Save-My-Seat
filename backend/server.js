@@ -39,7 +39,7 @@ app.use('/api/auction', auctionRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/dict', dictRoutes);
-app.use('/api/classes', classRoutes)
+//app.use('/api/classes', classRoutes)
 app.use('/api/enrolledClasses', enrollClassRoutes)
 connectDB().then(()=> app.listen(process.env.PORT, console.log("Server Started"))) //start the backend server);
 

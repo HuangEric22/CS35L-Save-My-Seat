@@ -27,6 +27,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const location = useLocation();
@@ -51,7 +53,33 @@ const location = useLocation();
     );
   };
 
+
+
   const Navbar = () => {
+    const [funds, setFunds] = useState('');
+    const Funds = async () => {
+      const {user} = useAuthContext();
+      try {
+  
+        const response = await fetch(`http://localhost:4000/api/user/funds/${user.userID}`, { // Corrected template string syntax
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`, // Corrected template string syntax
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Failed to retrieve funds');
+    }
+  
+    const message = await response.json();
+    setFunds(message);
+    
+  console.log("funds", message)
+      }
+      catch (error){}
+    }
+    Funds();
     const { user } = useAuthContext()
     const navigate = useNavigate()
     const { logout } = useLogout()
@@ -143,6 +171,10 @@ const location = useLocation();
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     
                     {user ?  '@'+ user.username: ''} {/* Use user's name or a default */}
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[400]}>
+                    
+                    {"Funds: $" + funds} {/* Use user's name or a default */}
                   </Typography>
                 </Box>
               </Box>

@@ -100,6 +100,16 @@ res.status(200).json(user.bids)
         res.status(400).json({error: error.message})
     }
 }
+const userFunds = async (req,res) => {
+    const {userId} = req.params;
+    try {
+        const user = await User.findById(userId);
+        res.status(200).json(user.funds)
+            }
+            catch (error) {
+                res.status(400).json({error: error.message})
+            }
+}
 
 const getAuctionOwners = async (auctionIds) => {
     const owners = {};
@@ -197,7 +207,7 @@ const planClass = async (classId) => {
 }
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap, userFunds
 }
 
 

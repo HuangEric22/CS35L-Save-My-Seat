@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {registerUser, authUser, getUser, getHighestBiddersForAllAuctions, planClass , userBids, swap} = require('../controllers/userController');
+const {registerUser, authUser, getUser, getHighestBiddersForAllAuctions, planClass , userBids, swap, userFunds} = require('../controllers/userController');
 const requireAuthent = require('../middleware/requireAuthent');
 //signup route
 // router.post('/', registerUser);
@@ -12,4 +12,5 @@ router.route('/highestBidder').get( requireAuthent, getHighestBiddersForAllAucti
 router.route('/swap').put( requireAuthent, swap);
 router.route('/:classId').put(requireAuthent, planClass);
 router.route('/bids/:userId').get(requireAuthent, userBids)
+router.route('/funds/:userId').get(requireAuthent, userFunds)
 module.exports = router;
