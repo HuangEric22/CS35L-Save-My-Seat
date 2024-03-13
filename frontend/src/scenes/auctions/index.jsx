@@ -22,6 +22,7 @@ const Auctions = () => {
     const [fetchAgain, setFetchAgain] = useState(false);
     const [realAuctions, setAuctions] = useState([]);
     const [highestBidders, setHighestBidders] = useState([]);
+    const [times, setTimes] = useState([]);
 
     const fetchAuctions = async () => {
         try {
@@ -45,6 +46,7 @@ const Auctions = () => {
             }, {});
             setAuctions(data);
             fetchHighestBidder();
+            fetchTimes();
         } catch (error) {
             console.error(error);
         }
@@ -69,7 +71,31 @@ const Auctions = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+    const fetchTimes = async () => {
+        try {
+            const res = await fetch("http://localhost:4000/api/auction/times", {
+                method:"GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                  }
+                /*headers: {
+                    // Added Authorization header with Bearer token
+                    'Authorization': `Bearer ${user.token}`
+                }
+*/
+            });
+            if(!res.ok){
+                throw new Error(`Failed to Fetch Times`)
+            }
+            const auctiontimes = await res.json(); 
+            setTimes(auctiontimes);
+            console.log(auctiontimes)
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     useEffect(() => {
         fetchAuctions();
@@ -85,8 +111,11 @@ const Auctions = () => {
     .filter(([id, [bidAmount, bidderName]]) => bidderName === username)
     .map(([id]) => id);
 
-    const auctionsFilteredByBids = realAuctions.filter(auction => filteredIDs.includes(auction._id));
+    const auctionsFilteredByBids = realAuctions.filter(auction => auction.bids.includes(id));
+    console.log(realAuctions);
+    console.log(id);
     console.log(highestBidders);
+    console.log(times);
 
 
     const cardStyle = {
@@ -117,7 +146,12 @@ const Auctions = () => {
                                             Highest Bid: ${highestBidders[auction._id][0]}
                                             <br/>
                                             Bidder: {highestBidders[auction._id][1]} 
+                                            <br/>
                                         </Typography> }
+                                        { times[auction._id] && 
+                                        <Typography color = "#FFD100">
+                                            Time Left: {times[auction._id].hours} hours, {times[auction._id].minutes} minutes
+                                            </Typography>}
                                     </CardContent>
                                     <CardActions>
                                         <Button size="medium" sx={{ color: `${colors.primary[50]}` }}>Delete</Button>
@@ -148,6 +182,10 @@ const Auctions = () => {
                                             }}>
                                                 {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
                                         </Typography> }
+                                        { times[auction._id] && 
+                                        <Typography color = "#FFD100">
+                                            Time Left: {times[auction._id].hours} hours, {times[auction._id].minutes} minutes
+                                            </Typography>}
                                     </CardContent>
                                     <CardActions>
                                         { highestBidders[auction._id] &&

@@ -199,6 +199,7 @@ const MyAuctions = () => {
         backgroundColor: colors.primary[500],
     }
 
+    console.log(auctions);
     return (
         <Box m="20px">
             {[...auctions].reverse().map((auction) => 
