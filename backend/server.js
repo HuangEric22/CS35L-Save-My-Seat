@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const auctionRoutes = require('./routes/auctionRoutes')
 const userRoutes  = require('./routes/userRoutes')
 const classRoutes = require('./routes/classRoutes')
-const enrollClassRoutes = require('./routes/enrollClassRoutes')
 const cors=require("cors");
 const app = express();
 dotenv.config();
@@ -36,7 +35,6 @@ app.use(express.json());
 app.use('/api/auction', auctionRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/classes', classRoutes)
-app.use('/api/enrolledClasses', enrollClassRoutes)
 connectDB().then(()=> app.listen(process.env.PORT, console.log("Server Started"))) //start the backend server);
 
 
