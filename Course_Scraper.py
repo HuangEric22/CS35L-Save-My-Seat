@@ -8,13 +8,7 @@ from selenium.webdriver.chrome.options import Options
 import json
 import re
 import requests
-#Have a global dictionary that keeps track of all of the courses current in the database and their information
-course_list = dict()
-major_list = dict()
-import json
-import re
-import requests
-#Have a global dictionary that keeps track of all of the courses current in the database and their information
+
 course_list = dict()
 major_list = dict()
 # Set up Chrome options for headless mode
@@ -480,10 +474,10 @@ def load_data(subject_name, term):
    if (abbrv_dict.get(subject_name, '')):
        abbrv = abbrv_dict.get(subject_name)
    else:
-       print("Please Enter A Valid Major Name:", subject_name, "Was Not Found")
+       print("Please Enter A Valid Department Name:", subject_name, "Was Not Found")
        return error
   
-   subject_abbrv = abbrv.translate(str.maketrans(' ', '+'))  
+   subject_abbrv = abbrv.translate(str.maketrans(' ', '+')).replace('&', '%26')  
   
    course_list = get_courses_offered(subject_abbrv, term)
    for course in course_list:
@@ -665,23 +659,19 @@ def print_all():
        print('---------------------')
 
 
-def load_courses():
-   #for each class you want to load, call load_data()
-    load_data("Asian American Studies", "24S")
-    load_data("Communication", "24S")
-    load_data("Geography", "24S")
+#api functions:
+
+def load_courses(department_list, term):
+    
+    for dept in department_list:
+        load_data(dept, term)
+    
     set_reqs_to_nodes()
     return course_list
 
-
-def load_majors():
-   load_major_reqs("Computer Science")
-   load_major_reqs("Mathematics")
-   load_major_reqs("Physics")
-   load_major_reqs("ComputerEngineering")
-
-
+def load_majors(requested_majors):
+   for major in requested_majors:
+       load_major_reqs(major)
+   
    return major_list
-
-
 
