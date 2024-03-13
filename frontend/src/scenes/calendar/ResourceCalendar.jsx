@@ -98,10 +98,19 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
     //DISPLAYING MYCLASSES CORRECTLY ON CALENDAR
     //TIMES
     const parseTime = (timeString) => {
-        const [startTime, endTime] = timeString.split('-');
-        let [startHour, startMinute] = startTime.trim().split(':').map(part => parseInt(part, 10));
-        let [endHour, endMinute] = endTime.trim().split(':').map(part => parseInt(part, 10));
+
+        if (!timeString) {
+            // Return empty stirng if timeString is undefined
+            return { start: "", end: "" };
+        }
+
+        else{
+            const [startTime, endTime] = timeString.split('-');
+            let [startHour, startMinute] = startTime.trim().split(':').map(part => parseInt(part, 10));
+            let [endHour, endMinute] = endTime.trim().split(':').map(part => parseInt(part, 10));
     
+     
+
         // If minutes are undefined, default them to 0
         startMinute = isNaN(startMinute) ? 0 : startMinute;
         endMinute = isNaN(endMinute) ? 0 : endMinute;
@@ -133,6 +142,8 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
         //test
         //console.log(`Start: ${startDate}, End: ${endDate}`);
         return { start: startDate, end: endDate };
+        }
+        
     };
     
     //DAYS
@@ -153,8 +164,11 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
       
         const resourceIds = parseDays(classData.lectures[0].days);
       
-        start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
-        end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+        if (start!="" && end !=""){
+            start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+            end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+        }
+       
       
         return {
           title: title,
@@ -166,7 +180,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
       });
 
      //test
-     //console.log("Contents of parsedClasses:", parsedClasses);
+     console.log("Contents of parsedClasses:", parsedClasses);
 
     //when class clicked, popup with additinal info
     const handleSelectClass = (event) => {

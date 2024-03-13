@@ -7,7 +7,7 @@ import { tokens } from "../../theme";
 import { momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { ClassesProvider } from '../../context/ClassesContext'
-
+import  {useAuthContext}  from '../../hooks/useAuthContext';
 const localizer = momentLocalizer(moment);
 
 const today = new Date();
@@ -53,11 +53,13 @@ const initialClasses = [
 
 const ParentComponent = () => {
     //lifting state up
+    const {user} = useAuthContext();
+    console.log("ID HERE",user.userID)
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [myClasses, setMyClasses] = useState(blankInitialClasses);
 
-    const addClass = (newClass) => {
+    const addClass = async (newClass) => {
       // Check if the class and specific lecture are already in the plan
       const isClassAndLectureAlreadyAdded = myClasses.some(classInPlan => 
           classInPlan.id === newClass.id && 
@@ -70,20 +72,112 @@ const ParentComponent = () => {
           console.log("This lecture has already been added to the plan.");
       }
 
+
+
+      try {
+       
+    
+        const classData = {
+         
+            classId: newClass.id,
+            courseAbbrv: newClass.course_abbrv,
+            courseTitle: newClass.course_title,
+            catNum: newClass.cat_num,
+            lectures: newClass.lectures, 
+           coursePage: newClass.course_page,
+            prereqs: newClass.prereqs,
+            coreqs: newClass.coreqs,
+            term: newClass.term
+        };
+
+        const response = await fetch(`http://localhost:4000/api/enrolledClasses/${user.userID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${user.token}`
+            },
+           body: JSON.stringify(classData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to enroll in class`);
+        }
+
+        console.log("Added new class:", newClass);
+        console.log(newClass.hash_id)
+  
+        
+        console.log("Contents of myClasses:", myClasses);
+        console.log("Class enrolled successfully!");
+
+        // Reset form fields after successful submission if needed
+        
+    } catch (error) {
+        console.error(error);
+    }
+
+
+
+
+
       //test
-      console.log("Added new class:", newClass);
-      console.log("Contents of myClasses:", myClasses);
+    
     };
   
 
     //function- remove a class from the planner
-    const removeClass = (classHashId) => {
-        setMyClasses(myClasses.filter((c) => c.hash_id !== classHashId));
+    const removeClass  = async (classes)  => {
+
+      try {
+        const response = await fetch(`http://localhost:4000/api/enrolledClasses/${classes._id}`, { // Corrected template string syntax
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user.token}`, // Corrected template string syntax
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete class');
+        }
+
+        const message = await response.json();
+        console.log(message);
+
+       
+        //setAuctions(updatedAuctions);
+
+    } catch (error) {
+        console.error(error);
+        
+    }
+       // setMyClasses(myClasses.filter((c) => c.hash_id !== classHashId));
         
         //test
-        console.log("Removed classhashid: ", classHashId)
+      //  console.log("Removed classhashid: ", classHashId)
     };
 
+    const showClass = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/api/enrolledClasses/${user.userID}`, { // Corrected template string syntax
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`, // Corrected template string syntax
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete class');
+    }
+
+    const message = await response.json();
+    console.log(message);
+
+   
+    //setAuctions(updatedA
+
+      }
+      catch(error) {}
+    }
 
     //display list of user's current classes in planner
     const renderMyClassesCard = (myClass) => {

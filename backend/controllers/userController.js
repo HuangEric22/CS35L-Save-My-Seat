@@ -133,8 +133,35 @@ const getUser = async (req, res) => {
     }
 };
 
+const swap = async (req, res) => {
+    const {completedAuctions} = req.body;
+    const objectIds = completedAuctions.map(elem => elem.id);
+    try {
+        const auctions = await Auction.find({ _id: { $in: objectIds } });
+        for (const auction of auctions){
+            if(auction.bids.length > 0){
+                const highestBid = auction.bids[auction.bids.length - 1]
+                const bid = await Bid.findById(highestBid._id);
+                const highestBidder = await User.findById(bid.bidderID);
+                const owner = await User.findById(auction.ownerId); 
+                const amount = bid.amount;
+                owner.funds += amount;
+                highestBidder.funds -= amount;
+                const cls = auction.courseName;
+                owner.courses = owner.courses.filter(item => item !== cls);
+                if (!highestBidder.courses.includes(cls)) {
+                    highestBidder.courses.push(cls);
+                }
+                await owner.save();
+                await highestBidder.save();
 
+            }
+        }
 
+    } catch (error) {
+        console.log(error);
+    }
+}
 const getHighestBiddersForAllAuctions = async (req, res) => {
     try {
         // Find all auctions
@@ -170,7 +197,7 @@ const planClass = async (classId) => {
 }
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap
 }
 
 
