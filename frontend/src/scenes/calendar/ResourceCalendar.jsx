@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 //added
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import "./index.css"
-import React, { Fragment, useMemo, useState, useEffect } from 'react';
+import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react';
 import { Calendar, Views } from 'react-big-calendar';
 import { useClasses } from '../../hooks/useClasses' 
 import { v4 as uuidv4 } from 'uuid';
@@ -52,27 +52,47 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
 
     // find earliest and latest class to adapt the calendar hours flexibly
     //if no classes, then set to default hours 8 AM - 5 PM
-    //ONLY ONCE ON INITIAL RENDER, use useEffect to do this
-
-    const defaultMinTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8); 
+    const defaultMinTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 0, 0);
     const defaultMaxTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 59, 59);
-    
-    // states
-    const [minTime, setMinTime] = useState();
-    const [maxTime, setMaxTime] = useState();
 
-    useEffect(() => {
-        const computedMinClass = myClasses.length > 0
-            ? myClasses.reduce((min, classEvent) => (classEvent.start < min ? classEvent.start : min), myClasses[0].start)
-            : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8);
+    const [minTime, setMinTime] = useState(defaultMinTime);
+    const [maxTime, setMaxTime] = useState(defaultMaxTime);
 
-        const computedMaxClass = myClasses.length > 0
-            ? myClasses.reduce((max, classEvent) => (classEvent.end > max ? classEvent.end : max), myClasses[0].end)
-            : new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 59, 59);
+    //once 
+    const initialMinTime = useRef(minTime);
+    const initialMaxTime = useRef(maxTime);
 
-        setMinTime(new Date(computedMinClass.getFullYear(), computedMinClass.getMonth(), computedMinClass.getDate(), computedMinClass.getHours(), computedMinClass.getMinutes()));
-        setMaxTime(new Date(computedMaxClass.getFullYear(), computedMaxClass.getMonth(), computedMaxClass.getDate(), computedMaxClass.getHours(), computedMaxClass.getMinutes(), computedMaxClass.getSeconds()));
-    }, []);
+    const updateCalendarBounds = (classes) => {
+        let newMinTime = initialMinTime.current;
+        let newMaxTime = initialMaxTime.current;
+
+        classes.forEach(classEvent => {
+        const { start, end } = parseTime(classEvent.lectures[0].time);
+        if (start < newMinTime) newMinTime = start;
+        if (end > newMaxTime) newMaxTime = end;
+    });
+
+    setMinTime(newMinTime);
+    setMaxTime(newMaxTime);
+  };
+
+  useEffect(() => {
+    updateCalendarBounds(myClasses);
+    initialMinTime.current = minTime;
+    initialMaxTime.current = maxTime;
+  }, []);
+
+  //fix bug of out of bounds classes
+  useEffect(() => {
+    let classesOutsideBounds = myClasses.filter(classEvent => {
+      const { start, end } = parseTime(classEvent.lectures[0].time);
+      return start < initialMinTime.current || end > initialMaxTime.current;
+    });
+
+    if (classesOutsideBounds.length > 0) {
+      updateCalendarBounds(classesOutsideBounds);
+    }
+  }, [myClasses]);
 
 
     //DISPLAYING MYCLASSES CORRECTLY ON CALENDAR
@@ -111,7 +131,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
         endDate.setHours(endHour, endMinute, 0, 0);
     
         //test
-        console.log(`Start: ${startDate}, End: ${endDate}`);
+        //console.log(`Start: ${startDate}, End: ${endDate}`);
         return { start: startDate, end: endDate };
     };
     
@@ -121,7 +141,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
         const parsedDays = daysString.split('').map(dayChar => dayMap[dayChar]);
         
         //test
-        console.log(`Days: ${parsedDays}`);
+        //console.log(`Days: ${parsedDays}`);
         return parsedDays;
     };
     
@@ -146,16 +166,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
       });
 
      //test
-     console.log("Contents of parsedClasses:", parsedClasses);
-
-    
-    
-
-
-
-
-
-
+     //console.log("Contents of parsedClasses:", parsedClasses);
 
     //when class clicked, popup with additinal info
     const handleSelectClass = (event) => {
