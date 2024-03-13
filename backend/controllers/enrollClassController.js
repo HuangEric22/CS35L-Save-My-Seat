@@ -2,9 +2,9 @@ const EnrolledClass = require('../models/enrolledClassModel')
 const mongoose = require('mongoose');
 
 const enrollClass = async (req,res) => {
-    const {userid} = req.params;
+    const {userId} = req.params;
     try {
-const {userId, classId,courseAbbrv, courseTitle,catNum, lectures,  prereqs, coreqs, coursePage, term } = req.body;
+const { classId,courseAbbrv, courseTitle,catNum, lectures,  prereqs, coreqs, coursePage,term } = req.body;
 const enrolledClass = new EnrolledClass({
 
 userId,
@@ -21,9 +21,9 @@ catch (error){
 
 
 const getClasses = async (req,res) => {
-
+const {userId} = req.params;
     try {
-        const classes = await EnrolledClass.find({});
+        const classes = await EnrolledClass.find({userId: userId});
         res.status(200).json(classes); //return the acutinos array to the user 
     } catch (error) {
         res.status(500).json({ error: error.message });
