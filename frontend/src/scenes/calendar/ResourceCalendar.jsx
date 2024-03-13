@@ -75,11 +75,92 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
     }, []);
 
 
+    //DISPLAYING MYCLASSES CORRECTLY ON CALENDAR
+    //TIMES
+    const parseTime = (timeString) => {
+        const [startTime, endTime] = timeString.split('-');
+        let [startHour, startMinute] = startTime.trim().split(':').map(part => parseInt(part, 10));
+        let [endHour, endMinute] = endTime.trim().split(':').map(part => parseInt(part, 10));
+    
+        // If minutes are undefined, default them to 0
+        startMinute = isNaN(startMinute) ? 0 : startMinute;
+        endMinute = isNaN(endMinute) ? 0 : endMinute;
+    
+        const isStartPM = startTime.includes('pm');
+        const isEndPM = endTime.includes('pm');
+    
+        // Adjust for AM/PM
+        if (isStartPM && startHour !== 12) {
+            startHour += 12;
+        } else if (!isStartPM && startHour === 12) {
+            // Adjust if it's 12 AM
+            startHour = 0;
+        }
+    
+        if (isEndPM && endHour !== 12) {
+            endHour += 12;
+        } else if (!isEndPM && endHour === 12) {
+            // Adjust if it's 12 AM
+            endHour = 0;
+        }
+    
+        const startDate = new Date();
+        startDate.setHours(startHour, startMinute, 0, 0);
+    
+        const endDate = new Date();
+        endDate.setHours(endHour, endMinute, 0, 0);
+    
+        //test
+        console.log(`Start: ${startDate}, End: ${endDate}`);
+        return { start: startDate, end: endDate };
+    };
+    
+    //DAYS
+    const parseDays = (daysString) => {
+        const dayMap = { 'M': 1, 'T': 2, 'W': 3, 'R': 4, 'F': 5 };
+        const parsedDays = daysString.split('').map(dayChar => dayMap[dayChar]);
+        
+        //test
+        console.log(`Days: ${parsedDays}`);
+        return parsedDays;
+    };
+    
+    //new variable with the right times and days
+    const parsedClasses = myClasses.flatMap(classData => {
+        const title = `${classData.course_abbrv} ${classData.cat_num} ${classData.lectures[0].num}`;
+      
+        const { start, end } = parseTime(classData.lectures[0].time);
+      
+        const resourceIds = parseDays(classData.lectures[0].days);
+      
+        start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+        end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+      
+        return {
+          title: title,
+          location: classData.lectures[0].location,
+          resourceId: resourceIds,
+          start: start,
+          end: end
+        };
+      });
+
+     //test
+     console.log("Contents of parsedClasses:", parsedClasses);
+
+    
+    
+
+
+
+
+
+
+
     //when class clicked, popup with additinal info
     const handleSelectClass = (event) => {
         const startTime = event.start.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         const endTime = event.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-        //const finalExamInfo
         alert(`Class: ${event.title}\nLocation: ${event.location}\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
     }
 
@@ -95,7 +176,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
             defaultDate={defaultDate}
             defaultView={Views.DAY}
             toolbar={false}
-            events={myClasses}
+            events={parsedClasses}
             localizer={localizer}
             resourceIdAccessor="resourceId"
             resources={resourceMap}

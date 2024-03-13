@@ -136,10 +136,10 @@ const ParentComponent = () => {
         <h1>Search & Manage Classes</h1>
 
         <ClassPlanner 
-         backgroundColor={colors.primary[400]}
+            backgroundColor={colors.primary[400]}
             myClasses={myClasses}
-        addClass={addClass}
-        removeClass={removeClass}
+            addClass={addClass}
+            removeClass={removeClass}
         />
 
         <hr />
@@ -149,7 +149,6 @@ const ParentComponent = () => {
             {myClasses.map(renderMyClassesCard)}
       </Box>
 
-        {/*<MyClasses/>*/}
         
     </Box>
     </ClassesProvider>
