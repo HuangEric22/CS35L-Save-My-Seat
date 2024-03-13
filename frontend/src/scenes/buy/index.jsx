@@ -112,7 +112,7 @@ const Buy = () => {
         </Box>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, mx: '20px' }}>
                 <FormControl fullWidth margin="normal">
-                    <InputLabel id="course-abbrev-select-label">Course Abbreviation</InputLabel>
+                    <InputLabel id="course-abbrev-select-label">Department*</InputLabel>
                     <Select
                         labelId="course-abbrev-select-label"
                         id="course-abbrev-select"
@@ -131,7 +131,7 @@ const Buy = () => {
                 </FormControl>
                 {selectedCourseAbbrev && (
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="class-select-label">Class</InputLabel>
+                        <InputLabel id="class-select-label">Class*</InputLabel>
                         <Select
                             labelId="class-select-label"
                             id="class-select"
@@ -174,8 +174,22 @@ const Buy = () => {
               onChange={(event) => setMessage(event.target.value)}
               sx={cardStyle}
           />
-          <FormControl fullWidth margin="normal">
-              <InputLabel id="duration-select-label">Duration</InputLabel>
+       {/*}    <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="duration"
+              label="Duration (days)"
+              name="startingBid"
+              autoComplete="off"
+              type="number"
+              InputProps={{ inputProps: { min: 0 } }}
+              value={duration}
+              onChange={handleDurationChange}
+              sx={cardStyle}
+                            />*/}
+         { <FormControl fullWidth margin="normal">
+              <InputLabel id="duration-select-label">Duration*</InputLabel>
               <Select
                   labelId="duration-select-label"
                   id="duration-select"
@@ -190,7 +204,7 @@ const Buy = () => {
                       </MenuItem>
                   ))}
               </Select>
-          </FormControl>
+                  </FormControl>}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }} onClick={handleSubmit}>
               Start Auction
           </Button>
