@@ -12,6 +12,7 @@ const MyAuctions = () => {
 
     const {user} = useAuthContext();
     const [auctions, setAuctions] = useState([]);
+    const [filteredAuctions, setFilteredAuctions] = useState([]);
     const [sellers, setSellers] = useState([]);
     const [times, setTimes] = useState([]);
     const [highestBidders, setHighestBidders] = useState([]);
@@ -23,19 +24,17 @@ const MyAuctions = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
+        handleSearch(event.target.value);
     };
 
-    const handleSearch = async () => {
-        if (searchTerm.trim()) {
-            const trimmedSearchTerm = searchTerm.trim().toLowerCase();
-            const filtered = auctions.filter(auction =>
-              auction.courseName.toLowerCase() === trimmedSearchTerm
-            );
-            setAuctions(filtered);
-          } else {
-            // If the search term is empty, show all auctions
-            setAuctions(auctions);
-          }
+    const handleSearch = (currentSearchTerm) => {
+        const trimmedSearchTerm = currentSearchTerm.trim().toLowerCase();
+        console.log(trimmedSearchTerm); 
+        const filtered = auctions.filter(auction =>
+            auction.courseName.toLowerCase().includes(trimmedSearchTerm)
+        );
+    
+        setFilteredAuctions(filtered);
     };
 
 
@@ -179,6 +178,7 @@ const MyAuctions = () => {
             fetchHighestBidder();
             fetchTimes();
             setFormVisibleMap(initialFormVisibleMap);
+            setFilteredAuctions(data);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -261,14 +261,18 @@ const MyAuctions = () => {
                 sx={{ ml: 2, flex: 1 }} 
                 placeholder="Need something?"
                 value={searchTerm}
-                onChange={handleSearchChange}
+                onChange={ (event) => {
+                    const newSearchTerm = event.target.value;
+                    setSearchTerm(newSearchTerm);
+                    handleSearch(newSearchTerm);
+                }}
                 />
                 <IconButton type="button" sx= {{ p: 1 }} onClick={handleSearch}>
                     <SearchIcon/>
                 </IconButton>
             </Box>
         <Box m="20px">
-            {[...auctions].reverse().map((auction) => 
+            {[...filteredAuctions].reverse().map((auction) => 
             <Box key={auction._id} className={times[auction._id] && times[auction._id].hours < 2 ? 'fieryBox' : ''} sx={boxStyle} width='65%' p={2} color='white' borderRadius='10px' mb={3}>
                 <Grid container justifyContent="space-between" alignItems="center">
                     {times[auction._id] ? (
