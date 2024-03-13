@@ -6,9 +6,8 @@ import { tokens } from "../../theme";
 //add localizer for calendar
 import { momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-//import MyClasses from '../../components/fetchClasses'
-import { useClasses } from '../../hooks/useClasses' 
 import { ClassesProvider } from '../../context/ClassesContext'
+
 const localizer = momentLocalizer(moment);
 
 const today = new Date();
@@ -78,8 +77,11 @@ const ParentComponent = () => {
   
 
     //function- remove a class from the planner
-    const removeClass = (classId) => {
-        setMyClasses(myClasses.filter((c) => c.id !== classId));
+    const removeClass = (classHashId) => {
+        setMyClasses(myClasses.filter((c) => c.hash_id !== classHashId));
+        
+        //test
+        console.log("Removed classhashid: ", classHashId)
     };
 
 
@@ -109,7 +111,7 @@ const ParentComponent = () => {
                   <Button 
                       size="small" 
                       color="secondary" 
-                      onClick={() => removeClass(myClass.id)}
+                      onClick={() => removeClass(myClass.hash_id)}
                       sx={{ backgroundColor: '#ffc649', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
                       Remove Class
                   </Button>

@@ -7,6 +7,7 @@ import "./index.css"
 import React, { Fragment, useMemo, useState, useEffect } from 'react';
 import { Calendar, Views } from 'react-big-calendar';
 import { useClasses } from '../../hooks/useClasses' 
+import { v4 as uuidv4 } from 'uuid';
 
 
 const today = new Date()

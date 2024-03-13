@@ -3,6 +3,7 @@ import React, { Fragment, useMemo, useState, useEffect } from 'react';
 import {styled} from '@mui/system'
 import { Box, Card, CardContent, CardActions, FormControl, InputLabel, Select, MenuItem, Button, Typography, useTheme } from "@mui/material";
 import { useClasses } from '../../hooks/useClasses' 
+import { v4 as uuidv4 } from 'uuid';
 import Header from '../../components/Header';
 
 
@@ -64,7 +65,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
         if (fullClassData && specificLectureData) {
             const newClass = {
                 // Construct your new class object with all properties
-                //_id: new mongoose.Types.ObjectId(),
+                hash_id: uuidv4(), // Add unique identifier
                 id: fullClassData.id,
                 course_abbrv: fullClassData.course_abbrv,
                 course_title: fullClassData.course_title,
