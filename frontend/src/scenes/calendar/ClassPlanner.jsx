@@ -171,7 +171,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
                     onChange={handleMajorChange}
                     options={deptList}
                     className="major-select"
-                    placeholder="Select a major..."
+                    placeholder="Select a department..."
                     isClearable={true}
                     isSearchable={true}
                     styles={{
