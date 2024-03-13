@@ -174,7 +174,7 @@ const Buy = () => {
               onChange={(event) => setMessage(event.target.value)}
               sx={cardStyle}
           />
-           <TextField
+       {/*}    <TextField
               margin="normal"
               required
               fullWidth
@@ -187,8 +187,8 @@ const Buy = () => {
               value={duration}
               onChange={handleDurationChange}
               sx={cardStyle}
-          />
-         {/* <FormControl fullWidth margin="normal">
+                            />*/}
+         { <FormControl fullWidth margin="normal">
               <InputLabel id="duration-select-label">Duration*</InputLabel>
               <Select
                   labelId="duration-select-label"
@@ -204,7 +204,7 @@ const Buy = () => {
                       </MenuItem>
                   ))}
               </Select>
-                  </FormControl>*/}
+                  </FormControl>}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, backgroundColor: colors.primary[800], color:'white' }} onClick={handleSubmit}>
               Start Auction
           </Button>
