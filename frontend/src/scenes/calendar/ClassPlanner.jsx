@@ -78,6 +78,10 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
                 // ... any other properties that are needed
             };
     
+
+
+
+            
             addClass(newClass); // Pass this to your addClass function
         } else {
             console.log("Class or lecture data not found");

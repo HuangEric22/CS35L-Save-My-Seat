@@ -5,19 +5,29 @@ const enrolledClassSchema = new mongoose.Schema({
     classId: { type: String, required: true },
     courseAbbrv: { type: String, required: true },
     courseTitle: { type: String, required: true },
-    catNum: String,
+    catNum: {type: String},
     
     lectures: [{ // Example of embedded document for MongoDB
-        num: String,
-        title: String,
-        instructors: String,
-        days: String,
-        time: String,
-        location: String,
+
+        capacity: {type: String}, 
+        days: {type: String}, 
+        final_date: {type: String},
+        final_location: {type: String},
+        final_time: {type: String},
+        instructors: [{type: String}],
+        location: {type: String},
+        num: {type: String},
+        status: {type: String},
+        time: {type: String},
+        title: {type: String},
+        units: {type: String},
+        waitlist: {type: String},
+        _id: { type: String}
+
     }],
     prereqs: [{type: String}],
     coreqs: [{type: String}],
-    coursePage: {type:String},
+    coursePage: {type: String},
     term: {type:String}
 });
 
