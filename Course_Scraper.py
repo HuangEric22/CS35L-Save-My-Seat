@@ -436,14 +436,17 @@ def get_reqs_and_final(course_page):
            department = element.rsplit(' ', 1)[0]
            num = element.rsplit(' ', 1)[1]
            abbrv = abbrv_dict.get(department)
-           final_course_reqs.append(abbrv + " " + num)
+           if abbrv:
+                final_course_reqs.append(abbrv + " " + num)
        if type(element) is list:
            new_list = []
            for course in element:
+               
                department = course.rsplit(' ', 1)[0]
                num = course.rsplit(' ', 1)[1]
                abbrv = abbrv_dict.get(department)
-               new_list.append(abbrv + " " + num)
+               if abbrv:
+                new_list.append(abbrv + " " + num)
           
            final_course_reqs.append(new_list)
 
@@ -453,14 +456,16 @@ def get_reqs_and_final(course_page):
            department = element.rsplit(' ', 1)[0]
            num = element.rsplit(' ', 1)[1]
            abbrv = abbrv_dict.get(department)
-           final_course_coreqs.append(abbrv + " " + num)
+           if abbrv:
+            final_course_coreqs.append(abbrv + " " + num)
        if type(element) is list:
            new_list = []
            for course in element:
                department = course.rsplit(' ', 1)[0]
                num = course.rsplit(' ', 1)[1]
                abbrv = abbrv_dict.get(department)
-               new_list.append(abbrv + " " + num)
+               if abbrv:
+                new_list.append(abbrv + " " + num)
           
            final_course_coreqs.append(new_list)               
 
@@ -662,22 +667,11 @@ def print_all():
 
 def load_courses():
    #for each class you want to load, call load_data()
-   # load_data("Electrical and Computer Engineering", "24S")
-
-
-
-
-   # for course in courses:
-   #     print("Processing:", course)
-       # create_course_node("PHYSICS", course, "24S")
-   load_data("Computer Science", "24S")
-   load_data("Mathematics", "24S")
-   load_data('Physics', '24S')
-   load_data("Physics", "24S")
-   load_data("Electrical and Computer Engineering", "24S")
-   load_data("Program in Computing", "24S")
-   set_reqs_to_nodes()
-   return course_list
+    load_data("Asian American Studies", "24S")
+    load_data("Communication", "24S")
+    load_data("Geography", "24S")
+    set_reqs_to_nodes()
+    return course_list
 
 
 def load_majors():
