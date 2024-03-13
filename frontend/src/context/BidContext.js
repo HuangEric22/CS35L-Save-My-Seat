@@ -1,31 +1,41 @@
-import { createContext, useReducer } from 'react'
+import React, { createContext, useContext, useReducer } from 'react';
 
-export const BidsContext = createContext()
+export const BidContext = createContext();
 
 export const bidsReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_BIDS': 
+    case 'SET_BIDS':
       return {
-        bids: action.payload
-      }
-    case 'CREATE_BIDS':
+        ...state,
+        bids: action.payload,
+      };
+    case 'CREATE_BID':
       return {
-        bids: [action.payload, ...state.bids]
-      }
-    
+        ...state,
+        bids: [action.payload, ...state.bids],
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export const BidsContextProvider = ({ children }) => {
+export const BidContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(bidsReducer, {
-    workouts: null
-  })
+    bids: [],
+  });
+
+  // Function to get a bidder's user ID based on bid ID
+  const getBidderUserIdByBidId = (bidId) => {
+    const bid = state.bids.find(b => b.bidId === bidId);
+    return bid ? bid.userId : null;
+  };
 
   return (
-    <BidsContext.Provider value={{...state, dispatch}}>
-      { children }
-    </BidsContext.Provider>
-  )
-}
+    <BidContext.Provider value={{ ...state, dispatch, getBidderUserIdByBidId }}>
+      {children}
+    </BidContext.Provider>
+  );
+};
+
+// Custom hook to use the BidContext
+export const useBids = () => useContext(BidContext);
