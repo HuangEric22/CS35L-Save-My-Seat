@@ -29,6 +29,7 @@ const createAuction = async (req, res) => {
         const user = await User.findById(ownerId);
         user.courses.push(courseName);
         await user.save();
+        console.log(user)
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });
@@ -60,6 +61,12 @@ const createBid = async (req, res) => {
         await bid.save();
         auction.bids.push(bid);
         await auction.save();
+        const user = await User.findById(bidderID);
+        user.bids.push(bid);
+        await user.save();
+        console.log("Bid ID",bid._id)
+        console.log("User bid array", user.bids)
+        console.log(user)
         res.status(201).json(auction); //return the auction to the frontend api
     } catch (error) {
         console.log(error)

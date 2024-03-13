@@ -8,6 +8,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { useBidContext } from "../../hooks/useBidContext";
 const Buy = () => {
     const {user} = useAuthContext();
+    const [errors, setErrors] = useState({});
     const {getBidderUserIdByBidId} = useBidContext();
     //console.log(bid.bidderID)
     const [selectedClass, setSelectedClass] = useState('');
@@ -29,7 +30,16 @@ const Buy = () => {
     const handleDurationChange = (event) => {
         setDuration(event.target.value);
     };
-
+    const validateForm = () => {
+        let tempErrors = {};
+        tempErrors.startingBid = startingBid ? "" : "Starting bid is required";
+        tempErrors.class = selectedClass ? "" : "Class is required";
+        tempErrors.duration = duration ? "" : "Duration is required";
+        // Add more validations as needed
+    
+        setErrors(tempErrors);
+        return Object.values(tempErrors).every(x => x === "");
+    }
     const fetchClasses = async () => {
         try {
             const response = await fetch("http://localhost:4000/api/classes/", {
@@ -62,7 +72,11 @@ const Buy = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+    
+        if (!validateForm()) {
+            console.error("Validation failed");
+            return;
+        }
         try {
             let userString = localStorage.getItem('user'); 
             let { userID } = JSON.parse(userString);
@@ -159,6 +173,7 @@ const Buy = () => {
               value={startingBid}
               onChange={handleBidChange}
               sx={cardStyle}
+              
           />
           <TextField
               margin="normal"

@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { Card, CardContent, CardActions, Grid } from '@mui/material';
-import { auctions, bids } from "../../data/mockAuctions"
+//import { auctions, bids } from "../../data/mockAuctions"
 import { styled, keyframes } from '@mui/system';
 import '../../animations.css';
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -26,6 +26,11 @@ const Auctions = () => {
     const [highestBidders, setHighestBidders] = useState([]);
     const [bidders, setBidders] = useState([]);
     const [times, setTimes] = useState([]);
+    const [mybids, setBids] = useState([]);
+
+    const fetchMyBids = async () => {
+
+    }
 
     
     const fetchAuctions = async () => {
@@ -54,6 +59,29 @@ const Auctions = () => {
         } catch (error) {
             console.error(error);
         }
+        
+try {
+    const response = await fetch(`http://localhost:4000/api/user/bids/${id}`, {
+        method: "GET", 
+      headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          }
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch auctions');
+    }
+
+    const data = await response.json();
+   
+    setBids(data);
+    //console.log(bids);
+  
+}
+catch (error) {
+    console.error(error);
+}
     };
     const fetchHighestBidder = async () => {
        
@@ -102,6 +130,7 @@ const Auctions = () => {
     };
 
     useEffect(() => {
+        fetchMyBids();
         fetchAuctions();
     }, [fetchAgain]);
 
@@ -110,17 +139,32 @@ const Auctions = () => {
     console.log(id);
     
 
-    const auctionsFilteredByOwner = realAuctions.filter(auction => auction.ownerId === id);
+    const auctionsFilteredByOwner = realAuctions.filter(auction => auction.ownerId === user.userID);
 
+   {/* const auctionsFilteredByBidder = realAuctions.filter(auction =>
+        auction.bids.some(bidId => user.Bids.includes(bidId)) // Checks if any of auction's bidIds exist in user's bids
+   );*/}
+
+      console.log("My bids", mybids)
+      console.log(Array.isArray(mybids));
+      const innerArray = mybids[0]
+      console.log(Array.isArray(innerArray))
+     // console.log("Auctions Filtered Bids", auctionsFilteredByOwner)
+   
     const filteredIDs = Object.entries(highestBidders)
     .filter(([id, [bidAmount, bidderName]]) => bidderName === username)
     .map(([id]) => id);
 
-    const auctionsFilteredByBids = realAuctions.filter(auction => auction.bids.includes(id));
-    console.log(realAuctions);
-    console.log(id);
-    console.log(highestBidders);
-    console.log(times);
+    const auctionsFilteredByBids = realAuctions.filter(auction =>
+        auction.bids.some(auctionBidRef => mybids.includes(auctionBidRef))
+    );
+      console.log(auctionsFilteredByOwner)
+   //   console.log(auctionsFilteredByBids)
+   // console.log(realAuctions);
+   // console.log(id);
+  // // console.log(highestBidders);
+   // console.log(times);
+    //console.log(user.userID)
 
 
     const cardStyle = {
@@ -202,7 +246,7 @@ const Auctions = () => {
                     <Grid container spacing={2}>
                         {auctionsFilteredByBids.map((auction) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={auction._id}>
-                                <Card raised className={ highestBidders[auction._id] && username != highestBidders[auction._id][1] ? 'someoneOutbidYou' : '' } sx={cardStyle}>
+                                <Card raised className={ highestBidders[auction._id] && username !== highestBidders[auction._id][1] ? 'someoneOutbidYou' : '' } sx={cardStyle}>
                                     <CardContent>
                                         { highestBidders[auction._id] && <Typography variant="h5" component="h2">
                                             {auction.courseName} 
@@ -218,10 +262,10 @@ const Auctions = () => {
                                             }}>
                                                 {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : 'Highest Bidder: {highestBidders[auction._id][1]}'}
                                         </Typography> }
-                                        { times[auction._id] && 
-                                        <Typography color = "#FFD100">
-                                            Time left: {times[auction._id]}
-                                            </Typography>}
+                                        { times[auction._id] &&
+    <Typography color="#FFD100">
+        Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
+    </Typography>}
                                     </CardContent>
                                     <CardActions>
                                         { highestBidders[auction._id] &&

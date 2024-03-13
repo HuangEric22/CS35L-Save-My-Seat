@@ -33,7 +33,7 @@ const generateToken = (_id) => {
         email: user.email,
         major: user.major,
         userID: user._id,
-        
+       // bids: [],
          token})
     } catch (error) {
       res.status(400).json({error: error.message})
@@ -74,6 +74,7 @@ const generateToken = (_id) => {
 const authUser = async(req, res) => {
     const { email, password } = req.body;
     
+    
 
     try {
         const user = await User.login(email, password)
@@ -81,11 +82,24 @@ const authUser = async(req, res) => {
         // create a token
         const token = generateToken(user._id)
         const userID = user._id
-        res.status(200).json({username: user.username, name: user.name, email,userID,  token})
+        const bids = user.bids;
+        res.status(200).json({username: user.username, name: user.name, email,userID, bids, token})
       } catch (error) {
         res.status(400).json({error: error.message})
       }
 };
+
+const userBids = async (req,res) => {
+    
+const {userId} = req.params;
+    try {
+const user = await User.findById(userId);
+res.status(200).json(user.bids)
+    }
+    catch (error) {
+        res.status(400).json({error: error.message})
+    }
+}
 
 const getAuctionOwners = async (auctionIds) => {
     const owners = {};
@@ -156,7 +170,7 @@ const planClass = async (classId) => {
 }
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids
 }
 
 
