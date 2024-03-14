@@ -68,12 +68,12 @@ want to isolate the dependencies for this project.
 
 ### Running the Scraper:
 
-From there, the user edit the `department_list` and `term` string in `dataAPI.py` and put 
-insert department listed in:
+From there, the user can edit the `department_list` and `term` string in `dataAPI.py` and
+insert any department listed in:
 `https://registrar.ucla.edu/faculty-staff/courses-and-programs/department-and-subject-area-codes`
 
 When `dataAPI.py` is ran, it will print which course from the department (if any) is currently 
-being processed and then insert them into the database after every course from the given list
+being processed and then insert them into the database after every department from the given list
 has been processed. Keep in mind the `load_course_data` function expects a list of strings and a string.
 
 You can also fetch major requirements by adding majors into the `requested_majors` list. Keep each entry
