@@ -39,13 +39,6 @@ const Topbar = () => {
                     <GiTrojanHorse />
                 )}
             </IconButton>
-            <IconButton>
-                <NotificationsOutLinedIcon />
-            </IconButton>
-            <IconButton >
-                
-                <SettingsOutLinedIcon />
-            </IconButton>
             <IconButton onClick={handleLogout}>
             
                 <LogoutOutlinedIcon />

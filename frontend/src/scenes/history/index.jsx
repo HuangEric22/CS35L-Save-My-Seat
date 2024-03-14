@@ -306,7 +306,7 @@ catch (error) {
     const columns = [
         {
           field: "name",
-          headerName: "Name",
+          headerName: "Last Bidder",
           flex: 1,
         },
         {

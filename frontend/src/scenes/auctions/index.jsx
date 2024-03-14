@@ -271,7 +271,7 @@ catch (error) {
         }
         // Check if the auction has been bid on before
         if (highestBidders[auctionId]) {
-            const highestBid = parseFloat(highestBidders[auctionId][0]);
+            const highestBid = parseFloat(highestBidders[auctionId][highestBidders[auctionId].length - 1].amount);
             // New bid must be higher than the current highest bid
             if (bidAmount > highestBid) {
                 createBids(auctionId, bidAmount); 
