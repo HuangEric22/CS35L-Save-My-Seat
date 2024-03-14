@@ -204,7 +204,7 @@ const location = useLocation();
                 setSelected={setSelected}
               />
               <Item
-                title="Purchase History"
+                title="Transaction History"
                 to="/history"
                 icon={<HistoryOutlinedIcon />}
                 selected={selected}
