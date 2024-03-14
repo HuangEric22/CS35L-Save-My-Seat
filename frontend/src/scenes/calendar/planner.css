@@ -1,0 +1,25 @@
+/* styles.css */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  @keyframes loadingDots {
+    0%  { content: '.....'; }
+    10% { content: '....'; }
+    20% { content: '...'; }
+    30% { content: '..'; }
+    40% { content: '.'; }
+    50% {content: ''}
+    60%  { content: '.'; }
+    70% { content: '..'; }
+    80% { content: '...'; }
+    90% { content: '....'; }
+    100% { content: '.....'; }
+  }
+  
+  .loadingText::after {
+    content: '';
+    animation: loadingDots 1.25s infinite step-start;
+    white-space: 0; /* This ensures spaces are preserved */
+  }
