@@ -1,5 +1,7 @@
 # CS35L-Save-My-Seat
 
+<img src="frontend/build/assets/OIG4.png" alt="Save My Seat Logo" width="270"/>
+
 ## Overview
 
 Save My Seat aims to streamline the process of getting seats in classes, many of which are in high demand and reach full capacity quickly. Our goal is to create a user-friendly, interactive platform that facilitates the exchange of classes from student to student through various features, which takes out a lot of the complexity of trying to enroll in a full class. These features include an auctioning feature that allows users to post courses on a billboard, all other app users can see and bid on these courses. The app also has a system to filter and display relevant courses based on the users’ department, and provides a convenient overview of their schedule in calendar format.
