@@ -51,29 +51,28 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
   const sortedClassesById = useMemo(() => {
     return [...classes].sort((a, b) => {
-      // Extract the numeric part and the remaining part of the id for comparison
+      // First, compare the course abbreviations
+      const abbrvComparison = a.course_abbrv.localeCompare(b.course_abbrv);
+      if (abbrvComparison !== 0) {
+        return abbrvComparison;
+      }
+  
+      // If the abbreviations are the same, extract and compare the numeric parts
       const matchA = a.id.match(/(\D+)?(\d+)(\D*)?/);
       const matchB = b.id.match(/(\D+)?(\d+)(\D*)?/);
   
-      if (!matchA || !matchB) return 0; // Fallback in case of an unexpected format
+      if (!matchA || !matchB) return 0;
   
-      // Deconstruct the results; defaulting prefix and suffix to empty string if they don't exist
-      const [, prefixA = '', numericA, suffixA = ''] = matchA;
-      const [, prefixB = '', numericB, suffixB = ''] = matchB;
+      const [, , numericA, suffixA = ''] = matchA;
+      const [, , numericB, suffixB = ''] = matchB;
   
-      // Compare the numeric parts as integers first
       const numA = parseInt(numericA, 10);
       const numB = parseInt(numericB, 10);
       if (numA !== numB) {
         return numA - numB;
       }
   
-      // If numeric parts are equal, then compare the prefixes if they are different
-      if (prefixA !== prefixB) {
-        return prefixA.localeCompare(prefixB);
-      }
-  
-      // If prefixes are also equal, then compare the remaining part, if any
+      // If numeric parts are equal, then compare the remaining parts, if any
       return suffixA.localeCompare(suffixB);
     });
   }, [classes]);
@@ -136,7 +135,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
 
     const handleEnroll = () => {
         // Find the full class data including lectures from the classes state
-        const fullClassData = classes.find(c => c.id === selectedClass);
+        const fullClassData = sortedClassesById.find(c => c.id === selectedClass);
     
         // Find the specific lecture data from the selected class
         const specificLectureData = fullClassData.lectures.find(lecture => lecture.num === selectedLecture);
@@ -167,12 +166,6 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
         }
     };
     
-    
-
-
-
-
-
   const StyledBox = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),
     backgroundColor: theme.palette.primary.light, // Or use custom theme token colors
