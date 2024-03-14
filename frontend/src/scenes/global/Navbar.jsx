@@ -217,6 +217,13 @@ const location = useLocation();
                 selected={selected}
                 setSelected={setSelected}
               />
+                <Item
+                title="Profile"
+                to="/profile"
+                icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
               
   
               {/* <Typography

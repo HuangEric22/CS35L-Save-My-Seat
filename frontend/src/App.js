@@ -13,7 +13,7 @@ import Login from "./Login";
 import { useAuthContext } from './hooks/useAuthContext.js';
 import { Navigate } from 'react-router-dom';
 import History from "./scenes/history";
-
+//import Profile from "./Profile"
 import ParentComponent from "./scenes/calendar/ParentComponent.jsx";
 
 import { useEffect } from 'react';
@@ -58,6 +58,9 @@ function App() {
               //  user ? <Auctions /> : <Navigate to="/login" />
                  <ProtectedRoute> <Auctions/> </ProtectedRoute>
               }/>
+           {/*}   <Route path = "/profile" element = {
+                <ProtectedRoute><Profile/></ProtectedRoute>
+              }/>*/}
                <Route path="/login" element={ <Login/> }/> 
                <Route path="/signup" element={<Signup/>}/> {/*routes for signup/login*/}
                <Route path="/test" element={<Test/>}/>
