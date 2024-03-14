@@ -94,7 +94,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
         if (fullClassData && specificLectureData) {
             const newClass = {
                 // Construct your new class object with all properties
-                hash_id: uuidv4(), // Add unique identifier
+                hash_id: uuidv4(),
                 id: fullClassData.id,
                 course_abbrv: fullClassData.course_abbrv,
                 course_title: fullClassData.course_title,
