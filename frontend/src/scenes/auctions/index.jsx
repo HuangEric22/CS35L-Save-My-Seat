@@ -49,12 +49,12 @@ const Auctions = () => {
             }
 
             const data = await response.json();
-            console.log(data);
             const initialFormVisibleMap = data.reduce((acc, auction) => {
                 acc[auction._id] = false;
                 return acc;
             }, {});
             setAuctions(data);
+            console.log(realAuctions);
             fetchHighestBidder();
             setFormVisibleMap(initialFormVisibleMap);
             fetchTimes();
@@ -294,6 +294,9 @@ catch (error) {
     };
 
     const [isVisible, setIsVisible] = useState(true);
+
+    console.log(realAuctions);
+
 
     return (
         <Box m={2}>
