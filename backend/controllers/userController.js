@@ -182,17 +182,20 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
 
         // Iterate over each auction
         for (const auction of auctions) {
-            // Check if the auction has any bids
-            if (auction.bids.length > 0) {
-                // Since the bids are in reverse chronological order, the highest bid is the first one
-                const highestBid = auction.bids[auction.bids.length - 1]; // Get the first bid in the array
-                const bid = await Bid.findById(highestBid._id);
-                // Store the bidder ID of the highest bid
-                highestBidders[auction._id] = [bid.amount, bid.name];
-            } else {
-                // If there are no bids for the auction, set the highest bidder to 'Unknown'
-                highestBidders[auction._id] = [auction.startingBid, 'No Bids'];
+            // Initialize an array to store all bids for this auction
+            const allBids = [];
+
+            // Iterate over each bid in the auction
+            for (const bid of auction.bids) {
+                const foundBid = await Bid.findById(bid._id);
+                allBids.push({
+                    amount: foundBid.amount,
+                    name: foundBid.name
+                });
             }
+
+            // Store the array of bids for this auction in the highestBidders object
+            highestBidders[auction._id] = allBids.length > 0 ? allBids : [{ amount: auction.startingBid, name: 'No Bids' }];
         }
 
         // Return the result
@@ -202,6 +205,7 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 const planClass = async (classId) => {
     
 }
