@@ -11,7 +11,7 @@ import { useBidContext } from "../../hooks/useBidContext";
 import { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from '@mui/x-data-grid';
-import CircularProgress from '@mui/material/CircularProgress';
+//import { CircularProgress, GridOverlay } from '@mui/x-data-grid';
 
 
 
@@ -357,15 +357,6 @@ catch (error) {
       
         fetchData();
       }, [id, realAuctions, highestBidders]);
-    
-
-    if (isLoading) {
-        return (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <CircularProgress /> 
-          </div>
-        );
-      }
 
 
     return (
@@ -396,7 +387,12 @@ catch (error) {
                  }
             
             }}>
-               <DataGrid rows={rows} columns = {columns}/> 
+               <DataGrid 
+               rows={rows}
+                columns = {columns}
+                localeText={{
+                    noRowsLabel: "Loading...",
+                }}/> 
             </Box>
 
         </Box>
