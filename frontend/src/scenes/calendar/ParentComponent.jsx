@@ -172,6 +172,17 @@ const ParentComponent = () => {
                       Location: {myClass.lectures[0].location}
                   </Typography>
                   <Typography variant="body1" component="div">
+                      Status: {myClass.lectures[0].status}
+                  </Typography>
+                  {myClass.lectures[0].status.toLowerCase() !== 'closed' && (
+                    <Typography variant="body1" component="div">
+                    Capacity: {myClass.lectures[0].capacity}
+                    </Typography>
+                    )}
+                  <Typography variant="body1" component="div">
+                      Units: {myClass.lectures[0].units}
+                  </Typography>
+                  <Typography variant="body1" component="div">
                       Final Exam: {myClass.lectures[0].final_date} at {myClass.lectures[0].final_time}, {myClass.lectures[0].final_location}
                   </Typography>
               </CardContent>
