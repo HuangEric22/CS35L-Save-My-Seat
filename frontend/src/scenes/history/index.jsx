@@ -335,8 +335,9 @@ catch (error) {
       
               if (auctionId && highestBidders[auctionId] && highestBidders[auctionId].length > 0) {
                 const bids = highestBidders[auctionId] || [];
+                const filteredBids = bids.filter(bid => bid.name !== "No Bids");
                 console.log(bids);
-                return bids.map((bid, index) => ({
+                return filteredBids.map((bid, index) => ({
                   id: `${auctionId}-${index}`,
                   name: bid.name,
                   class: courseName,
