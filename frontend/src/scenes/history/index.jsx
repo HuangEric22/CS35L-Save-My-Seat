@@ -392,7 +392,7 @@ catch (error) {
                rows={rows}
                 columns = {columns}
                 localeText={{
-                    noRowsLabel: "Loading...",
+                    noRowsLabel: rows.length === 0 ? "Start an auction for it to show up here!" : "Loading...",
                 }}/> 
             </Box>
 
