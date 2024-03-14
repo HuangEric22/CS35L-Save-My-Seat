@@ -56,7 +56,7 @@ const location = useLocation();
 
 
   const Navbar = () => {
-    const [funds, setFunds] = useState('');
+   /* const [funds, setFunds] = useState('');
     const Funds = async () => {
       const {user} = useAuthContext();
       try {
@@ -79,7 +79,7 @@ const location = useLocation();
       }
       catch (error){}
     }
-    Funds();
+    Funds();*/
     const { user } = useAuthContext()
     const navigate = useNavigate()
     const { logout } = useLogout()
@@ -172,10 +172,7 @@ const location = useLocation();
                     
                     {user ?  '@'+ user.username: ''} {/* Use user's name or a default */}
                   </Typography>
-                  <Typography variant="h5" color={colors.greenAccent[400]}>
-                    
-                    {"Funds: $" + funds} {/* Use user's name or a default */}
-                  </Typography>
+                 
                 </Box>
               </Box>
             )}
