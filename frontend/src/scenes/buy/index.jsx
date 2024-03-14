@@ -1,6 +1,6 @@
 import { Box, FormControl, InputLabel, Select, MenuItem, TextField, Button } from "@mui/material";
 import Header from "../../components/Header";
-import React, { useState , useEffect} from 'react';
+import React, { useState , useEffect, useMemo} from 'react';
 import { tokens } from "../../theme";
 import { useTheme } from '@mui/material/styles';
 import { classesList, auctionDurations } from '../../data/mockClassData';
@@ -18,15 +18,42 @@ const Buy = () => {
     const [classes, setClasses] = useState([]);
     const [selectedCourseAbbrev, setSelectedCourseAbbrev] = useState('');
     const courseAbbrevs = [...new Set(classes.map(cls => cls.course_abbrv))];
-    const filteredClasses = classes.filter((cls) => cls.course_title && cls.course_abbrv === selectedCourseAbbrev);
+    const sortedCourseAbbrevs = Array.from(courseAbbrevs).sort();
+    const sortedClassesById = useMemo(() => {
+        return [...classes].sort((a, b) => {
+          // First, compare the course abbreviations
+          const abbrvComparison = a.course_abbrv.localeCompare(b.course_abbrv);
+          if (abbrvComparison !== 0) {
+            return abbrvComparison;
+          }
+      
+          // If the abbreviations are the same, extract and compare the numeric parts
+          const matchA = a.id.match(/(\D+)?(\d+)(\D*)?/);
+          const matchB = b.id.match(/(\D+)?(\d+)(\D*)?/);
+      
+          if (!matchA || !matchB) return 0;
+      
+          const [, , numericA, suffixA = ''] = matchA;
+          const [, , numericB, suffixB = ''] = matchB;
+      
+          const numA = parseInt(numericA, 10);
+          const numB = parseInt(numericB, 10);
+          if (numA !== numB) {
+            return numA - numB;
+          }
+      
+          // If numeric parts are equal, then compare the remaining parts, if any
+          return suffixA.localeCompare(suffixB);
+        });
+      }, [classes]);
+    const filteredClasses = sortedClassesById.filter((cls) => cls.course_title && cls.course_abbrv === selectedCourseAbbrev);
+    
     const handleClassChange = (event) => {
         setSelectedClass(event.target.value);
     };
-
     const handleBidChange = (event) => {
         setStartingBid(event.target.value);
     };
-
     const handleDurationChange = (event) => {
         setDuration(event.target.value);
     };
@@ -138,7 +165,7 @@ const Buy = () => {
                         }}
                         sx={cardStyle}
                     >
-                        {courseAbbrevs.map((abbrev) => (
+                        {sortedCourseAbbrevs.map((abbrev) => (
                             <MenuItem key={abbrev} value={abbrev}>{abbrev}</MenuItem>
                         ))}
                     </Select>
