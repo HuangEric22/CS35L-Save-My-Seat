@@ -134,36 +134,44 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     // }
   };
 
-  const handleEnroll = () => {
-    // Find the full class data including lectures from the classes state
-    const fullClassData = sortedClassesById.find((c) => c.id === selectedClass);
+    const handleEnroll = () => {
+        // Find the full class data including lectures from the classes state
+        const fullClassData = classes.find(c => c.id === selectedClass);
+    
+        // Find the specific lecture data from the selected class
+        const specificLectureData = fullClassData.lectures.find(lecture => lecture.num === selectedLecture);
+    
+        if (fullClassData && specificLectureData) {
+            const newClass = {
+                // Construct your new class object with all properties
+                hash_id: uuidv4(), // Add unique identifier
+                id: fullClassData.id,
+                course_abbrv: fullClassData.course_abbrv,
+                course_title: fullClassData.course_title,
+                cat_num: fullClassData.cat_num,
+                lectures: [specificLectureData], // Add the selected lecture
+                prereqs: fullClassData.prereqs,
+                coreqs: fullClassData.coreqs,
+                course_page: fullClassData.course_page,
+                term: fullClassData.term,
+                // ... any other properties that are needed
+            };
+    
 
-    // Find the specific lecture data from the selected class
-    const specificLectureData = fullClassData.lectures.find(
-      (lecture) => lecture.num === selectedLecture
-    );
 
-    if (fullClassData && specificLectureData) {
-      const newClass = {
-        // Construct your new class object with all properties
-        hash_id: uuidv4(), // Add unique identifier
-        id: fullClassData.id,
-        course_abbrv: fullClassData.course_abbrv,
-        course_title: fullClassData.course_title,
-        cat_num: fullClassData.cat_num,
-        lectures: [specificLectureData], // Add the selected lecture
-        prereqs: fullClassData.prereqs,
-        coreqs: fullClassData.coreqs,
-        course_page: fullClassData.course_page,
-        term: fullClassData.term,
-        // ... any other properties that are needed
-      };
 
-      addClass(newClass); // Pass this to your addClass function
-    } else {
-      console.log("Class or lecture data not found");
-    }
-  };
+            
+            addClass(newClass); // Pass this to your addClass function
+        } else {
+            console.log("Class or lecture data not found");
+        }
+    };
+    
+    
+
+
+
+
 
   const StyledBox = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),

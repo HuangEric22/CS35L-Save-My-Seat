@@ -158,7 +158,7 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
     
     //new variable with the right times and days
     const parsedClasses = myClasses.flatMap(classData => {
-        const title = `${classData.course_abbrv} ${classData.cat_num} ${classData.lectures[0].num}`;
+        const title = `${classData.courseAbbrv} ${classData.catNum} ${classData.lectures[0].num}`;
       
         const { start, end } = parseTime(classData.lectures[0].time);
       

@@ -302,7 +302,12 @@ const MyAuctions = () => {
                 ) : null}
                 </Grid>
                 {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
-                    Seller: {sellers[auction._id]} | {highestBidders[auction._id]  && highestBidders[auction._id][highestBidders[auction._id].length - 1]? `Highest Bid: $${highestBidders[auction._id][highestBidders[auction._id].length - 1].name} (${highestBidders[auction._id][highestBidders[auction._id].length - 1].amount})` : `Starting Price: $${auction.startingBid}`}
+                    Seller: {sellers[auction._id]} | {highestBidders[auction._id] 
+                     && highestBidders[auction._id][highestBidders[auction._id].length - 1]?
+                      `Highest Bid: $${ highestBidders[auction._id][highestBidders[auction._id].length - 1].amount} 
+                      (${
+                        highestBidders[auction._id][highestBidders[auction._id].length - 1].name
+                       })` : `Starting Price: $${auction.startingBid}`}
                 </Typography>}
                 {auction.message && // Check if there is a message
             <Typography variant="body1" gutterBottom>
