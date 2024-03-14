@@ -190,7 +190,8 @@ const ParentComponent = () => {
                   <Button 
                       size="small" 
                       color="secondary" 
-                      onClick={() => removeClass(myClass)}  
+                      onClick={() => {removeClass(myClass)
+                        window.location.reload();}}  
                       sx={{ backgroundColor: '#ffc649', color: 'black', '&:hover': { backgroundColor: 'darkgoldenrod' } }}> 
                       Remove Class
                   </Button>

@@ -338,24 +338,24 @@ catch (error) {
                             <Grid item xs={12} sm={6} md={4} lg={3} key={auction._id}>
                                 <Card raised className={ highestBidders[auction._id] && username !== highestBidders[auction._id][1] ? 'someoneOutbidYou' : '' } sx={cardStyle}>
                                     <CardContent>
-                                        { highestBidders[auction._id] && <Typography variant="h5" component="h2">
+                                      { highestBidders[auction._id] && <Typography variant="h5" component="h2">
                                             {auction.courseName} 
-                                        </Typography> }
+                        </Typography> }
                                         { highestBidders[auction._id] &&
                                         <Typography color="textSecondary">
                                             Highest Bid: ${highestBidders[auction._id][0]} 
-                                        </Typography> }
+                                     </Typography> }
                                         { highestBidders[auction._id] &&
                                         <Typography color="textSecondary"
                                             sx={{
                                                 color: username === highestBidders[auction._id][1] ? 'green' : 'red',
                                             }}>
                                                 {username === highestBidders[auction._id][1] ? 'You are the highest bidder!' : `Highest Bidder: ${highestBidders[auction._id][1]}`}
-                                    </Typography>}
-                                        { times[auction._id] &&
+                                        </Typography>}
+                                       { times[auction._id] &&
     <Typography color="#FFD100">
         Time Left - {times[auction._id].hours} hours : {times[auction._id].minutes} minutes
-    </Typography>}
+                                       </Typography>}
                                     </CardContent>
                                     <CardActions>
                                         {highestBidders[auction._id] &&
@@ -384,7 +384,7 @@ catch (error) {
                                                 </form>
                                             </Box>
                                         )}
-                                    </Box>}
+                                        </Box>}
                                     </CardActions>
                                 </Card>
                             </Grid>
