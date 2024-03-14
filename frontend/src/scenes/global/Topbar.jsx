@@ -42,7 +42,8 @@ const Topbar = () => {
             <IconButton>
                 <NotificationsOutLinedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton >
+                
                 <SettingsOutLinedIcon />
             </IconButton>
             <IconButton onClick={handleLogout}>

@@ -79,16 +79,13 @@ const MyAuctions = () => {
             }
     
             const data = await response.json();
+            const updatedBids = highestBidders[auctionId] ? [...highestBidders[auctionId]] : [];
+            updatedBids.push([bidAmount.toString(), user.name]);
+            setHighestBidders(highestBidders => ({
+                ...highestBidders,
+                [auctionId]: updatedBids
+            }));
             
-            // Check if the current bid is higher than the existing highest bid
-            if (!highestBidders[auctionId] || bidAmount > parseFloat(highestBidders[auctionId][0])) {
-                // Update the highestBidders state only if the current bid is higher
-                const updatedBidder = [bidAmount.toString(), user.name];
-                setHighestBidders(prevHighestBidders => ({
-                    ...prevHighestBidders,
-                    [auctionId]: updatedBidder
-                }));
-            }
             
             // Update state or perform any other necessary actions upon successful bid placement
             console.log(data);
@@ -226,11 +223,12 @@ const MyAuctions = () => {
         }
         // Check if the auction has been bid on before
         if (highestBidders[auctionId]) {
-            const highestBid = parseFloat(highestBidders[auctionId][0]);
+            const highestBid = parseFloat(highestBidders[auctionId][highestBidders[auction._id].length - 1].amount);
             // New bid must be higher than the current highest bid
             if (bidAmount > highestBid) {
                 createBids(auctionId, bidAmount); 
                 setFetchAgain(!fetchAgain); 
+                window.location.reload();
             } else {
                 alert("Your bid must be higher than the current highest bid.");
             }
@@ -304,7 +302,7 @@ const MyAuctions = () => {
                 ) : null}
                 </Grid>
                 {highestBidders[auction._id] && <Typography variant="body1" gutterBottom>
-                    Seller: {sellers[auction._id]} | {highestBidders[auction._id] && highestBidders[auction._id][1] !== "No Bids" ? `Highest Bid: $${highestBidders[auction._id][0]} (${highestBidders[auction._id][1]})` : `Starting Price: $${auction.startingBid}`}
+                    Seller: {sellers[auction._id]} | {highestBidders[auction._id]  && highestBidders[auction._id][highestBidders[auction._id].length - 1]? `Highest Bid: $${highestBidders[auction._id][highestBidders[auction._id].length - 1].name} (${highestBidders[auction._id][highestBidders[auction._id].length - 1].amount})` : `Starting Price: $${auction.startingBid}`}
                 </Typography>}
                 {auction.message && // Check if there is a message
             <Typography variant="body1" gutterBottom>
