@@ -50,3 +50,34 @@ You should receive the message "Connected \n Server Started".
 You can view the app in your browser at http://localhost:3000.
 
 
+### For Administrators:
+
+### Setting Up Python Dependencies:
+
+```
+git clone https://github.com/HuangEric22/CS35L-Save-My-Seat.git
+cd CS35L-Save-My-Seat
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -U -r requirements.txt
+```
+
+The `source venv/bin/activate` creates a virtual envirionment for Python 
+which should be done every time the user creates a new shell if the users
+want to isolate the dependencies for this project.
+
+### Running the Scraper:
+
+From there, the user edit the `department_list` and `term` string in `dataAPI.py` and put 
+insert department listed in:
+`https://registrar.ucla.edu/faculty-staff/courses-and-programs/department-and-subject-area-codes`
+
+When `dataAPI.py` is ran, it will print which course from the department (if any) is currently 
+being processed and then insert them into the database after every course from the given list
+has been processed. Keep in mind the `load_course_data` function expects a list of strings and a string.
+
+You can also fetch major requirements by adding majors into the `requested_majors` list. Keep each entry
+as a list separated by commas. Majors should be inputted by only their name, not degree type. So for example:
+`Computer Science BS` should be inputted as `Computer Science`.
+
+You can exit the virtual envirionment by running `deactivate`.
