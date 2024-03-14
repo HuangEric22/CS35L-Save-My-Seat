@@ -40,37 +40,53 @@ const generateToken = (_id) => {
     }
 };
 
-// const registerUser = async(req, res) =>{
-//     console.log("register");
-//     const {name, email, password} = req.body;
-//     if(!name || !email || !password){
-//         res.status(400).send("Please Enter All Fields");
-//     }
-//     if(await User.findOne({email})){
-//         res.status(400).send("User already Registered Under Email");
-//     }
+const changePassword = async (req,res) => {
 
-//     const salt = await bcrypt.genSalt(5)
-//     const hashedPassword = await bcrypt.hash(password, salt)
+    const {oldPassword, newPassword} = req.body
+    const {userId} = req.params
+    try {
+        
+        const user = await User.changePassword(userId, oldPassword, newPassword)
+        res.status(200).json({userId})
+        } catch(error) {
+            res.status(400).json({error: error.message})
+        }
+}
 
-//     const user = new User({
-//         name,
-//         email, 
-//         password: hashedPassword
-//     });
+const changeUsername = async (req,res) => {
+    const {newUsername} = req.body
+    const {userId} = req.params
+    try {
+        const exists = await User.findOne({_id: userId, username: newUsername})
+        if (exists) {
+            throw Error("That's already your username")
+        }
+        /* exists = await this.findOne(userId, {username: newUsername});
+        if (exists) {
+          throw Error("That's already your username.")
+        }*/
+        const existsTwo = await User.findOne({username: newUsername});
+        if(existsTwo) {
+          throw Error('Username already in use');
+        }
+        await User.findByIdAndUpdate(userId, {username: newUsername });
+        res.status(200).json({username: newUsername})}
+    catch (error) {
+        res.status(400).json({error: error.message})
+    }
+}
 
-//     try {
-//         await user.save();
-//         res.json({
-//             _id:user._id, 
-//             name:user.name, 
-//             email:user.email,
-//             token: generateToken(user._id)
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// };
+const changeName = async (req,res) => {
+    const {userId} = req.params
+        const {newName} = req.body
+    try {
+        const user = await User.changeName(userId, newName)
+    
+    res.status(200).json({name: newName})}
+    catch (error) {
+        res.status(400).json({error: error.message})
+    }
+}
 const authUser = async(req, res) => {
     const { email, password } = req.body;
     
@@ -211,7 +227,8 @@ const planClass = async (classId) => {
 }
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap, userFunds
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap, userFunds, changePassword,
+    changeUsername, changeName
 }
 
 
