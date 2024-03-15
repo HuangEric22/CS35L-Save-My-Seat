@@ -13,6 +13,15 @@ Save My Seat aims to streamline the process of getting seats in classes, many of
 
 ## Running the Application:
 
+### For Linux Users Running Bash:
+`git clone https://github.com/HuangEric22/CS35L-Save-My-Seat.git`
+
+`cd CS35L-Save-My-Seat`
+
+`./script.sh`
+
+### For Users on Other Operating Systems:
+
 ### Step 1: Clone Repository
 
 `git clone https://github.com/HuangEric22/CS35L-Save-My-Seat.git`
@@ -50,7 +59,7 @@ You should receive the message "Connected \n Server Started".
 You can view the app in your browser at http://localhost:3000.
 
 
-### For Administrators:
+## For Administrators:
 
 ### Setting Up Python Dependencies:
 
