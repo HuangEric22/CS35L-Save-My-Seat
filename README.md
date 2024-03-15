@@ -20,6 +20,20 @@ Save My Seat aims to streamline the process of getting seats in classes, many of
 
 `./script.sh`
 
+This should install all of your dependencies. You then need to run:
+
+`cd backend/`
+
+`npm start`
+
+This starts the backend. You then need to open a new terminal:
+
+`cd CS35L-Save-My-Seat`
+
+`cd frontend/`
+
+`npm start`
+
 ### For Users on Other Operating Systems:
 
 ### Step 1: Clone Repository
