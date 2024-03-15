@@ -18,6 +18,8 @@ Save My Seat aims to streamline the process of getting seats in classes, many of
 
 `cd CS35L-Save-My-Seat`
 
+`chmod +x script.sh`
+
 `./script.sh`
 
 This should install all of your dependencies. You then need to run:
