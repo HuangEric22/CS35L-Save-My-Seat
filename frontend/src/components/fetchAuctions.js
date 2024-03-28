@@ -71,7 +71,7 @@ const MyAuctions = () => {
                     // Add authorization token if needed
                     'Authorization': `Bearer ${user.token}`
                 },
-                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name })
+                body: JSON.stringify({ auctionId, amount: bidAmount, bidderId : user.userID, name: user.name , email: user.email})
             });
     
             if (!response.ok) {

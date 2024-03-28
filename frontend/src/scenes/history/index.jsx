@@ -305,10 +305,15 @@ catch (error) {
 
     const columns = [
         {
-          field: "name",
-          headerName: "Last Bidder",
-          flex: 1,
-        },
+            field: "name",
+            headerName: "Last Bidder",
+            flex: 1,
+            renderCell: (params) => (
+              <div>
+                {params.row.name} ({params.row.email})
+              </div>
+            ),
+          },
         {
           field: "class",
           headerName: "Class Name",
@@ -328,7 +333,6 @@ catch (error) {
             const filteredAuctions = realAuctions.filter(auction => auction.ownerId == id);
             console.log(filteredAuctions);
             console.log(highestBidders);
-      
             const newRows = filteredAuctions.flatMap(auction => {
               const auctionId = auction._id;
               const courseName = auction.courseName;
@@ -336,9 +340,10 @@ catch (error) {
               if (auctionId && highestBidders[auctionId] && highestBidders[auctionId].length > 0) {
                 const bids = highestBidders[auctionId] || [];
                 const filteredBids = bids.filter(bid => bid.name !== "No Bids");
-                console.log(bids);
+                console.log(bids, "this is bids");
                 return filteredBids.map((bid, index) => ({
                   id: `${auctionId}-${index}`,
+                  email: bid.email,
                   name: bid.name,
                   class: courseName,
                   price: `$${bid.amount}`,
@@ -392,7 +397,7 @@ catch (error) {
                rows={rows}
                 columns = {columns}
                 localeText={{
-                    noRowsLabel: rows.length === 0 ? "Other people's bids on your auctions will show up here" : "Loading...",
+                    noRowsLabel: rows.length === 0 ? "Other people's bids on your auctions..." : "Loading...",
                 }}/> 
             </Box>
 

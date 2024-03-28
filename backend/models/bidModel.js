@@ -15,6 +15,10 @@ const bidModel =  new Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    email : {
+        type:String,
+        required:true
     }
 });
 

@@ -33,7 +33,6 @@ const generateToken = (_id) => {
         email: user.email,
         major: user.major,
         userID: user._id,
-       // bids: [],
          token})
     } catch (error) {
       res.status(400).json({error: error.message})
@@ -116,16 +115,6 @@ res.status(200).json(user.bids)
         res.status(400).json({error: error.message})
     }
 }
-const userFunds = async (req,res) => {
-    const {userId} = req.params;
-    try {
-        const user = await User.findById(userId);
-        res.status(200).json(user.funds)
-            }
-            catch (error) {
-                res.status(400).json({error: error.message})
-            }
-}
 
 const getAuctionOwners = async (auctionIds) => {
     const owners = {};
@@ -159,35 +148,6 @@ const getUser = async (req, res) => {
     }
 };
 
-const swap = async (req, res) => {
-    const {completedAuctions} = req.body;
-    const objectIds = completedAuctions.map(elem => elem.id);
-    try {
-        const auctions = await Auction.find({ _id: { $in: objectIds } });
-        for (const auction of auctions){
-            if(auction.bids.length > 0){
-                const highestBid = auction.bids[auction.bids.length - 1]
-                const bid = await Bid.findById(highestBid._id);
-                const highestBidder = await User.findById(bid.bidderID);
-                const owner = await User.findById(auction.ownerId); 
-                const amount = bid.amount;
-                owner.funds += amount;
-                highestBidder.funds -= amount;
-                const cls = auction.courseName;
-                owner.courses = owner.courses.filter(item => item !== cls);
-                if (!highestBidder.courses.includes(cls)) {
-                    highestBidder.courses.push(cls);
-                }
-                await owner.save();
-                await highestBidder.save();
-
-            }
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
-}
 const getHighestBiddersForAllAuctions = async (req, res) => {
     try {
         // Find all auctions
@@ -206,12 +166,13 @@ const getHighestBiddersForAllAuctions = async (req, res) => {
                 const foundBid = await Bid.findById(bid._id);
                 allBids.push({
                     amount: foundBid.amount,
-                    name: foundBid.name
+                    name: foundBid.name,
+                    email : foundBid.email
                 });
             }
 
             // Store the array of bids for this auction in the highestBidders object
-            highestBidders[auction._id] = allBids.length > 0 ? allBids : [{ amount: auction.startingBid, name: 'No Bids' }];
+            highestBidders[auction._id] = allBids.length > 0 ? allBids : [{ amount: auction.startingBid, name: 'No Bids' , email: ''}];
         }
 
         // Return the result
@@ -227,7 +188,7 @@ const planClass = async (classId) => {
 }
 
 module.exports  = {
-    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, swap, userFunds, changePassword,
+    authUser, registerUser, getUser, getHighestBiddersForAllAuctions, planClass, userBids, changePassword,
     changeUsername, changeName
 }
 

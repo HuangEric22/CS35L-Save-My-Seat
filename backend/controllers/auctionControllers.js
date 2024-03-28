@@ -27,7 +27,6 @@ const createAuction = async (req, res) => {
         await auction.save();
         res.status(201).json(auction);
         const user = await User.findById(ownerId);
-        user.courses.push(courseName);
         await user.save();
         console.log(user)
     } catch (error) {
@@ -38,7 +37,7 @@ const createAuction = async (req, res) => {
 
 const createBid = async (req, res) => {
     const { auctionId } = req.params;
-    const { bidderId: bidderID, amount, name } = req.body;
+    const { bidderId: bidderID, amount, name, email} = req.body;
     if (!mongoose.Types.ObjectId.isValid(auctionId)) 
     {
         res.status(404).send(`No auction with id: ${auctionId}`);
@@ -55,7 +54,8 @@ const createBid = async (req, res) => {
     const bid = new Bid({
         bidderID, 
         amount, 
-        name
+        name, 
+        email
     })
     try {
         await bid.save();

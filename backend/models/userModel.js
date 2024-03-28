@@ -8,9 +8,7 @@ const userSchema = new Schema({
     email:{type:String, required:true, unique:true }, 
     password:{type:String, required:true}, 
     major:{type:String, required:true},
-    courses: [{ type: String }],
     bids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bid' }],
-    funds:{type:String, default:"1000"}
 }, {timestamps: true})
 
 
