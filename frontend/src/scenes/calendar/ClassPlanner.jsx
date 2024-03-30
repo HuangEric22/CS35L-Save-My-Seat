@@ -42,13 +42,16 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     selectedClass,
     setSelectedClass,
     selectedLecture,
-    setSelectedLecture,
     lectures,
+    setSelectedLecture,
+    selectedDiscussion,
+    setSelectedDiscussion,
+    filteredClasses,
+    setFilteredClasses,
+    discussions
   } = useClasses();
   //added
-  const [filteredClasses, setFilteredClasses] = useState([]);
   const [deptList, setDeptList] = useState([]);
-
   const sortedClassesById = useMemo(() => {
     return [...classes].sort((a, b) => {
       // First, compare the course abbreviations
@@ -132,6 +135,11 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     //     setMajorClasses([]); //clear classes if no major is selected
     // }
   };
+    const handleClear = () => {
+        setSelectedClass("");
+        setSelectedLecture("");
+        setSelectedDiscussion("");
+    };
 
     const handleEnroll = () => {
         // Find the full class data including lectures from the classes state
@@ -205,6 +213,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
   //         </Card>
   //     );
   // };
+
   if (sortedClassesById.length === 0) {
     return (
       <Box
@@ -289,14 +298,41 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
             </Select>
           </FormControl>
         )}
+        {selectedLecture && (discussions.length != 0) && (
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="discussion-select-label">Select a Discussion</InputLabel>
+            <Select
+              labelId="discussion-select-label"
+              id="discussion-select"
+              value={selectedDiscussion}
+              onChange={(e) => setSelectedDiscussion(e.target.value)}
+            >
+              {discussions.map((discussion) => (
+                <MenuItem key={discussion.alpha} value={discussion.alpha}>
+                  {`${discussion.alpha}: ${discussion.instructors} - ${discussion.days} ${discussion.time} at ${discussion.location}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}        
         <Button
           variant="contained"
           color="secondary"
           onClick={handleEnroll}
-          sx={{ mt: 2 }}
-          disabled={!selectedLecture}
+          sx={{ mt: 2, mr: 2 }}
+          disabled={discussions.length === 0 ? !selectedLecture : !selectedDiscussion}
         >
           Add to Plan
+        </Button>
+        
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleClear}
+          sx={{ mt: 2}}
+          
+        >
+          Clear Class
         </Button>
       </StyledBox>
     </Box>

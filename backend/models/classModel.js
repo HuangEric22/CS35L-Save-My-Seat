@@ -2,6 +2,17 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // Define the lecture schema
+const discussionSchema = new Schema({
+  alpha: String,
+  location: String,
+  time: String,
+  instructors: String,
+  status: String,
+  capacity: String,
+  waitlist: String,
+  page: String
+});
+
 const lectureSchema = new Schema({
   num: String,
   title: String,
@@ -15,7 +26,8 @@ const lectureSchema = new Schema({
   units: String,
   final_date: String,
   final_time: String,
-  final_location: String
+  final_location: String,
+  discussions: [discussionSchema]
 });
 
 // Define the main course schema

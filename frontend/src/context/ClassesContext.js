@@ -8,8 +8,12 @@ export const ClassesProvider = ({ children }) => {
     const [classes, setClasses] = useState([]);
     const [abbreviations, setAbbreviations] = useState([]); // State to hold abbreviations
     const [selectedClass, setSelectedClass] = useState("");
+    const [filteredClasses, setFilteredClasses] = useState([]);
     const [lectures, setLectures] = useState([]);
     const [selectedLecture, setSelectedLecture] = useState("");
+    const [discussions, setDiscussions] = useState([]);
+    const [selectedDiscussion, setSelectedDiscussion] = useState("");
+
 
     const fetchClasses = async () => {
         try {
@@ -55,12 +59,27 @@ export const ClassesProvider = ({ children }) => {
     }, [user.token]); // Assuming user.token is needed and relevant for both fetches
 
     useEffect(() => {
+        setSelectedClass("");
+        setSelectedLecture("");
+        setSelectedDiscussion("");
+    },[filteredClasses])
+
+    useEffect(() => {
         if (selectedClass) {
             const classLectures = classes.find(cls => cls.id === selectedClass)?.lectures || [];
             setLectures(classLectures);
             setSelectedLecture(""); // Reset selected lecture when class changes
+            setSelectedDiscussion(""); // Reset selected discussion when class changes
         }
     }, [selectedClass, classes]);
+
+    useEffect(() => {
+        if(selectedLecture) {
+            const lecDiscussions = lectures.find(lec => lec.num === selectedLecture)?.discussions || [];
+            setDiscussions(lecDiscussions);
+            setSelectedDiscussion(""); // Reset selected lecture when lecture changes
+        }
+    }, [selectedClass, classes, selectedLecture, lectures]);
 
     return (
         <ClassesContext.Provider value={{
@@ -68,7 +87,10 @@ export const ClassesProvider = ({ children }) => {
             abbreviations, // Provide abbreviations to the context consumers
             selectedClass, setSelectedClass, 
             selectedLecture, setSelectedLecture, 
+            selectedDiscussion, setSelectedDiscussion,
+            filteredClasses, setFilteredClasses,
             lectures,
+            discussions
         }}>
             {children}
         </ClassesContext.Provider>
