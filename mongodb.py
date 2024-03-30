@@ -20,7 +20,8 @@ def insert_course(course):
    print("Inserting:", course.id)
    course_dict = course.__dict__
    course_dict['lectures'] = [lec.__dict__ for lec in course_dict['lectures']]
-
+   for lec in course_dict['lectures']:
+       lec['discussions'] = [disc.__dict__ for disc in lec['discussions']]
 
    if course_dict['course_title']:
        result = collection.replace_one({'id': course_dict['id']}, course_dict, upsert=True)

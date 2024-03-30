@@ -1,7 +1,5 @@
 from os import error
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-from os import error
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -56,8 +54,9 @@ class Course:
        self.coreqs  = coreqs
        self.course_page = page
        self.term = term
+
 class lecture:
-   def __init__(self, num = '1', title='', location='', time ='', days = '', instructors=[], status='', capacity='', waitlist='',units='', final_date='', final_time='', final_location=''):
+   def __init__(self, num = '1', title='', location='', time ='', days = '', instructors=[], status='', capacity='', waitlist='',units='', final_date='', final_time='', final_location='', discussions=[]):
        self.num = num
        self.title = title
        self.location = location
@@ -71,8 +70,26 @@ class lecture:
        self.final_date = final_date
        self.final_time = final_time
        self.final_location = final_location 
-class discussion():
-   pass
+       self.discussions = discussions
+   def print_member_variables(self):
+            for key, value in self.__dict__.items():
+                print(f"{key.capitalize()}: {value}")
+class Discussion():
+   def __init__(self, alpha = 'A', location='', time ='', days = '', instructors=[], status='', capacity='', waitlist='', page=''):
+       self.alpha = alpha
+       self.location = location
+       self.time = time
+       self.days = days
+       self.instructors = instructors
+       self.status = status
+       self.capacity = capacity
+       self.waitlist = waitlist
+       self.page = page
+
+   def print_member_variables(self):
+        for key, value in self.__dict__.items():
+            print(f"{key.capitalize()}: {value}")
+
 #returns a list of all the courses offered in a term
 def get_courses_offered(subject_abbrv, term):
     
@@ -236,82 +253,72 @@ def add_course_list(courses, dictionary):
 
 
 def get_catalog_number(course_description):
-   # Regular expression to match letters before the digits, the digits, and letters after the digits
-   match = re.search(r'([A-Z]*)(\d+)([A-Z]*)', course_description)
+    # Regular expression to match letters before the digits, the digits, and letters after the digits
+    match = re.search(r'([A-Z]*)(\d+)([A-Z]*)', course_description)
+
+    if match:
+        prefix, number, suffix = match.groups()
+
+        # Ensure the number part is 4 digits by padding with leading zeros
+        number_part = number.zfill(4)
+
+        # Rearrange the parts: number first, then prefix, then suffix, adding spaces as needed to make it 8 characters long
+        if prefix:
+            if len(prefix) == 1:
+                prefix+=" "
+            spacing = "".ljust(8-len(number_part)-len(suffix)-len(prefix), ' ')
+            catalog_number = f"{number_part}{suffix}{spacing}{prefix}"
+
+        else:
+            catalog_number = f"{number_part}{suffix}".ljust(8, ' ')
+
+        return catalog_number
+
+    # Return None if the pattern does not match the course description
+    return None
 
 
-   if match:
-       prefix, number, suffix = match.groups()
+def generate_course_url(subject_code, catalog_num, term, isDisc=False):
+    # Parse the base URL to extract components
+    
+    base_url = "https://sa.ucla.edu/ro/public/soc/Results/GetCourseSummary?model=%7B%22Term%22%3A%2224S%22%2C%22SubjectAreaCode%22%3A%22COM+SCI%22%2C%22CatalogNumber%22%3A%220035L+++%22%2C%22IsRoot%22%3Atrue%2C%22SessionGroup%22%3A%22%25%22%2C%22ClassNumber%22%3A%22%25%22%2C%22SequenceNumber%22%3Anull%2C%22Path%22%3A%22COMSCI0035L%22%2C%22MultiListedClassFlag%22%3A%22n%22%2C%22Token%22%3A%22MDAzNUwgICBDT01TQ0kwMDM1TA%3D%3D%22%7D&FilterFlags=%7B%22enrollment_status%22%3A%22O%2CW%2CC%2CX%2CT%2CS%22%2C%22advanced%22%3A%22y%22%2C%22meet_days%22%3A%22M%2CT%2CW%2CR%2CF%22%2C%22start_time%22%3A%228%3A00+am%22%2C%22end_time%22%3A%228%3A00+pm%22%2C%22meet_locations%22%3Anull%2C%22meet_units%22%3Anull%2C%22instructor%22%3Anull%2C%22class_career%22%3Anull%2C%22impacted%22%3Anull%2C%22enrollment_restrictions%22%3Anull%2C%22enforced_requisites%22%3Anull%2C%22individual_studies%22%3Anull%2C%22summer_session%22%3Anull%7D&_=1711262428882"
+    parsed_url = urlparse(base_url)
+    query_components = parse_qs(parsed_url.query)
 
+    # Extract the 'model' parameter and convert it from a JSON string to a dictionary
+    model_param = json.loads(query_components['model'][0])
+    # print(model_param)
+    # Update the dictionary with the new course details
+    parsed_cat_num = get_catalog_number(catalog_num)
+    path = (subject_code + parsed_cat_num).replace(' ', '')
+    model_param['SubjectAreaCode'] = subject_code
+    model_param['CatalogNumber'] = parsed_cat_num
+    model_param['Term'] = term
+    model_param['Path'] = path
+    if isDisc:
+        model_param['IsRoot'] = False
+    else:
+        model_param['IsRoot'] = True
+        
+    updated_model_param = json.dumps(model_param)
 
-       # Ensure the number part is 4 digits by padding with leading zeros
-       number_part = number.zfill(4)
+    # Update the 'model' parameter in the original query components
+    query_components['model'] = [updated_model_param]
 
+    # Re-encode the query parameters
+    updated_query_string = urlencode(query_components, doseq=True)
 
-       # Rearrange the parts: number first, then prefix, then suffix, adding spaces as needed to make it 8 characters long
-       if prefix:
-           if len(prefix) == 1:
-               prefix+=" "
-           spacing = "".ljust(8-len(number_part)-len(suffix)-len(prefix), ' ')
-           catalog_number = f"{number_part}{suffix}{spacing}{prefix}"
+    # Reconstruct the full URL with the updated query string
+    new_url = urlunparse((
+        parsed_url.scheme,
+        parsed_url.netloc,
+        parsed_url.path,
+        parsed_url.params,
+        updated_query_string,
+        parsed_url.fragment
+    ))
 
-
-       else:
-           catalog_number = f"{number_part}{suffix}".ljust(8, ' ')
-
-
-       return catalog_number
-
-
-   # Return None if the pattern does not match the course description
-   return None
-
-
-
-
-def generate_course_url(subject_code, catalog_num, term):
-   # Parse the base URL to extract components
-  
-   base_url = "https://sa.ucla.edu/ro/public/soc/Results/GetCourseSummary?model=%7B%22Term%22%3A%2224W%22%2C%22SubjectAreaCode%22%3A%22COM+SCI%22%2C%22CatalogNumber%22%3A%220035L+++%22%2C%22IsRoot%22%3Atrue%2C%22SessionGroup%22%3A%22%25%22%2C%22ClassNumber%22%3A%22%25%22%2C%22SequenceNumber%22%3Anull%2C%22Path%22%3A%22COMSCI0035L%22%2C%22MultiListedClassFlag%22%3A%22n%22%2C%22Token%22%3A%22MDAzNUwgICBDT01TQ0kwMDM1TA%3D%3D%22%7D&FilterFlags=%7B%22enrollment_status%22%3A%22O%2CW%2CC%2CX%2CT%2CS%22%2C%22advanced%22%3A%22y%22%2C%22meet_days%22%3A%22M%2CT%2CW%2CR%2CF%22%2C%22start_time%22%3A%228%3A00+am%22%2C%22end_time%22%3A%228%3A00+pm%22%2C%22meet_locations%22%3Anull%2C%22meet_units%22%3Anull%2C%22instructor%22%3Anull%2C%22class_career%22%3Anull%2C%22impacted%22%3Anull%2C%22enrollment_restrictions%22%3Anull%2C%22enforced_requisites%22%3Anull%2C%22individual_studies%22%3Anull%2C%22summer_session%22%3Anull%7D&_=1709852472123"
-   parsed_url = urlparse(base_url)
-   query_components = parse_qs(parsed_url.query)
-
-
-   # Extract the 'model' parameter and convert it from a JSON string to a dictionary
-   model_param = json.loads(query_components['model'][0])
-   # Update the dictionary with the new course details
-   parsed_cat_num = get_catalog_number(catalog_num)
-   path = (subject_code + parsed_cat_num).replace(' ', '')
-   model_param['SubjectAreaCode'] = subject_code
-   model_param['CatalogNumber'] = parsed_cat_num
-   model_param['Term'] = term
-   model_param['Path'] = path
-
-
-   updated_model_param = json.dumps(model_param)
-
-
-   # Update the 'model' parameter in the original query components
-   query_components['model'] = [updated_model_param]
-
-
-   # Re-encode the query parameters
-   updated_query_string = urlencode(query_components, doseq=True)
-
-
-   # Reconstruct the full URL with the updated query string
-   new_url = urlunparse((
-       parsed_url.scheme,
-       parsed_url.netloc,
-       parsed_url.path,
-       parsed_url.params,
-       updated_query_string,
-       parsed_url.fragment
-   ))
-
-
-   return new_url
-
+    return new_url
 
 
 
@@ -488,15 +495,20 @@ def load_data(subject_name, term):
       
   
 def create_course_node(subject_abbrv, course_name, term):
-   url = generate_course_url(subject_abbrv, course_name, term)
-   html = requests.get(url).text
-   soup = BeautifulSoup(html, 'lxml')
-   sections = soup.find_all('div', class_='row-fluid data_row primary-row class-info class-not-checked')
+   lec_url = generate_course_url(subject_abbrv, course_name, term)
+   lec_html = requests.get(lec_url).text
+   lec_soup = BeautifulSoup(lec_html, 'lxml')
+   sections = lec_soup.find_all('div', class_='row-fluid data_row primary-row class-info class-not-checked')
+   
+   disc_url = generate_course_url(subject_abbrv, course_name, term, True)
+   disc_html = requests.get(disc_url).text
+   disc_soup = BeautifulSoup(disc_html, 'lxml')
+   discussions = disc_soup.find_all('div', class_='row-fluid data_row primary-row class-info class-not-checked')
    if not sections:
        print("Course Not Found")
        return error
    section_list = []
-  
+   discussion_list = []
    course_page = sections[0].find('a').get('href', '')
    prereqs = []
    coreqs = []
@@ -504,7 +516,6 @@ def create_course_node(subject_abbrv, course_name, term):
    final_time = ''
    final_location = ''
    prereqs, coreqs, final_date, final_time, final_location = get_reqs_and_final(course_page)
-
 
    for section in sections:
        #get all section information
@@ -517,10 +528,11 @@ def create_course_node(subject_abbrv, course_name, term):
        section_days = section.find('div', class_='timeColumn').find_all("p")[0].text
        instructors = section.find('div', class_='instructorColumn hide-small').p.get_text(separator='\n').split('\n')
        section_status = enroll_info.split('\n')[0].strip()
+       
        if final_date != "None listed":
            prereqs, coreqs, final_date, final_time, final_location = get_reqs_and_final(course_page)
       
-       if enroll_info.count('\n') > 1:
+       if enroll_info.count('\n') >= 1:
            if "Cancelled" in section_status:
                continue
            if "Closed by Dept" in section_status:
@@ -531,20 +543,46 @@ def create_course_node(subject_abbrv, course_name, term):
            section_capacity = ''
        section_waitlist = section.find('div', class_='waitlistColumn').p.text
        section_units = section.find('div', class_='unitsColumn').p.text
-      
        lec_node = lecture(section_num, section_title, section_location, section_time, section_days, instructors, section_status, section_capacity, section_waitlist, section_units, final_date, final_time, final_location)
        section_list.append(lec_node)
+       discussion_list.append([])
 
+   if discussions:
+    for discussion in discussions:
+        disc_alpha = discussion.find('a').text
+        disc_page = discussion.find('a').get('href', '')
+        disc_num = int(re.search('[0-9]+', disc_alpha).group())
+        disc_enroll_info = discussion.find('div', class_='statusColumn').p.get_text(separator='\n')
+        disc_status = disc_enroll_info.split('\n')[0].strip()
+        disc_location = discussion.find('div', class_='locationColumn hide-small').p.text.strip()
+        disc_time = discussion.find('div', class_='timeColumn').find_all("p")[1].text
+        disc_days = discussion.find('div', class_='timeColumn').find_all("p")[0].text
+        disc_instructors = discussion.find('div', class_='instructorColumn hide-small').p.text.strip()
+        disc_waitlist = discussion.find('div', class_='waitlistColumn').p.text
+        
+        if disc_enroll_info.count('\n') >= 1:
+            if "Cancelled" in disc_status:
+                continue
+            if "Closed by Dept" in disc_status:
+                disc_capacity = disc_enroll_info.split('\n')[2]
+            else:
+                disc_capacity = disc_enroll_info.split('\n')[1]
+        else:
+           disc_capacity = ''        
+        
+        disc_node = Discussion(disc_alpha, disc_location, disc_time, disc_days, disc_instructors, disc_status, disc_capacity, disc_waitlist, ("https://sa.ucla.edu" + disc_page))
 
-
-
+        for i in range(len(section_list)):
+            if (int(section_list[i].num.strip().split()[1]) == disc_num):
+                discussion_list[i].append(disc_node)
+                
+   for i in range(len(section_list)):
+       section_list[i].discussions = discussion_list[i]
+               
    course_num = course_name.split('-')[0].strip()
    course_id = (subject_abbrv + ' ' + course_num)
    course_node = Course(course_id, subject_abbrv, course_name, course_num, section_list, prereqs, coreqs, ("https://sa.ucla.edu" + course_page), term)
    course_list[course_id] = course_node
-
-
-
 
 def set_reqs_to_nodes():
    new_courses = []
@@ -652,11 +690,15 @@ def print_all():
            print("Final Date:", item.final_date)  # Shows the maximum number of students that can enroll in the lecture.
            print("Final Time:", item.final_time)  # Displays the number of students currently on the waitlist for the lecture.
            print("Final Location:", item.final_location)  # Indicates the number of credit units the lecture is worth.
-
-
-
-
-       print('---------------------')
+           
+           print('=========================================')
+           print("Discussions:")
+           for disc in item.discussions:
+               disc.print_member_variables()
+               print('-----------------------------------------')
+           print('=========================================')
+           
+       print(":::::::::::::::::::::::::::::::::::::::::")
 
 
 #api functions:
@@ -674,4 +716,3 @@ def load_majors(requested_majors):
        load_major_reqs(major)
    
    return major_list
-
