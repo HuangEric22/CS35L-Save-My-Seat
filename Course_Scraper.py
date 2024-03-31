@@ -557,7 +557,7 @@ def create_course_node(subject_abbrv, course_name, term):
         disc_location = discussion.find('div', class_='locationColumn hide-small').p.text.strip()
         disc_time = discussion.find('div', class_='timeColumn').find_all("p")[1].text
         disc_days = discussion.find('div', class_='timeColumn').find_all("p")[0].text
-        disc_instructors = discussion.find('div', class_='instructorColumn hide-small').p.text.strip()
+        disc_instructors = discussion.find('div', class_='instructorColumn hide-small').p.get_text(separator='\n').split('\n')
         disc_waitlist = discussion.find('div', class_='waitlistColumn').p.text
         
         if disc_enroll_info.count('\n') >= 1:

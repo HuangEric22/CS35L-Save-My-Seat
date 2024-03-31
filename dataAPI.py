@@ -1,6 +1,6 @@
 import mongodb
 
-department_list = ["Electrical and Computer Engineering", "Life Sciences", "Mathematics"]
+department_list = ["Computer Science", "Electrical and Computer Engineering", "Life Sciences", "Mathematics"]
 requested_majors = []
 term = "24S"
 

@@ -23,9 +23,22 @@ const enrolledClassSchema = new mongoose.Schema({
         title: {type: String},
         units: {type: String},
         waitlist: {type: String},
-        _id: { type: String}
+        discussions: [{
+            alpha: {type: String},
+            location: {type: String},
+            time:  {type: String},
+            days: {type: String},
+            instructors: [{type: String}],
+            status: {type: String},
+            capacity: {type: String},
+            waitlist: {type: String},
+            page: {type: String},
+            _id: {type: String}
+        }],
+        _id: {type: String}
 
     }],
+
     prereqs: [{type: String}],
     coreqs: [{type: String}],
     coursePage: {type: String},

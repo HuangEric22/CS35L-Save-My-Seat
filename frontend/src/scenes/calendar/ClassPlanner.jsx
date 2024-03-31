@@ -147,31 +147,51 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
     
         // Find the specific lecture data from the selected class
         const specificLectureData = fullClassData.lectures.find(lecture => lecture.num === selectedLecture);
-    
+        const specificDiscussionData = discussions.find(discussion => discussion.alpha === selectedDiscussion);
+  
         if (fullClassData && specificLectureData) {
-            const newClass = {
-                // Construct your new class object with all properties
-                hash_id: uuidv4(), // Add unique identifier
-                id: fullClassData.id,
-                course_abbrv: fullClassData.course_abbrv,
-                course_title: fullClassData.course_title,
-                cat_num: fullClassData.cat_num,
-                lectures: [specificLectureData], // Add the selected lecture
-                prereqs: fullClassData.prereqs,
-                coreqs: fullClassData.coreqs,
-                course_page: fullClassData.course_page,
-                term: fullClassData.term,
-                // ... any other properties that are needed
-            };
-    
-
-
-
-            
-            addClass(newClass); // Pass this to your addClass function
-        } else {
-            console.log("Class or lecture data not found");
+          const newClass = {
+              // Construct your new class object with all properties
+              hash_id: uuidv4(), // Add unique identifier
+              id: fullClassData.id,
+              course_abbrv: fullClassData.course_abbrv,
+              course_title: fullClassData.course_title,
+              cat_num: fullClassData.cat_num,
+              lectures: [specificLectureData], // Add the selected lecture
+              prereqs: fullClassData.prereqs,
+              coreqs: fullClassData.coreqs,
+              course_page: fullClassData.course_page,
+              term: fullClassData.term,
+              // ... any other properties that are needed
+          };
+  
+          addClass(newClass); // Pass this to your addClass function
+      } 
+        else {
+          console.log("Class, lecture, or discussion data not found");
         }
+
+        // if (fullClassData && specificLectureData && selectedDiscussion) {
+        //   const newDisc = {
+        //       // Construct your new class object with all properties
+        //       hash_id: uuidv4(), // Add unique identifier
+        //       id: fullClassData.id,
+        //       course_abbrv: fullClassData.course_abbrv,
+        //       course_title: fullClassData.course_title,
+        //       cat_num: selectedDiscussion.alpha,
+        //       lectures: [specificLectureData], // Add the selected lecture
+        //       prereqs: fullClassData.prereqs,
+        //       coreqs: fullClassData.coreqs,
+        //       course_page: fullClassData.course_page,
+        //       term: fullClassData.term,
+        //       // ... any other properties that are needed
+        //   };
+
+        //   addClass(newDisc);
+        // }
+        // else {
+        //   console.log("Discussion Data not found");
+        // }
     };
     
   const StyledBox = styled(Box)(({ theme }) => ({
@@ -292,7 +312,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
             >
               {lectures.map((lecture) => (
                 <MenuItem key={lecture.num} value={lecture.num}>
-                  {`${lecture.num}: ${lecture.instructors} - ${lecture.title} - ${lecture.days} ${lecture.time} at ${lecture.location}`}
+                  {`${lecture.num}: ${lecture.instructors.join(" ")} - ${lecture.title} - ${lecture.days} ${lecture.time} at ${lecture.location}`}
                 </MenuItem>
               ))}
             </Select>
@@ -309,7 +329,7 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
             >
               {discussions.map((discussion) => (
                 <MenuItem key={discussion.alpha} value={discussion.alpha}>
-                  {`${discussion.alpha}: ${discussion.instructors} - ${discussion.days} ${discussion.time} at ${discussion.location}`}
+                  {`${discussion.alpha}: ${discussion.instructors.join(" ")} - ${discussion.days} ${discussion.time} at ${discussion.location}`}
                 </MenuItem>
               ))}
             </Select>

@@ -49,12 +49,26 @@ const ParentComponent = () => {
     //ADDING AND REMOVING ENROLLEDCLASSES
 
     const addClass = async (newClass) => {
-    const isClassAndLectureAlreadyAdded = myClasses.some(classInPlan =>
-        classInPlan.classId === newClass.id &&
-        classInPlan.lectures.some(lecture => lecture.num === newClass.lectures[0].num)
-    );
+        console.log(myClasses)
+        let isClassAndLectureAndDiscussionAlreadyAdded = false;        
+        
+        if (newClass.lectures[0].discussions) {
+            isClassAndLectureAndDiscussionAlreadyAdded = myClasses.some(classInPlan =>
+            classInPlan.classId === newClass.id &&
+            classInPlan.lectures.some(lecture => 
+                lecture.num === newClass.lectures[0].num &&
+                lecture.discussions.some(discussion => discussion.alpha === newClass.lectures.discussions[0].alpha)) 
+            // classInPlan.lectures[0].discussions.some(discussion => discussion.alpha === newClass.discussions[0].alpha)
+        );}
+        
+        else {
+                isClassAndLectureAndDiscussionAlreadyAdded = myClasses.some(classInPlan =>
+                classInPlan.classId === newClass.id &&
+                classInPlan.lectures.some(lecture => lecture.num === newClass.lectures[0].num)
+            );            
+        }
 
-    if (!isClassAndLectureAlreadyAdded) {
+    if (!isClassAndLectureAndDiscussionAlreadyAdded) {
         try {
             const classData = {
                 hash_id: newClass.hash_id,
@@ -63,7 +77,7 @@ const ParentComponent = () => {
                 courseTitle: newClass.course_title,
                 catNum: newClass.cat_num,
                 lectures: newClass.lectures, 
-               coursePage: newClass.course_page,
+                coursePage: newClass.course_page,
                 prereqs: newClass.prereqs,
                 coreqs: newClass.coreqs,
                 term: newClass.term
@@ -163,10 +177,13 @@ const ParentComponent = () => {
                   </Typography>
                   <hr style={{margin: "8px 0", borderColor: "white"}} /> 
                   <Typography variant="body1" component="div">
+                      Lecture: {myClass.lectures[0].num}
+                  </Typography>
+                  <Typography variant="body1" component="div">
                       Time: {myClass.lectures[0].time}
                   </Typography>
                   <Typography variant="body1" component="div">
-                      Instructor: {myClass.lectures[0].instructors.join(', ')}
+                      Instructor: {myClass.lectures[0].instructors.join(' ')}
                   </Typography>
                   <Typography variant="body1" component="div">
                       Location: {myClass.lectures[0].location}

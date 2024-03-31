@@ -6,7 +6,7 @@ const discussionSchema = new Schema({
   alpha: String,
   location: String,
   time: String,
-  instructors: String,
+  instructors: [String],
   status: String,
   capacity: String,
   waitlist: String,
