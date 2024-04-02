@@ -32,6 +32,7 @@ const EventComponent = ({ event }) => {
 
 const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
 
+    
     //set the columns
     const resourceMap = [
     { resourceId: 1, resourceTitle: 'Monday' },
@@ -156,28 +157,58 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
         return parsedDays;
     };
     
-    //new variable with the right times and days
-    const parsedClasses = myClasses.flatMap(classData => {
+    const parsedClasses = myClasses.reduce((acc, classData) => {
         const title = `${classData.courseAbbrv} ${classData.catNum} ${classData.lectures[0].num}`;
-      
+        // Check if the title already exists, don't add it if it already does
+        if (!acc.find(item => item.title === title)) {
+        
         const { start, end } = parseTime(classData.lectures[0].time);
-      
         const resourceIds = parseDays(classData.lectures[0].days);
       
-        if (start!="" && end !=""){
-            start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
-            end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+        if (start !== "" && end !== "") {
+          start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+          end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
         }
-       
       
-        return {
+        // Add the new class data to the accumulator
+        acc.push({
           title: title,
           location: classData.lectures[0].location,
           resourceId: resourceIds,
           start: start,
           end: end
-        };
-      });
+        });
+    }
+        
+        if (classData.lectures[0].discussions[0]) {
+            
+            const title = `${classData.courseAbbrv} ${classData.catNum} ${classData.lectures[0].discussions[0].alpha}`;
+            
+            if (acc.find(item => item.title === title)) {
+                return acc; 
+              }
+            
+              const { start, end } = parseTime(classData.lectures[0].discussions[0].time);
+              const resourceIds = parseDays(classData.lectures[0].discussions[0].days);
+            
+              if (start !== "" && end !== "") {
+                start.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+                end.setFullYear(today.getFullYear(), today.getMonth(), today.getDate());
+              }
+            
+              // Add the new class data to the accumulator
+              acc.push({
+                title: title,
+                location: classData.lectures[0].discussions[0].location,
+                resourceId: resourceIds,
+                start: start,
+                end: end
+              });
+      
+        }
+      
+        return acc;
+      }, []);
 
      //test
      console.log("Contents of parsedClasses:", parsedClasses);
@@ -190,7 +221,6 @@ const ResourceCalendar = ({ localizer, myClasses, addClass, removeClass }) => {
     }
 
     
-
     return (
 
     <Box> 

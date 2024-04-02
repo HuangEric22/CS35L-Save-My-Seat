@@ -330,7 +330,7 @@ catch (error) {
         const fetchData = async () => {
           try {
             setIsLoading(true);
-            const filteredAuctions = realAuctions.filter(auction => auction.ownerId == id);
+            const filteredAuctions = realAuctions.filter(auction => auction.ownerId === id);
             console.log(filteredAuctions);
             console.log(highestBidders);
             const newRows = filteredAuctions.flatMap(auction => {

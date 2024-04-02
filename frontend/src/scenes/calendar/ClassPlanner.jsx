@@ -146,9 +146,10 @@ const ClassPlanner = ({ myClasses, addClass, removeClass }) => {
         const fullClassData = sortedClassesById.find(c => c.id === selectedClass);
     
         // Find the specific lecture data from the selected class
-        const specificLectureData = fullClassData.lectures.find(lecture => lecture.num === selectedLecture);
+        let specificLectureData = fullClassData.lectures.find(lecture => lecture.num === selectedLecture);
         const specificDiscussionData = discussions.find(discussion => discussion.alpha === selectedDiscussion);
-  
+        specificLectureData.discussions = specificDiscussionData
+        
         if (fullClassData && specificLectureData) {
           const newClass = {
               // Construct your new class object with all properties
