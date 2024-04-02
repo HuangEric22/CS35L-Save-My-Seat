@@ -204,9 +204,9 @@ const ParentComponent = () => {
       <Card
         key={myClass.id}
         variant="outlined"
-        sx={{ maxWidth: 800, margin: 1, backgroundColor: colors.primary[400] }}
+        sx={{ maxWidth: 800, margin: 1, backgroundColor: colors.primary[400], display: 'flex', flexDirection: 'column'}}
       >
-        <CardContent>
+        <CardContent sx={{ flexGrow: 1}}>
           <Typography variant="h4" component="div">
             {myClass.courseAbbrv} {myClass.courseTitle}
           </Typography>
@@ -311,7 +311,7 @@ const ParentComponent = () => {
             </>
           )}
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ justifyContent: 'flex-start', padding: '8px'}}>
           <Button
             size="small"
             color="secondary"
